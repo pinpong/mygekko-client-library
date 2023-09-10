@@ -1,13 +1,13 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { WeatherItem } from "./types";
 
 const res = "globals/meteo";
 
-export class Weather extends Client {
-  private parseWeatherItem(system: string, status: string, key: string) {
-    const item: WeatherItem = {
+export class Weather extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): WeatherItem {
+    return {
       sumState: null,
       id: key,
       name: null,
@@ -21,14 +21,13 @@ export class Weather extends Client {
       temperature: tryParseFloat(status["temperature"]["value"]),
       rain: tryParseFloat(status["rain"]["value"]),
     };
-    return item;
   }
 
-  async getWeather(): Promise<WeatherItem> {
-    const system = this.system["globals"]["meteo"];
+  async get(): Promise<WeatherItem> {
+    const system = this.client.systemConfig["globals"]["meteo"];
     throwErrorIfSystemIsNotEnabled(system);
 
-    const status = await this.systemStatusRequest(res);
-    return this.parseWeatherItem(system, status, null);
+    const status = await this.client.systemStatusRequest(res);
+    return this.parseItem(system, status, null);
   }
 }

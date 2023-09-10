@@ -1,27 +1,26 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { GlobalAlarmItem } from "./types";
 
 const res = "globals/alarm";
 
-export class GlobalAlarm extends Client {
-  private parseGlobalAlarmItem(status: string, key: string) {
-    const item: GlobalAlarmItem = {
+export class GlobalAlarm extends BaseSystem {
+  private parseItem(status: string, key: string): GlobalAlarmItem {
+    return {
       sumState: null,
       id: key,
       name: null,
       page: null,
       state: tryParseFloat(status["sumstate"]["value"]),
     };
-    return item;
   }
 
-  async getGlobalAlarm(): Promise<GlobalAlarmItem> {
-    const system = this.system["globals"]["alarm"];
+  async get(): Promise<GlobalAlarmItem> {
+    const system = this.client.systemConfig["globals"]["alarm"];
     throwErrorIfSystemIsNotEnabled(system);
 
-    const status = await this.systemStatusRequest(res);
-    return this.parseGlobalAlarmItem(status, null);
+    const status = await this.client.systemStatusRequest(res);
+    return this.parseItem(status, null);
   }
 }

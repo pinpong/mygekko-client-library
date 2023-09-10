@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { Fireplace } from "./types";
 
 const res = "stoven";
 
-export class Fireplaces extends Client {
-  private parseFireplaceItem(system: string, status: string, key: string) {
+export class Fireplaces extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Fireplace {
     const values = valuesToStringList(status, key);
-    const item: Fireplace = {
+
+    return {
       sumState: tryParseFloat(values[4]),
       id: key,
       name: system[key].name,
@@ -22,24 +22,17 @@ export class Fireplaces extends Client {
       currentState: tryParseFloat(values[2]),
       workingState: tryParseFloat(values[3]),
     };
-    return item;
   }
 
-  async getFireplaces(): Promise<Fireplace[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseFireplaceItem(system, status, key);
+  async getAll(): Promise<Fireplace[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getFireplace(id: string): Promise<Fireplace> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseFireplaceItem(this.system[res], status, id);
+  async getById(id: string): Promise<Fireplace> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

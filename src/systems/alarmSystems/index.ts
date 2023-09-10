@@ -1,18 +1,19 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
 import { AlarmSystem } from "./types";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
+import { AirConditioner } from "../airConditioners/types";
 
 const res = "alarmsystem";
 
-export class AlarmSystems extends Client {
-  private parseAlarmSystemItem(system: string, status: string, key: string) {
+export class AlarmSystems extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): AlarmSystem {
     const values = valuesToStringList(status, key);
-    const item: AlarmSystem = {
+
+    return {
       sumState: null,
       id: key,
       name: system[key].name,
@@ -32,28 +33,21 @@ export class AlarmSystems extends Client {
       ],
       deviceModel: tryParseFloat(values[7]),
     };
-    return item;
   }
 
-  async getAlarmSystems(): Promise<AlarmSystem[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseAlarmSystemItem(system, status, key);
+  async getAll(): Promise<AlarmSystem[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getAlarmSystem(id: string): Promise<AlarmSystem> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseAlarmSystemItem(this.system[res], status, id);
+  async getById(id: string): Promise<AirConditioner> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setAlarmSystemSharped(id: string, zone: number) {
-    await this.changeRequest(res, id, `${zone}`);
+  async setSharped(id: string, zone: number): Promise<void> {
+    await this.client.changeRequest(res, id, `${zone}`);
   }
 }

@@ -1,4 +1,4 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import {
   RoomTemperature,
   RoomTemperatureWorkingModeKnx,
@@ -9,18 +9,18 @@ import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "roomTemps";
 
-export class RoomTemperatures extends Client {
-  private parseRoomTemperatureItem(
+export class RoomTemperatures extends BaseSystem {
+  private parseItem(
     system: string,
     status: string,
     key: string,
-  ) {
+  ): RoomTemperature {
     const values = valuesToStringList(status, key);
-    const item: RoomTemperature = {
+
+    return {
       sumState: tryParseFloat(values[6]),
       id: key,
       name: system[key].name,
@@ -37,39 +37,32 @@ export class RoomTemperatures extends Client {
       floorTemperature: tryParseFloat(values[10]),
       deviceModel: tryParseFloat(values[11]),
     };
-    return item;
   }
 
-  async getRoomTemperatures(): Promise<RoomTemperature[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseRoomTemperatureItem(system, status, key);
+  async getAll(): Promise<RoomTemperature[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getRoomTemperature(id: string): Promise<RoomTemperature> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseRoomTemperatureItem(this.system[res], status, id);
+  async getById(id: string): Promise<RoomTemperature> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setRoomTemperatureSetPoint(id: string, temperature: number) {
-    await this.changeRequest(res, id, `S${temperature}`);
+  async setTemperaturSetPoint(id: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(res, id, `S${temperature}`);
   }
 
-  async setRoomTemperatureAdjust(id: string, temperature: number) {
-    await this.changeRequest(res, id, `K${temperature}`);
+  async setTemperatureAdjust(id: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(res, id, `K${temperature}`);
   }
 
-  async setRoomTemperatureWorkingMode(
+  async setWorkingMode(
     id: string,
     mode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx,
-  ) {
-    await this.changeRequest(res, id, `M${mode}`);
+  ): Promise<void> {
+    await this.client.changeRequest(res, id, `M${mode}`);
   }
 }

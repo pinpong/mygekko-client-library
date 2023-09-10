@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
 import { Action, ActionState } from "./types";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "actions";
 
-export class Actions extends Client {
-  private parseActionItem(system: string, status: string, key: string) {
+export class Actions extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Action {
     const values = valuesToStringList(status, key);
-    const item: Action = {
+
+    return {
       sumState: tryParseFloat(values[2]),
       id: key,
       name: system[key].name,
@@ -20,29 +20,21 @@ export class Actions extends Client {
       currentState: tryParseFloat(values[0]),
       startCondition: tryParseFloat(values[1]),
     };
-
-    return item;
   }
 
-  async getActions(): Promise<Action[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseActionItem(system, status, key);
+  async getAll(): Promise<Action[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getAction(id: string): Promise<Action> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseActionItem(this.system[res], status, id);
+  async getById(id: string): Promise<Action> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setActionState(id: string, state: ActionState) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: ActionState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 }

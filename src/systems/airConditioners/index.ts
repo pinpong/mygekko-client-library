@@ -1,10 +1,9 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import {
   AirConditioner,
   AirConditionerState,
@@ -13,14 +12,15 @@ import {
 
 const res = "air_handling_unit";
 
-export class AirConditioners extends Client {
-  private parseAirConditionersItem(
+export class AirConditioners extends BaseSystem {
+  private parseItem(
     system: string,
     status: string,
     key: string,
-  ) {
+  ): AirConditioner {
     const values = valuesToStringList(status, key);
-    const item: AirConditioner = {
+
+    return {
       sumState: tryParseFloat(values[25]),
       id: key,
       name: system[key].name,
@@ -51,48 +51,41 @@ export class AirConditioners extends Client {
       currentState: tryParseFloat(values[23]),
       workingMode: tryParseFloat(values[24]),
     };
-    return item;
   }
 
-  async getAirConditioners(): Promise<AirConditioner[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseAirConditionersItem(system, status, key);
+  async getAll(): Promise<AirConditioner[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getAirConditioner(id: string): Promise<AirConditioner> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseAirConditionersItem(this.system[res], status, id);
+  async getById(id: string): Promise<AirConditioner> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setAirConditionerState(id: string, state: AirConditionerState) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: AirConditionerState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 
-  async setAirConditionerMode(id: string, mode: AirConditionerWorkingMode) {
-    await this.changeRequest(res, id, `M${mode}`);
+  async setMode(id: string, mode: AirConditionerWorkingMode): Promise<void> {
+    await this.client.changeRequest(res, id, `M${mode}`);
   }
 
-  async setAirConditionerPower(id: string, power: number) {
-    await this.changeRequest(res, id, `P${power}`);
+  async setPower(id: string, power: number): Promise<void> {
+    await this.client.changeRequest(res, id, `P${power}`);
   }
 
-  async setAirConditionerAirMinFlap(id: string, flaps: number) {
-    await this.changeRequest(res, id, `F${flaps}`);
+  async setMinFlap(id: string, flaps: number): Promise<void> {
+    await this.client.changeRequest(res, id, `F${flaps}`);
   }
 
-  async setAirConditionerAirQuality(id: string, airQuality: number) {
-    await this.changeRequest(res, id, `Q${airQuality}`);
+  async setAirQuality(id: string, airQuality: number): Promise<void> {
+    await this.client.changeRequest(res, id, `Q${airQuality}`);
   }
 
-  async setAirConditionerHumidity(id: string, humidity: number) {
-    await this.changeRequest(res, id, `H${humidity}`);
+  async setHumidity(id: string, humidity: number): Promise<void> {
+    await this.client.changeRequest(res, id, `H${humidity}`);
   }
 }

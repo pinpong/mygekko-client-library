@@ -1,46 +1,40 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { SmsEmail, SmsEmailState } from "./types";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
+import { EnergyManager } from "../energyManagers/types";
 
 const res = "smsemail";
 
-export class SmsEmails extends Client {
-  private parseSmsEmailItem(system: string, status: string, key: string) {
+export class SmsEmails extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): SmsEmail {
     const values = valuesToStringList(status, key);
-    const item: SmsEmail = {
+
+    return {
       sumState: null,
       id: key,
       name: system[key].name,
       page: system[key].page,
       currentState: tryParseFloat(values[0]),
     };
-    return item;
   }
 
-  async getSmsEmails(): Promise<SmsEmail[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseSmsEmailItem(system, status, key);
+  async getAll(): Promise<EnergyManager[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getSmsEmail(id: string): Promise<SmsEmail> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseSmsEmailItem(this.system[res], status, id);
+  async getById(id: string): Promise<EnergyManager> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setSmsEmailState(id: string, state: SmsEmailState) {
+  async setState(id: string, state: SmsEmailState): Promise<void> {
     let value = -1;
     switch (state) {
       case SmsEmailState.off:
@@ -50,6 +44,6 @@ export class SmsEmails extends Client {
         value = 1;
         break;
     }
-    await this.changeRequest(res, id, `${value}`);
+    await this.client.changeRequest(res, id, `${value}`);
   }
 }

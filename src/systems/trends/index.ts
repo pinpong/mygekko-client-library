@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { Trend } from "./types";
 
 const res = "trends";
 
-export class Trends extends Client {
-  private parseTrendItem(system: string, status: string, key: string) {
+export class Trends extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Trend {
     const values = valuesToStringList(status, key);
-    const item: Trend = {
+
+    return {
       sumState: tryParseFloat(values[20]),
       id: key,
       name: system[key].name,
@@ -48,24 +48,17 @@ export class Trends extends Client {
         },
       ],
     };
-    return item;
   }
 
-  async getTrends(): Promise<Trend[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseTrendItem(system, status, key);
+  async getAll(): Promise<Trend[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getTrend(id: string): Promise<Trend> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseTrendItem(this.system[res], status, id);
+  async getById(id: string): Promise<Trend> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

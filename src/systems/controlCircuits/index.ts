@@ -1,18 +1,22 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { ControlCircuit } from "./types";
 
 const res = "controlcircuits";
 
-export class ControlCircuits extends Client {
-  private parseControlCircuitItem(system: string, status: string, key: string) {
+export class ControlCircuits extends BaseSystem {
+  private parseItem(
+    system: string,
+    status: string,
+    key: string,
+  ): ControlCircuit {
     const values = valuesToStringList(status, key);
-    const item: ControlCircuit = {
+
+    return {
       sumState: tryParseFloat(values[2]),
       id: key,
       name: system[key].name,
@@ -23,24 +27,17 @@ export class ControlCircuits extends Client {
       pump2WorkingPowerLevel: tryParseFloat(values[4]),
       pump3WorkingPowerLevel: tryParseFloat(values[5]),
     };
-    return item;
   }
 
-  async getControlCircuits(): Promise<ControlCircuit[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseControlCircuitItem(system, status, key);
+  async getAll(): Promise<ControlCircuit[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getControlCircuit(id: string): Promise<ControlCircuit> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseControlCircuitItem(this.system[res], status, id);
+  async getById(id: string): Promise<ControlCircuit> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

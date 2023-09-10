@@ -1,18 +1,18 @@
-import { Client } from "../../client";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
 import { Access, AccessState } from "./types";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
+import { BaseSystem } from "../base";
 
 const res = "accessdoors";
 
-export class Accesses extends Client {
-  private parseAccessItem(system: string, status: string, key: string) {
+export class Accesses extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Access {
     const values = valuesToStringList(status, key);
-    const item: Access = {
+
+    return {
       sumState: tryParseFloat(values[1]),
       id: key,
       name: system[key].name,
@@ -22,29 +22,21 @@ export class Accesses extends Client {
       gateRuntimePercentage: tryParseFloat(values[3]),
       accessType: tryParseFloat(values[4]),
     };
-
-    return item;
   }
 
-  async getAccesses(): Promise<Access[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseAccessItem(system, status, key);
+  async getAll(): Promise<Access[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getAccess(id: string): Promise<Access> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseAccessItem(this.system[res], status, id);
+  async getById(id: string): Promise<Access> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setAccessOpenState(id: string, state: AccessState) {
+  async setOpenState(id: string, state: AccessState): Promise<void> {
     let value = -1;
     switch (state) {
       case AccessState.close:
@@ -57,6 +49,6 @@ export class Accesses extends Client {
         value = 2;
         break;
     }
-    await this.changeRequest(res, id, `${value}`);
+    await this.client.changeRequest(res, id, `${value}`);
   }
 }

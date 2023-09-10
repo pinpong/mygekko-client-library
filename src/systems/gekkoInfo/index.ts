@@ -1,12 +1,12 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { GekkoInfoItem } from "./types";
 
 const res = "globals/network";
 
-export class GekkoInfo extends Client {
-  private parseGekkoInfoItem(status: string, key: string) {
-    const item: GekkoInfoItem = {
+export class GekkoInfo extends BaseSystem {
+  private parseItem(status: string, key: string): GekkoInfoItem {
+    return {
       sumState: null,
       id: key,
       name: null,
@@ -16,14 +16,13 @@ export class GekkoInfo extends Client {
       version: status["version"]["value"],
       hardware: status["hardware"]["value"],
     };
-    return item;
   }
 
-  async getGekkoInfo(): Promise<GekkoInfoItem> {
-    const system = this.system["globals"]["network"];
+  async get(): Promise<GekkoInfoItem> {
+    const system = this.client.systemConfig["globals"]["network"];
     throwErrorIfSystemIsNotEnabled(system);
 
-    const status = await this.systemStatusRequest(res);
-    return this.parseGekkoInfoItem(status, null);
+    const status = await this.client.systemStatusRequest(res);
+    return this.parseItem(status, null);
   }
 }

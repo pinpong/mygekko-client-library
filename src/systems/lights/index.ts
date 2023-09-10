@@ -1,57 +1,53 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { Light, LightState } from "./types";
 
 const res = "lights";
 
-export class Lights extends Client {
-  private parseLightItem(system: string, status: string, key: string) {
+export class Lights extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Light {
     const values = valuesToStringList(status, key);
-    const item: Light = {
+
+    return {
       sumState: tryParseFloat(values[0]),
       id: key,
       name: system[key].name,
       page: system[key].page,
     };
-    return item;
   }
 
-  async getLights(): Promise<Light[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseLightItem(system, status, key);
+  async getAll(): Promise<Light[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getLight(id: string): Promise<Light> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseLightItem(this.system[res], status, id);
+  async getById(id: string): Promise<Light> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setLightState(id: string, state: LightState) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: LightState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 
-  async setLightDimLevel(id: string, dimLevel: number) {
-    await this.changeRequest(res, id, `D${dimLevel}`);
+  async setDimLevel(id: string, dimLevel: number): Promise<void> {
+    await this.client.changeRequest(res, id, `D${dimLevel}`);
   }
 
-  async setLightTunableWhiteLevel(id: string, tunableWhiteLevel: number) {
-    await this.changeRequest(res, id, `TW${tunableWhiteLevel}`);
+  async setTunableWhiteLevel(
+    id: string,
+    tunableWhiteLevel: number,
+  ): Promise<void> {
+    await this.client.changeRequest(res, id, `TW${tunableWhiteLevel}`);
   }
 
-  async setLightColor(id: string, color: number) {
-    await this.changeRequest(res, id, `C${color}`);
+  async setColor(id: string, color: number): Promise<void> {
+    await this.client.changeRequest(res, id, `C${color}`);
   }
 }

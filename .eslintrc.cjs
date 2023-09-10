@@ -4,8 +4,14 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   root: true,
-  ignorePatterns: ["dist/*"],
+  ignorePatterns: ["dist/*", "*.test.ts"],
   env: {
     node: true,
+  },
+  rules: {
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { allowTypedFunctionExpressions: true },
+    ],
   },
 };

@@ -1,22 +1,22 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { HotWaterCirculation, HotWaterCirculationState } from "./types";
 
 const res = "hotwater_circulations";
 
-export class HotWaterCirculations extends Client {
-  private parseHotWaterCirculationItem(
+export class HotWaterCirculations extends BaseSystem {
+  private parseItem(
     system: string,
     status: string,
     key: string,
-  ) {
+  ): HotWaterCirculation {
     const values = valuesToStringList(status, key);
-    const item: HotWaterCirculation = {
+
+    return {
       sumState: tryParseFloat(values[4]),
       id: key,
       name: system[key].name,
@@ -26,31 +26,21 @@ export class HotWaterCirculations extends Client {
       returnWaterTemperature: tryParseFloat(values[2]),
       returnWaterTemperatureSetPoint: tryParseFloat(values[3]),
     };
-    return item;
   }
 
-  async getHotWaterCirculations(): Promise<HotWaterCirculation[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseHotWaterCirculationItem(system, status, key);
+  async getAll(): Promise<HotWaterCirculation[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getHotWaterCirculation(id: string): Promise<HotWaterCirculation> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseHotWaterCirculationItem(this.system[res], status, id);
+  async getById(id: string): Promise<HotWaterCirculation> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setHotWaterCirculationState(
-    id: string,
-    state: HotWaterCirculationState,
-  ) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: HotWaterCirculationState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 }

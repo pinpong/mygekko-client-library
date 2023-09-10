@@ -1,19 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { EnergyCost } from "./types";
 
 const res = "energycosts";
 
-export class EnergyCosts extends Client {
-  private parseEnergyCostsItem(system: string, status: string, key: string) {
+export class EnergyCosts extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): EnergyCost {
     const values = valuesToStringList(status, key);
 
-    const item: EnergyCost = {
+    return {
       sumState: tryParseFloat(values[15]),
       id: key,
       name: system[key].name,
@@ -38,24 +37,17 @@ export class EnergyCosts extends Client {
       startDateTotalEnergyInPeriod: values[17],
       counterDirection: tryParseFloat(values[18]),
     };
-    return item;
   }
 
-  async getEnergyCosts(): Promise<EnergyCost[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseEnergyCostsItem(system, status, key);
+  async getAll(): Promise<EnergyCost[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getEnergyCost(id: string): Promise<EnergyCost> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseEnergyCostsItem(this.system[res], status, id);
+  async getById(id: string): Promise<EnergyCost> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

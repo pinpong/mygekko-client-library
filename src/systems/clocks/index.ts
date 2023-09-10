@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { Clock, ClockState } from "./types";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "clocks";
 
-export class Clocks extends Client {
-  private parseClockItem(system: string, status: string, key: string) {
+export class Clocks extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Clock {
     const values = valuesToStringList(status, key);
-    const item: Clock = {
+
+    return {
       sumState: tryParseFloat(values[2]),
       id: key,
       name: system[key].name,
@@ -20,28 +20,21 @@ export class Clocks extends Client {
       currentState: tryParseFloat(values[0]),
       startCondition: tryParseFloat(values[1]),
     };
-    return item;
   }
 
-  async getClocks(): Promise<Clock[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseClockItem(system, status, key);
+  async getAll(): Promise<Clock[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getClock(id: string): Promise<Clock> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseClockItem(this.system[res], status, id);
+  async getById(id: string): Promise<Clock> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setClockState(id: string, state: ClockState) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: ClockState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 }

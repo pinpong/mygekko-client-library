@@ -1,4 +1,4 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import {
   CoolingModeState,
   DehumidificationState,
@@ -17,14 +17,14 @@ import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "vents";
 
-export class Vents extends Client {
-  private parseVentItem(system: string, status: string, key: string) {
+export class Vents extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Vent {
     const values = valuesToStringList(status, key);
-    const item: Vent = {
+
+    return {
       sumState: tryParseFloat(values[14]),
       id: key,
       name: system[key].name,
@@ -48,28 +48,20 @@ export class Vents extends Client {
       dehumidificationState: tryParseFloat(values[17]),
       bypassMode: tryParseFloat(values[18]),
     };
-    return item;
   }
 
-  async getVents(): Promise<Vent[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseVentItem(system, status, key);
+  async getAll(): Promise<Vent[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getVent(id: string): Promise<Vent> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseVentItem(this.system[res], status, id);
+  async getById(id: string): Promise<Vent> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
-
-  async setVentMode(
+  async setMode(
     id: string,
     mode:
       | VentWorkingModeProxxonV1
@@ -78,11 +70,11 @@ export class Vents extends Client {
       | VentWorkingModeStiebelTecalor
       | VentWorkingModeIndividual
       | VentWorkingModePluggit,
-  ) {
-    await this.changeRequest(res, id, `M${mode}`);
+  ): Promise<void> {
+    await this.client.changeRequest(res, id, `M${mode}`);
   }
 
-  async setVentLevel(id: string, ventLevel: VentLevel) {
+  async setLevel(id: string, ventLevel: VentLevel): Promise<void> {
     let level = -1;
     switch (ventLevel) {
       case VentLevel.off:
@@ -101,18 +93,24 @@ export class Vents extends Client {
         level = 4;
         break;
     }
-    await this.changeRequest(res, id, `${level}`);
+    await this.client.changeRequest(res, id, `${level}`);
   }
 
-  async setVentByPassState(id: string, state: VentBypassState) {
-    await this.changeRequest(res, id, `BY${state}`);
+  async setByPassState(id: string, state: VentBypassState): Promise<void> {
+    await this.client.changeRequest(res, id, `BY${state}`);
   }
 
-  async setVentCoolingModeState(id: string, state: CoolingModeState) {
-    await this.changeRequest(res, id, `C${state}`);
+  async setCoolingModeState(
+    id: string,
+    state: CoolingModeState,
+  ): Promise<void> {
+    await this.client.changeRequest(res, id, `C${state}`);
   }
 
-  async setDehumidificationState(id: string, state: DehumidificationState) {
-    await this.changeRequest(res, id, `D${state}`);
+  async setDehumidificationState(
+    id: string,
+    state: DehumidificationState,
+  ): Promise<void> {
+    await this.client.changeRequest(res, id, `D${state}`);
   }
 }

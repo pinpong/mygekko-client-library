@@ -1,4 +1,4 @@
-export function valuesToStringList(values: string, key: string) {
+export function valuesToStringList(values: string, key: string): string[] {
   try {
     if (values[key]) {
       return (values[key]["sumstate"]["value"] as string)
@@ -12,10 +12,10 @@ export function valuesToStringList(values: string, key: string) {
   }
 }
 
-export function systemFilteredByItems(system: string) {
+export function systemFilteredByItems(system: string): string[] {
   return Object.keys(system).filter((key) => key.includes("item"));
 }
 
-export function systemFilteredByGroup(system: string) {
+export function systemFilteredByGroup(system: string): string[] {
   return Object.keys(system).filter((key) => key.includes("group"));
 }

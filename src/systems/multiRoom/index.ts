@@ -1,17 +1,17 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { MultiRoom, MultiRoomState } from "./types";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "multirooms";
 
-export class MultiRooms extends Client {
-  private parseMultiRoomItem(system: string, status: string, key: string) {
+export class MultiRooms extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): MultiRoom {
     const values = valuesToStringList(status, key);
+
     const item: MultiRoom = {
       sumState: null,
       id: key,
@@ -25,32 +25,26 @@ export class MultiRooms extends Client {
       currentSongIndex: tryParseFloat(values[22]),
     };
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 5; i < 21; i++) {
       item.playList.push({ index: i, name: values[i] });
     }
 
     return item;
   }
 
-  async getMultiRooms(): Promise<MultiRoom[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseMultiRoomItem(system, status, key);
+  async getAll(): Promise<MultiRoom[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getMultiRoom(id: string): Promise<MultiRoom> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseMultiRoomItem(this.system[res], status, id);
+  async getById(id: string): Promise<MultiRoom> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setMultiRoomState(id: string, state: MultiRoomState) {
+  async setState(id: string, state: MultiRoomState): Promise<void> {
     let value = "STOP";
     switch (state) {
       case MultiRoomState.off:
@@ -60,22 +54,22 @@ export class MultiRooms extends Client {
         value = "PLAY";
         break;
     }
-    await this.changeRequest(res, id, `${value}`);
+    await this.client.changeRequest(res, id, `${value}`);
   }
 
-  async setMultiRoomVolume(id: string, volume: number) {
-    await this.changeRequest(res, id, `V${volume}`);
+  async setVolume(id: string, volume: number): Promise<void> {
+    await this.client.changeRequest(res, id, `V${volume}`);
   }
 
-  async setMultiRoomPreviousSong(id: string) {
-    await this.changeRequest(res, id, `N-1`);
+  async setPreviousSong(id: string): Promise<void> {
+    await this.client.changeRequest(res, id, `N-1`);
   }
 
-  async setMultiRoomNextSong(id: string) {
-    await this.changeRequest(res, id, `N+1`);
+  async setNextSong(id: string): Promise<void> {
+    await this.client.changeRequest(res, id, `N+1`);
   }
 
-  async setMultiRoomPlayList(id: string, playListIndex: number) {
-    await this.changeRequest(res, id, `C${playListIndex}`);
+  async setPlayList(id: string, playListIndex: number): Promise<void> {
+    await this.client.changeRequest(res, id, `C${playListIndex}`);
   }
 }

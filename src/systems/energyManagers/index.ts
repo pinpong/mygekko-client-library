@@ -1,19 +1,22 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { EnergyManager } from "./types";
 
 const res = "energymanager";
 
-export class EnergyManagers extends Client {
-  private parseEnergyManagerItem(system: string, status: string, key: string) {
+export class EnergyManagers extends BaseSystem {
+  private parseItem(
+    system: string,
+    status: string,
+    key: string,
+  ): EnergyManager {
     const values = valuesToStringList(status, key);
 
-    const item: EnergyManager = {
+    return {
       sumState: tryParseFloat(values[0]),
       id: key,
       name: system[key].name,
@@ -44,24 +47,17 @@ export class EnergyManagers extends Client {
       maximumPowerSolarPanels: tryParseFloat(values[24]),
       maximumPowerBattery: tryParseFloat(values[25]),
     };
-    return item;
   }
 
-  async getEnergyManagers(): Promise<EnergyManager[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseEnergyManagerItem(system, status, key);
+  async getAll(): Promise<EnergyManager[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getEnergyManager(id: string): Promise<EnergyManager> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseEnergyManagerItem(this.system[res], status, id);
+  async getById(id: string): Promise<EnergyManager> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

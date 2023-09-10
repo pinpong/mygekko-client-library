@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { Pool } from "./types";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "pools";
 
-export class Pools extends Client {
-  private parsePoolItem(system: string, status: string, key: string) {
+export class Pools extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Pool {
     const values = valuesToStringList(status, key);
-    const item: Pool = {
+
+    return {
       sumState: tryParseFloat(values[3]),
       id: key,
       name: system[key].name,
@@ -22,30 +22,23 @@ export class Pools extends Client {
       backwashState: tryParseFloat(values[2]),
       waterTemperature: tryParseFloat(values[4]),
     };
-    return item;
   }
 
-  async getPools(): Promise<Pool[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parsePoolItem(system, status, key);
+  async getAll(): Promise<Pool[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getPool(id: string): Promise<Pool> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parsePoolItem(this.system[res], status, id);
+  async getById(id: string): Promise<Pool> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
   /// TODO: implement all other function
 
-  async setPoolTemperatur(id: string, temperature: number) {
-    await this.changeRequest(res, id, `T${temperature}`);
+  async setTemperatur(id: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(res, id, `T${temperature}`);
   }
 }

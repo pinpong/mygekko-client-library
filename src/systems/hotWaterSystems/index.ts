@@ -1,18 +1,22 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { HotWaterSystem, HotWaterSystemState } from "./types";
 
 const res = "hotwater_systems";
 
-export class HotWaterSystems extends Client {
-  private parseHotWaterSystemItem(system: string, status: string, key: string) {
+export class HotWaterSystems extends BaseSystem {
+  private parseItem(
+    system: string,
+    status: string,
+    key: string,
+  ): HotWaterSystem {
     const values = valuesToStringList(status, key);
-    const item: HotWaterSystem = {
+
+    return {
       sumState: tryParseFloat(values[7]),
       id: key,
       name: system[key].name,
@@ -25,32 +29,25 @@ export class HotWaterSystems extends Client {
       collectorTemperature: tryParseFloat(values[5]),
       currentState: tryParseFloat(values[6]),
     };
-    return item;
   }
 
-  async getHotWaterSystems(): Promise<HotWaterSystem[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseHotWaterSystemItem(system, status, key);
+  async getAll(): Promise<HotWaterSystem[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getHotWaterSystem(id: string): Promise<HotWaterSystem> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseHotWaterSystemItem(this.system[res], status, id);
+  async getById(id: string): Promise<HotWaterSystem> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setHotWaterSystemState(id: string, state: HotWaterSystemState) {
-    await this.changeRequest(res, id, `${state}`);
+  async setState(id: string, state: HotWaterSystemState): Promise<void> {
+    await this.client.changeRequest(res, id, `${state}`);
   }
 
-  async setHotWaterSystemTemperature(id: string, temperatur: number) {
-    await this.changeRequest(res, id, `T${temperatur}`);
+  async setTemperature(id: string, temperatur: number): Promise<void> {
+    await this.client.changeRequest(res, id, `T${temperatur}`);
   }
 }

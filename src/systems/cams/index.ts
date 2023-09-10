@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
 import { Cam } from "./types";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 
 const res = "cams";
 
-export class Cams extends Client {
-  private parseCamItem(system: string, status: string, key: string) {
+export class Cams extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Cam {
     const values = valuesToStringList(status, key);
-    const item: Cam = {
+
+    return {
       sumState: null,
       id: key,
       name: system[key].name,
@@ -22,23 +22,17 @@ export class Cams extends Client {
       streamUrl: system[key].streampath ?? null,
       cgiUrl: system[key].cgipath ?? null,
     };
-    return item;
   }
 
-  async getCams(): Promise<Cam[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseCamItem(system, status, key);
+  async getAll(): Promise<Cam[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getCam(id: string): Promise<Cam> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseCamItem(this.system[res], status, id);
+  async getById(id: string): Promise<Cam> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 }

@@ -1,18 +1,18 @@
-import { Client } from "../../client";
+import { BaseSystem } from "../base";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
 } from "../../utils/stringUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { Sauna, SaunaWorkingMode } from "./types";
 
 const res = "saunas";
 
-export class Saunas extends Client {
-  private parseSaunaItem(system: string, status: string, key: string) {
+export class Saunas extends BaseSystem {
+  private parseItem(system: string, status: string, key: string): Sauna {
     const values = valuesToStringList(status, key);
-    const item: Sauna = {
+
+    return {
       sumState: tryParseFloat(values[3]),
       id: key,
       name: system[key].name,
@@ -26,28 +26,21 @@ export class Saunas extends Client {
       roomRelativeHumidityLevel: tryParseFloat(values[8]),
       roomRelativeHumiditySetPointLevel: tryParseFloat(values[9]),
     };
-    return item;
   }
 
-  async getSaunas(): Promise<Sauna[]> {
-    const system = this.system[res];
-    throwErrorIfSystemIsNotEnabled(system);
-
-    const status = await this.systemStatusRequest(res);
-
-    return systemFilteredByItems(system).map((key) => {
-      return this.parseSaunaItem(system, status, key);
+  async getAll(): Promise<Sauna[]> {
+    const status = await this.getCompleteStatus(res);
+    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
+      return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getSauna(id: string): Promise<Sauna> {
-    throwErrorIfSystemIsNotEnabled(this.system[res]);
-
-    const status = await this.itemStatusRequest(res, id);
-    return this.parseSaunaItem(this.system[res], status, id);
+  async getById(id: string): Promise<Sauna> {
+    const status = await this.getStatusById(res, id);
+    return this.parseItem(this.client.systemConfig[res], status, id);
   }
 
-  async setSaunaMode(id: string, mode: SaunaWorkingMode) {
-    await this.changeRequest(res, id, `${mode}`);
+  async setMode(id: string, mode: SaunaWorkingMode): Promise<void> {
+    await this.client.changeRequest(res, id, `${mode}`);
   }
 }
