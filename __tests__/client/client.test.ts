@@ -1,4 +1,4 @@
-import { LocalClient, RemoteClient } from "../../lib";
+import { LocalClient, RemoteClient } from "../../src";
 
 /// TODO: mock a gekko instance?
 test("remote client", async () => {

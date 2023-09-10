@@ -7,7 +7,7 @@ export function tryParseInt(string: string) {
 
 export function tryParseFloat(string: string) {
   if (!isNaN(Number(string)) && string != null) {
-    return Number.parseInt(string);
+    return Number.parseFloat(string);
   }
   return null;
 }

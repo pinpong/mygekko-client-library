@@ -1,4 +1,4 @@
-import { tryParseFloat, tryParseInt } from "../../lib/utils/numberUtils";
+import { tryParseFloat, tryParseInt } from "../../src/utils/numberUtils";
 
 test("tryParseInt", () => {
   expect(tryParseInt("Test")).toBe(null);

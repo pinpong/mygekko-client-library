@@ -7,7 +7,7 @@ export type RoomTemperature = BaseSystem & {
   workingMode?:
     | RoomTemperatureWorkingModeStandard
     | RoomTemperatureWorkingModeKnx;
-  reserved?: any;
+  reserved?: string;
   temperatureAdjustment?: number;
   coolingModeState?: RoomTemperatureCoolingState;
   relativeHumidity?: number;

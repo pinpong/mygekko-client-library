@@ -1,4 +1,4 @@
-import { throwErrorIfSystemIsNotEnabled } from "../../lib/utils/systemCheck";
+import { throwErrorIfSystemIsNotEnabled } from "../../src/utils/systemCheck";
 
 test("throwErrorIfSystemIsNotEnabled", () => {
   expect(() => throwErrorIfSystemIsNotEnabled("test")).not.toThrow();

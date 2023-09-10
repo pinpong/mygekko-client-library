@@ -2,7 +2,7 @@ import {
   systemFilteredByGroup,
   systemFilteredByItems,
   valuesToStringList,
-} from "../../lib/utils/stringUtils";
+} from "../../src/utils/stringUtils";
 
 test("valuesToStringList", () => {
   expect(

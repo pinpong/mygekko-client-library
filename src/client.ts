@@ -44,8 +44,6 @@ export abstract class Client {
   }
 
   public async internalRequest(endpoint: string): Promise<string> {
-    console.log(`${this.baseUrl}${endpoint}${this.authQueryString}`);
-
     let response: Response;
     try {
       response = await fetch(
@@ -53,7 +51,6 @@ export abstract class Client {
         {},
       );
     } catch (e) {
-      console.log(typeof e);
       throw new Error(e);
     }
     if (response.ok) {
@@ -108,7 +105,7 @@ export abstract class RemoteClientBase extends Client {
 
   constructor(config: RemoteConfig) {
     super({
-      baseUrl: `https://live.my-gekko.com/api/v1/var`,
+      baseUrl: "https://live.my-gekko.com/api/v1/var",
       authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
     });
     this.username = config.username;
@@ -124,7 +121,7 @@ export class LocalClientBase extends Client {
 
   constructor(config: LocalConfig) {
     super({
-      baseUrl: `http://${config.ip}/api/v1/var`,
+      baseUrl: "http://${config.ip}/api/v1/var",
       authQuery: `username=${config.username}&password=${config.password}`,
     });
     this.ip = config.ip;

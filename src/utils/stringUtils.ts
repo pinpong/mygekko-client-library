@@ -13,8 +13,6 @@ export function valuesToStringList(values: string, key: string) {
 }
 
 export function systemFilteredByItems(system: string) {
-  console.error(system);
-
   return Object.keys(system).filter((key) => key.includes("item"));
 }
 

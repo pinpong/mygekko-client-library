@@ -4,7 +4,7 @@ import {
   rgbToDecimal,
   rgbToHex,
   tunableWhiteToHex,
-} from "../../lib/utils/colorUtils";
+} from "../../src/utils/colorUtils";
 
 const bitterSweet = {
   rgb: { r: 255, g: 100, b: 100 },
