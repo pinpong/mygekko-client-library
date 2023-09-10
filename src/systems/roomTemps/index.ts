@@ -29,7 +29,7 @@ export class RoomTemperatures extends Client {
       temperatureSetPoint: tryParseFloat(values[1]),
       valveOpeningLevel: tryParseFloat(values[2]),
       workingMode: tryParseFloat(values[3]),
-      reserved: tryParseFloat(values[4]),
+      reserved: values[4],
       temperatureAdjustment: tryParseFloat(values[5]),
       coolingModeState: tryParseFloat(values[7]),
       relativeHumidity: tryParseFloat(values[8]),
