@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -17,7 +17,7 @@ export class Cams extends Client {
       id: key,
       name: system[key].name,
       page: system[key].page,
-      newRecordCount: tryParseInt(values[0]),
+      newRecordCount: tryParseFloat(values[0]),
       imageUrl: system[key].imagepath ?? null,
       streamUrl: system[key].streampath ?? null,
       cgiUrl: system[key].cgipath ?? null,

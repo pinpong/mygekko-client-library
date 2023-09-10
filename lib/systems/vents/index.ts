@@ -12,7 +12,7 @@ import {
   VentWorkingModeStiebelTecalor,
   VentWorkingModeWestaflex,
 } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -25,28 +25,28 @@ export class Vents extends Client {
   private parseVentItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Vent = {
-      sumState: tryParseInt(values[14]),
+      sumState: tryParseFloat(values[14]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      ventLevel: tryParseInt(values[0]),
-      deviceModel: tryParseInt(values[1]),
-      workingMode: tryParseInt(values[2]),
-      bypassState: tryParseInt(values[3]),
-      maximumWorkingLevel: tryParseInt(values[4]),
-      relativeHumidity: tryParseInt(values[5]),
-      airQuality: tryParseInt(values[6]),
-      co2: tryParseInt(values[7]),
-      supplyAirTemperature: tryParseInt(values[8]),
-      exhaustAirTemperature: tryParseInt(values[9]),
-      outsideAirTemperature: tryParseInt(values[10]),
-      outgoingAirTemperature: tryParseInt(values[11]),
-      supplyAirWorkingLevel: tryParseInt(values[12]),
-      exhaustAirWorkingLevel: tryParseInt(values[13]),
-      subWorkingMode: tryParseInt(values[15]),
-      coolingModeState: tryParseInt(values[16]),
-      dehumidificationState: tryParseInt(values[17]),
-      bypassMode: tryParseInt(values[18]),
+      ventLevel: tryParseFloat(values[0]),
+      deviceModel: tryParseFloat(values[1]),
+      workingMode: tryParseFloat(values[2]),
+      bypassState: tryParseFloat(values[3]),
+      maximumWorkingLevel: tryParseFloat(values[4]),
+      relativeHumidity: tryParseFloat(values[5]),
+      airQuality: tryParseFloat(values[6]),
+      co2: tryParseFloat(values[7]),
+      supplyAirTemperature: tryParseFloat(values[8]),
+      exhaustAirTemperature: tryParseFloat(values[9]),
+      outsideAirTemperature: tryParseFloat(values[10]),
+      outgoingAirTemperature: tryParseFloat(values[11]),
+      supplyAirWorkingLevel: tryParseFloat(values[12]),
+      exhaustAirWorkingLevel: tryParseFloat(values[13]),
+      subWorkingMode: tryParseFloat(values[15]),
+      coolingModeState: tryParseFloat(values[16]),
+      dehumidificationState: tryParseFloat(values[17]),
+      bypassMode: tryParseFloat(values[18]),
     };
     return item;
   }

@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { HeatingSystem } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,15 +13,15 @@ export class HeatingSystems extends Client {
   private parseHeatingSystemItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: HeatingSystem = {
-      sumState: tryParseInt(values[5]),
+      sumState: tryParseFloat(values[5]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      deviceModel: tryParseInt(values[0]),
-      coolingModeState: tryParseInt(values[1]),
-      flowTemperatureValue: tryParseInt(values[2]),
-      flowTemperatureSetPoint: tryParseInt(values[3]),
-      currentState: tryParseInt(values[4]),
+      deviceModel: tryParseFloat(values[0]),
+      coolingModeState: tryParseFloat(values[1]),
+      flowTemperatureValue: tryParseFloat(values[2]),
+      flowTemperatureSetPoint: tryParseFloat(values[3]),
+      currentState: tryParseFloat(values[4]),
     };
     return item;
   }

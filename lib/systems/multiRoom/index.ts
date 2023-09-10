@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { MultiRoom, MultiRoomState } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -17,12 +17,12 @@ export class MultiRooms extends Client {
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[0]),
-      currentVolume: tryParseInt(values[1]),
-      currentPlayingTime: tryParseInt(values[2]),
+      currentState: tryParseFloat(values[0]),
+      currentVolume: tryParseFloat(values[1]),
+      currentPlayingTime: tryParseFloat(values[2]),
       currentAudioTitle: values[3],
-      currentPlaylistIndex: tryParseInt(values[4]),
-      currentSongIndex: tryParseInt(values[22]),
+      currentPlaylistIndex: tryParseFloat(values[4]),
+      currentSongIndex: tryParseFloat(values[22]),
     };
 
     for (let i = 0; i < 5; i++) {

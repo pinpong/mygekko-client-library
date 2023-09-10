@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { WeatherItem } from "./types";
 
@@ -12,14 +12,14 @@ export class Weather extends Client {
       id: key,
       name: null,
       page: null,
-      twilight: tryParseInt(status["twilight"]["value"]),
-      humidity: tryParseInt(status["humidity"]["value"]),
-      brightness: tryParseInt(status["brightness"]["value"]),
-      brightnessWest: tryParseInt(status["brightnessw"]["value"]),
-      brightnessEast: tryParseInt(status["brightnesso"]["value"]),
-      wind: tryParseInt(status["wind"]["value"]),
-      temperature: tryParseInt(status["temperature"]["value"]),
-      rain: tryParseInt(status["rain"]["value"]),
+      twilight: tryParseFloat(status["twilight"]["value"]),
+      humidity: tryParseFloat(status["humidity"]["value"]),
+      brightness: tryParseFloat(status["brightness"]["value"]),
+      brightnessWest: tryParseFloat(status["brightnessw"]["value"]),
+      brightnessEast: tryParseFloat(status["brightnesso"]["value"]),
+      wind: tryParseFloat(status["wind"]["value"]),
+      temperature: tryParseFloat(status["temperature"]["value"]),
+      rain: tryParseFloat(status["rain"]["value"]),
     };
     return item;
   }

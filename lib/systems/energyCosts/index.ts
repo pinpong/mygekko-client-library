@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -14,29 +14,29 @@ export class EnergyCosts extends Client {
     const values = valuesToStringList(status, key);
 
     const item: EnergyCost = {
-      sumState: tryParseInt(values[15]),
+      sumState: tryParseFloat(values[15]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentPower: tryParseInt(values[0]),
-      totalEnergyToday: tryParseInt(values[1]),
-      totalEnergyMonth: tryParseInt(values[2]),
-      totalEnergy: tryParseInt(values[3]),
-      nominalPower: tryParseInt(values[4]),
+      currentPower: tryParseFloat(values[0]),
+      totalEnergyToday: tryParseFloat(values[1]),
+      totalEnergyMonth: tryParseFloat(values[2]),
+      totalEnergy: tryParseFloat(values[3]),
+      nominalPower: tryParseFloat(values[4]),
       energyUnit: values[5],
       powerUnit: values[6],
-      totalEnergyToday0h6h: tryParseInt(values[7]),
-      totalEnergyToday6h12h: tryParseInt(values[8]),
-      totalEnergyToday12h18h: tryParseInt(values[9]),
-      totalEnergyToday18h24h: tryParseInt(values[10]),
-      totalEnergyYesterday0h6h: tryParseInt(values[11]),
-      totalEnergyYesterday6h12h: tryParseInt(values[12]),
-      totalEnergyYesterday12h18h: tryParseInt(values[13]),
-      totalEnergyYesterday18h24h: tryParseInt(values[14]),
-      totalEnergyThisYear: tryParseInt(values[15]),
-      totalEnergyInPeriod: tryParseInt(values[16]),
+      totalEnergyToday0h6h: tryParseFloat(values[7]),
+      totalEnergyToday6h12h: tryParseFloat(values[8]),
+      totalEnergyToday12h18h: tryParseFloat(values[9]),
+      totalEnergyToday18h24h: tryParseFloat(values[10]),
+      totalEnergyYesterday0h6h: tryParseFloat(values[11]),
+      totalEnergyYesterday6h12h: tryParseFloat(values[12]),
+      totalEnergyYesterday12h18h: tryParseFloat(values[13]),
+      totalEnergyYesterday18h24h: tryParseFloat(values[14]),
+      totalEnergyThisYear: tryParseFloat(values[15]),
+      totalEnergyInPeriod: tryParseFloat(values[16]),
       startDateTotalEnergyInPeriod: values[17],
-      counterDirection: tryParseInt(values[18]),
+      counterDirection: tryParseFloat(values[18]),
     };
     return item;
   }

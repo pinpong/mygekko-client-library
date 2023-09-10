@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { Pool } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,14 +13,14 @@ export class Pools extends Client {
   private parsePoolItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Pool = {
-      sumState: tryParseInt(values[3]),
+      sumState: tryParseFloat(values[3]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      workingMode: tryParseInt(values[0]),
-      filteringState: tryParseInt(values[1]),
-      backwashState: tryParseInt(values[2]),
-      waterTemperature: tryParseInt(values[4]),
+      workingMode: tryParseFloat(values[0]),
+      filteringState: tryParseFloat(values[1]),
+      backwashState: tryParseFloat(values[2]),
+      waterTemperature: tryParseFloat(values[4]),
     };
     return item;
   }

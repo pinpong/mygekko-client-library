@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,18 +13,18 @@ export class Saunas extends Client {
   private parseSaunaItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Sauna = {
-      sumState: tryParseInt(values[3]),
+      sumState: tryParseFloat(values[3]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      workingMode: tryParseInt(values[0]),
-      currentState: tryParseInt(values[1]),
-      errorState: tryParseInt(values[4]),
-      roomTemperature: tryParseInt(values[5]),
-      roomTemperatureSetPoint: tryParseInt(values[6]),
-      burnerTemperature: tryParseInt(values[7]),
-      roomRelativeHumidityLevel: tryParseInt(values[8]),
-      roomRelativeHumiditySetPointLevel: tryParseInt(values[9]),
+      workingMode: tryParseFloat(values[0]),
+      currentState: tryParseFloat(values[1]),
+      errorState: tryParseFloat(values[4]),
+      roomTemperature: tryParseFloat(values[5]),
+      roomTemperatureSetPoint: tryParseFloat(values[6]),
+      burnerTemperature: tryParseFloat(values[7]),
+      roomRelativeHumidityLevel: tryParseFloat(values[8]),
+      roomRelativeHumiditySetPointLevel: tryParseFloat(values[9]),
     };
     return item;
   }

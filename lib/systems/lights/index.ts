@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,7 +13,7 @@ export class Lights extends Client {
   private parseLightItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Light = {
-      sumState: tryParseInt(values[0]),
+      sumState: tryParseFloat(values[0]),
       id: key,
       name: system[key].name,
       page: system[key].page,

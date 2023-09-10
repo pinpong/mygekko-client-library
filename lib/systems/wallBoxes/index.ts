@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { WallBox, WallBoxChargeState, WallBoxUser } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,22 +13,22 @@ export class WallBoxes extends Client {
   private parseWallBoxeItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: WallBox = {
-      sumState: tryParseInt(values[10]),
+      sumState: tryParseFloat(values[10]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      pluggedState: tryParseInt(values[0]),
-      chargeState: tryParseInt(values[1]),
-      chargeRequestState: tryParseInt(values[2]),
-      currentChargingPower: tryParseInt(values[3]),
-      maximumChargingPower: tryParseInt(values[4]),
-      chargingPowerSetPoint: tryParseInt(values[5]),
-      electricCurrentSetPoint: tryParseInt(values[6]),
+      pluggedState: tryParseFloat(values[0]),
+      chargeState: tryParseFloat(values[1]),
+      chargeRequestState: tryParseFloat(values[2]),
+      currentChargingPower: tryParseFloat(values[3]),
+      maximumChargingPower: tryParseFloat(values[4]),
+      chargingPowerSetPoint: tryParseFloat(values[5]),
+      electricCurrentSetPoint: tryParseFloat(values[6]),
       chargeUserName: values[7],
-      chargeDurationTime: tryParseInt(values[8]),
-      currentChargingEnergy: tryParseInt(values[9]),
+      chargeDurationTime: tryParseFloat(values[8]),
+      currentChargingEnergy: tryParseFloat(values[9]),
       chargeStartTime: values[11],
-      chargeUserIndex: tryParseInt(values[12]),
+      chargeUserIndex: tryParseFloat(values[12]),
       wallBoxUser: this.parseWallBoxUser(status, key),
     };
     return item;

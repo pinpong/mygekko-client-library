@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,37 +13,37 @@ export class Trends extends Client {
   private parseTrendItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Trend = {
-      sumState: tryParseInt(values[20]),
+      sumState: tryParseFloat(values[20]),
       id: key,
       name: system[key].name,
       page: system[key].page,
       trendsVariables: [
         {
-          currentState: tryParseInt(values[0]),
-          type: tryParseInt(values[1]),
+          currentState: tryParseFloat(values[0]),
+          type: tryParseFloat(values[1]),
           name: values[2],
-          value: tryParseInt(values[3]),
+          value: tryParseFloat(values[3]),
           unit: values[4],
         },
         {
-          currentState: tryParseInt(values[5]),
-          type: tryParseInt(values[6]),
+          currentState: tryParseFloat(values[5]),
+          type: tryParseFloat(values[6]),
           name: values[7],
-          value: tryParseInt(values[8]),
+          value: tryParseFloat(values[8]),
           unit: values[9],
         },
         {
-          currentState: tryParseInt(values[10]),
-          type: tryParseInt(values[11]),
+          currentState: tryParseFloat(values[10]),
+          type: tryParseFloat(values[11]),
           name: values[12],
-          value: tryParseInt(values[13]),
+          value: tryParseFloat(values[13]),
           unit: values[14],
         },
         {
-          currentState: tryParseInt(values[15]),
-          type: tryParseInt(values[16]),
+          currentState: tryParseFloat(values[15]),
+          type: tryParseFloat(values[16]),
           name: values[17],
-          value: tryParseInt(values[18]),
+          value: tryParseFloat(values[18]),
           unit: values[19],
         },
       ],

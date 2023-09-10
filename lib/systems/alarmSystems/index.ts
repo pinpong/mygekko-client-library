@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -17,20 +17,20 @@ export class AlarmSystems extends Client {
       id: key,
       name: system[key].name,
       page: system[key].page,
-      alarmSystemState: tryParseInt(values[0]),
+      alarmSystemState: tryParseFloat(values[0]),
       alarmDevices: [
         {
           type: values[1],
-          sharpState: tryParseInt(values[2]),
-          systemState: tryParseInt(values[3]),
+          sharpState: tryParseFloat(values[2]),
+          systemState: tryParseFloat(values[3]),
         },
         {
           type: values[4],
-          sharpState: tryParseInt(values[5]),
-          systemState: tryParseInt(values[6]),
+          sharpState: tryParseFloat(values[5]),
+          systemState: tryParseFloat(values[6]),
         },
       ],
-      deviceModel: tryParseInt(values[7]),
+      deviceModel: tryParseFloat(values[7]),
     };
     return item;
   }

@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,14 +13,14 @@ export class Fireplaces extends Client {
   private parseFireplaceItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Fireplace = {
-      sumState: tryParseInt(values[4]),
+      sumState: tryParseFloat(values[4]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      temperature: tryParseInt(values[0]),
-      flapOpeningLevel: tryParseInt(values[1]),
-      currentState: tryParseInt(values[2]),
-      workingState: tryParseInt(values[3]),
+      temperature: tryParseFloat(values[0]),
+      flapOpeningLevel: tryParseFloat(values[1]),
+      currentState: tryParseFloat(values[2]),
+      workingState: tryParseFloat(values[3]),
     };
     return item;
   }

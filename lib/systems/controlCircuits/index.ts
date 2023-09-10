@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,15 +13,15 @@ export class ControlCircuits extends Client {
   private parseControlCircuitItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: ControlCircuit = {
-      sumState: tryParseInt(values[2]),
+      sumState: tryParseFloat(values[2]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      sensorValue: tryParseInt(values[0]),
-      sensorType: tryParseInt(values[1]),
-      pump1WorkingPowerLevel: tryParseInt(values[3]),
-      pump2WorkingPowerLevel: tryParseInt(values[4]),
-      pump3WorkingPowerLevel: tryParseInt(values[5]),
+      sensorValue: tryParseFloat(values[0]),
+      sensorType: tryParseFloat(values[1]),
+      pump1WorkingPowerLevel: tryParseFloat(values[3]),
+      pump2WorkingPowerLevel: tryParseFloat(values[4]),
+      pump3WorkingPowerLevel: tryParseFloat(values[5]),
     };
     return item;
   }

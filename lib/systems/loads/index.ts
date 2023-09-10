@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { Load, LoadState } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,11 +13,11 @@ export class Loads extends Client {
   private parseLoadItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Load = {
-      sumState: tryParseInt(values[0]),
+      sumState: tryParseFloat(values[0]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[1]),
+      currentState: tryParseFloat(values[1]),
     };
     return item;
   }

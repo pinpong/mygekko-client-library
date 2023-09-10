@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,19 +13,19 @@ export class HeatingCircuits extends Client {
   private parseHeatingCircuitItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: HeatingCircuit = {
-      sumState: tryParseInt(values[8]),
+      sumState: tryParseFloat(values[8]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      deviceModel: tryParseInt(values[0]),
-      flowTemperature: tryParseInt(values[1]),
-      returnFlowTemperature: tryParseInt(values[2]),
-      dewPoint: tryParseInt(values[3]),
-      pumpWorkingLevel: tryParseInt(values[4]),
-      coolingModeState: tryParseInt(values[5]),
-      flowTemperatureSetPoint: tryParseInt(values[6]),
-      valveOpeningLevel: tryParseInt(values[7]),
-      currentState: tryParseInt(values[9]),
+      deviceModel: tryParseFloat(values[0]),
+      flowTemperature: tryParseFloat(values[1]),
+      returnFlowTemperature: tryParseFloat(values[2]),
+      dewPoint: tryParseFloat(values[3]),
+      pumpWorkingLevel: tryParseFloat(values[4]),
+      coolingModeState: tryParseFloat(values[5]),
+      flowTemperatureSetPoint: tryParseFloat(values[6]),
+      valveOpeningLevel: tryParseFloat(values[7]),
+      currentState: tryParseFloat(values[9]),
     };
     return item;
   }

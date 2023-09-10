@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,14 +13,14 @@ export class Blinds extends Client {
   private parseBlindItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Blind = {
-      sumState: tryParseInt(values[3]),
+      sumState: tryParseFloat(values[3]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[0]),
-      position: tryParseInt(values[1]),
-      rotationLevel: tryParseInt(values[2]),
-      rotationRange: tryParseInt(values[4]),
+      currentState: tryParseFloat(values[0]),
+      position: tryParseFloat(values[1]),
+      rotationLevel: tryParseFloat(values[2]),
+      rotationRange: tryParseFloat(values[4]),
     };
     return item;
   }

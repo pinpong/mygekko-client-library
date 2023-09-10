@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
 import { GlobalAlarmItem } from "./types";
 
@@ -12,7 +12,7 @@ export class GlobalAlarm extends Client {
       id: key,
       name: null,
       page: null,
-      state: tryParseInt(status["sumstate"]["value"]),
+      state: tryParseFloat(status["sumstate"]["value"]),
     };
     return item;
   }

@@ -4,7 +4,7 @@ import {
   RoomTemperatureWorkingModeKnx,
   RoomTemperatureWorkingModeStandard,
 } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -21,21 +21,21 @@ export class RoomTemperatures extends Client {
   ) {
     const values = valuesToStringList(status, key);
     const item: RoomTemperature = {
-      sumState: tryParseInt(values[6]),
+      sumState: tryParseFloat(values[6]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      temperature: tryParseInt(values[0]),
-      temperatureSetPoint: tryParseInt(values[1]),
-      valveOpeningLevel: tryParseInt(values[2]),
-      workingMode: tryParseInt(values[3]),
-      reserved: tryParseInt(values[4]),
-      temperatureAdjustment: tryParseInt(values[5]),
-      coolingModeState: tryParseInt(values[7]),
-      relativeHumidity: tryParseInt(values[8]),
-      airQualityLevel: tryParseInt(values[8]),
-      floorTemperature: tryParseInt(values[10]),
-      deviceModel: tryParseInt(values[11]),
+      temperature: tryParseFloat(values[0]),
+      temperatureSetPoint: tryParseFloat(values[1]),
+      valveOpeningLevel: tryParseFloat(values[2]),
+      workingMode: tryParseFloat(values[3]),
+      reserved: tryParseFloat(values[4]),
+      temperatureAdjustment: tryParseFloat(values[5]),
+      coolingModeState: tryParseFloat(values[7]),
+      relativeHumidity: tryParseFloat(values[8]),
+      airQualityLevel: tryParseFloat(values[8]),
+      floorTemperature: tryParseFloat(values[10]),
+      deviceModel: tryParseFloat(values[11]),
     };
     return item;
   }

@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { Clock, ClockState } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,12 +13,12 @@ export class Clocks extends Client {
   private parseClockItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Clock = {
-      sumState: tryParseInt(values[2]),
+      sumState: tryParseFloat(values[2]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[0]),
-      startCondition: tryParseInt(values[1]),
+      currentState: tryParseFloat(values[0]),
+      startCondition: tryParseFloat(values[1]),
     };
     return item;
   }

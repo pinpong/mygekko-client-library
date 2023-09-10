@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { Logic } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -17,7 +17,7 @@ export class Logics extends Client {
       id: key,
       name: system[key].name,
       page: system[key].page,
-      value: tryParseInt(values[0]),
+      value: tryParseFloat(values[0]),
     };
     return item;
   }

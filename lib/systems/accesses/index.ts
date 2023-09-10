@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -13,14 +13,14 @@ export class Accesses extends Client {
   private parseAccessItem(system: string, status: string, key: string) {
     const values = valuesToStringList(status, key);
     const item: Access = {
-      sumState: tryParseInt(values[1]),
+      sumState: tryParseFloat(values[1]),
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[0]),
-      startCondition: tryParseInt(values[2]),
-      gateRuntimePercentage: tryParseInt(values[3]),
-      accessType: tryParseInt(values[4]),
+      currentState: tryParseFloat(values[0]),
+      startCondition: tryParseFloat(values[2]),
+      gateRuntimePercentage: tryParseFloat(values[3]),
+      accessType: tryParseFloat(values[4]),
     };
 
     return item;

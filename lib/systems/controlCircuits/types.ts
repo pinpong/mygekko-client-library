@@ -15,14 +15,3 @@ export enum ControlCircuitSensorType {
   "humidity" = 3,
   "individual" = 4,
 }
-
-export enum HeatingCircuitCoolingMode {
-  "off" = 0,
-  "on" = 1,
-}
-
-export enum HeatingCircuitState {
-  "off" = 0,
-  "on" = 1,
-  "auto" = 2,
-}

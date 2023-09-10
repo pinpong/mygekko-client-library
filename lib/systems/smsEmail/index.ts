@@ -1,6 +1,6 @@
 import { Client } from "../../client";
 import { SmsEmail, SmsEmailState } from "./types";
-import { tryParseInt } from "../../utils/numberUtils";
+import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
   valuesToStringList,
@@ -17,7 +17,7 @@ export class SmsEmails extends Client {
       id: key,
       name: system[key].name,
       page: system[key].page,
-      currentState: tryParseInt(values[0]),
+      currentState: tryParseFloat(values[0]),
     };
     return item;
   }

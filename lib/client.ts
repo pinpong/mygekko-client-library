@@ -1,4 +1,5 @@
 import fetch from "isomorphic-unfetch";
+import { CLIENT_ERROR } from "./errors";
 
 type ClientConfig = {
   baseUrl: string;
@@ -35,27 +36,55 @@ export abstract class Client {
     this.system = await this.internalRequest("?");
   }
 
-  public async request<T>(endpoint: string): Promise<string> {
+  public async request(endpoint: string): Promise<string> {
     if (!this.system) {
       throw Error("Not initialized");
     }
     return await this.internalRequest(endpoint);
   }
 
-  public async internalRequest<T>(endpoint: string): Promise<string> {
+  public async internalRequest(endpoint: string): Promise<string> {
     console.log(`${this.baseUrl}${endpoint}${this.authQueryString}`);
-    const response = await fetch(
-      `${this.baseUrl}${endpoint}${this.authQueryString}`,
-    );
+
+    let response: Response;
+    try {
+      response = await fetch(
+        `${this.baseUrl}${endpoint}${this.authQueryString}`,
+        {},
+      );
+    } catch (e) {
+      console.log(typeof e);
+      throw new Error(e);
+    }
     if (response.ok) {
-      try {
-        return await response.json();
-      } catch (e) {
-        return "";
-      }
-    } else {
-      /// TODO: throw errors
-      throw new Error(response.statusText);
+      return response.body.toString().startsWith("OK")
+        ? {}
+        : await response.json();
+    }
+
+    switch (response.status) {
+      case 400:
+        throw new Error(CLIENT_ERROR.BAD_REQUEST);
+      case 403:
+        throw new Error(CLIENT_ERROR.BAD_LOGIN);
+      case 404:
+        throw new Error(CLIENT_ERROR.RESOURCE_NOT_FOUND);
+      case 405:
+        throw new Error(CLIENT_ERROR.PERMISSION_DENIED);
+      case 410:
+        throw new Error(CLIENT_ERROR.GEKKO_OFFLINE);
+      case 429:
+        throw new Error(CLIENT_ERROR.TO_MANY_REQUEST);
+      case 444:
+        throw new Error(CLIENT_ERROR.NOT_EXECUTED);
+      case 500:
+        throw new Error(CLIENT_ERROR.INTERNAL_SERVER_ERROR);
+      case 503:
+        throw new Error(CLIENT_ERROR.SERVICE_NOT_AVAILABLE);
+      default:
+        throw Error(
+          `${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${response.status}`,
+        );
     }
   }
 
