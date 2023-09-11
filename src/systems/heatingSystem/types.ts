@@ -1,11 +1,11 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type HeatingSystem = BaseSystem & {
-  deviceModel?: HeatingSystemDeviceModel;
-  coolingModeState?: HeatingSystemCoolingState;
-  flowTemperatureValue?: number;
-  flowTemperatureSetPoint?: number;
-  currentState?: HeatingSystemState;
+export type HeatingSystem = BaseSystemType & {
+  deviceModel: HeatingSystemDeviceModel | null;
+  coolingModeState: HeatingSystemCoolingState | null;
+  flowTemperatureValue: number | null;
+  flowTemperatureSetPoint: number | null;
+  currentState: HeatingSystemState | null;
 };
 
 export enum HeatingSystemDeviceModel {

@@ -17,8 +17,7 @@ export class GlobalAlarm extends BaseSystem {
   }
 
   async get(): Promise<GlobalAlarmItem> {
-    const system = this.client.systemConfig['globals']['alarm'];
-    throwErrorIfSystemIsNotEnabled(system);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, ['globals', 'alarm']);
 
     const status = await this.client.systemStatusRequest(res);
     return this.parseItem(status);

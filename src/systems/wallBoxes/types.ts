@@ -1,19 +1,19 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type WallBox = BaseSystem & {
-  pluggedState?: WallBoxPluggedState;
-  chargeState?: WallBoxChargeState;
-  chargeRequestState?: WallBoxChargeRequestState;
-  currentChargingPower?: number;
-  maximumChargingPower?: number;
-  chargingPowerSetPoint?: number;
-  electricCurrentSetPoint?: number;
-  chargeUserName?: string;
-  chargeDurationTime?: number;
-  currentChargingEnergy?: number;
-  chargeStartTime?: string;
-  chargeUserIndex?: number;
-  wallBoxUser?: WallBoxUser[];
+export type WallBox = BaseSystemType & {
+  pluggedState: WallBoxPluggedState | null;
+  chargeState: WallBoxChargeState | null;
+  chargeRequestState: WallBoxChargeRequestState | null;
+  currentChargingPower: number | null;
+  maximumChargingPower: number | null;
+  chargingPowerSetPoint: number | null;
+  electricCurrentSetPoint: number | null;
+  chargeUserName: string | null;
+  chargeDurationTime: number | null;
+  currentChargingEnergy: number | null;
+  chargeStartTime: string | null;
+  chargeUserIndex: number | null;
+  wallBoxUser: WallBoxUser[] | null;
 };
 
 export enum WallBoxPluggedState {
@@ -33,6 +33,6 @@ export enum WallBoxChargeRequestState {
 }
 
 export type WallBoxUser = {
-  id?: number;
-  totalEnergy?: number;
+  id: number | null;
+  totalEnergy: number | null;
 };

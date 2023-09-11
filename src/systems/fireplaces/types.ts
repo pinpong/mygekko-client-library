@@ -1,10 +1,10 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Fireplace = BaseSystem & {
-  temperature?: number;
-  flapOpeningLevel?: number;
-  currentState?: FireplaceState;
-  workingState?: FireplaceWorkingState;
+export type Fireplace = BaseSystemType & {
+  temperature: number | null;
+  flapOpeningLevel: number | null;
+  currentState: FireplaceState | null;
+  workingState: FireplaceWorkingState | null;
 };
 
 export enum FireplaceState {

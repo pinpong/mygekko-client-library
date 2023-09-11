@@ -1,8 +1,8 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Cam = BaseSystem & {
-  newRecordCount?: number;
-  imageUrl?: string;
-  streamUrl?: string;
-  cgiUrl?: string;
+export type Cam = BaseSystemType & {
+  newRecordCount: number | null;
+  imageUrl: string | null;
+  streamUrl: string | null;
+  cgiUrl: string | null;
 };

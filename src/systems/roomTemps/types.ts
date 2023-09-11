@@ -1,17 +1,17 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type RoomTemperature = BaseSystem & {
-  temperature?: number;
-  temperatureSetPoint?: number;
-  valveOpeningLevel?: number;
-  workingMode?: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx;
-  reserved?: string;
-  temperatureAdjustment?: number;
-  coolingModeState?: RoomTemperatureCoolingState;
-  relativeHumidity?: number;
-  airQualityLevel?: number;
-  floorTemperature?: number;
-  deviceModel?: RoomTemperatureDeviceModel;
+export type RoomTemperature = BaseSystemType & {
+  temperature: number | null;
+  temperatureSetPoint: number | null;
+  valveOpeningLevel: number | null;
+  workingMode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx | null;
+  reserved: string | null;
+  temperatureAdjustment: number | null;
+  coolingModeState: RoomTemperatureCoolingState | null;
+  relativeHumidity: number | null;
+  airQualityLevel: number | null;
+  floorTemperature: number | null;
+  deviceModel: RoomTemperatureDeviceModel | null;
 };
 
 export enum RoomTemperatureWorkingModeStandard {

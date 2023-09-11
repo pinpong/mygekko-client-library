@@ -1,15 +1,15 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type HeatingCircuit = BaseSystem & {
-  deviceModel?: HeatingCircuitDeviceModel;
-  flowTemperature?: number;
-  returnFlowTemperature?: number;
-  dewPoint?: number;
-  pumpWorkingLevel?: number;
-  coolingModeState?: HeatingCircuitCoolingMode;
-  flowTemperatureSetPoint?: number;
-  valveOpeningLevel?: number;
-  currentState?: HeatingCircuitState;
+export type HeatingCircuit = BaseSystemType & {
+  deviceModel: HeatingCircuitDeviceModel | null;
+  flowTemperature: number | null;
+  returnFlowTemperature: number | null;
+  dewPoint: number | null;
+  pumpWorkingLevel: number | null;
+  coolingModeState: HeatingCircuitCoolingMode | null;
+  flowTemperatureSetPoint: number | null;
+  valveOpeningLevel: number | null;
+  currentState: HeatingCircuitState | null;
 };
 
 export enum HeatingCircuitDeviceModel {

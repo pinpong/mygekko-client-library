@@ -1,13 +1,13 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type MultiRoom = BaseSystem & {
-  currentState?: MultiRoomState;
-  currentVolume?: number;
-  currentPlayingTime?: number;
-  currentAudioTitle?: string;
-  currentPlaylistIndex?: number;
-  playList?: PlayList[];
-  currentSongIndex?: number;
+export type MultiRoom = BaseSystemType & {
+  currentState: MultiRoomState | null;
+  currentVolume: number | null;
+  currentPlayingTime: number | null;
+  currentAudioTitle: string | null;
+  currentPlaylistIndex: number | null;
+  playList: PlayList[] | null;
+  currentSongIndex: number | null;
 };
 
 export enum MultiRoomState {
@@ -16,6 +16,6 @@ export enum MultiRoomState {
 }
 
 export type PlayList = {
-  index: number;
-  name?: string;
+  index: number | null;
+  name: string | null;
 };

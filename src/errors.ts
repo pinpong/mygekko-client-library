@@ -8,8 +8,8 @@ export const CLIENT_ERROR = {
   NOT_EXECUTED: 'request/not-executed',
   INTERNAL_SERVER_ERROR: 'request/internal-server-error',
   SERVICE_NOT_AVAILABLE: 'request/service-not-available',
-  SYSTEM_NOT_INITIALIZED: 'client/system-not-initialized',
-  ALREADY_INITIALIZED: 'client/already-initialized',
+  SYSTEM_NOT_INITIALIZED: 'client/client-not-initialized',
+  ALREADY_INITIALIZED: 'client/client-already-initialized',
   SYSTEM_NOT_ENABLED: 'client/system-not-enabled',
-  CANNOT_PARSE_STATUS: 'client-cannot-parse-status',
+  CANNOT_PARSE_STATUS: 'client/cannot-parse-status',
 };

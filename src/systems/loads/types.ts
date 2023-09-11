@@ -1,7 +1,7 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Load = BaseSystem & {
-  currentState?: LoadState;
+export type Load = BaseSystemType & {
+  currentState: LoadState | null;
 };
 
 export enum LoadState {

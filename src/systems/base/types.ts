@@ -1,8 +1,8 @@
-export type BaseSystem = {
-  id?: string;
-  name?: string;
-  page?: string;
-  sumState?: SumState;
+export type BaseSystemType = {
+  id: string | null;
+  name: string | null;
+  page: string | null;
+  sumState: SumState | null;
 };
 
 export enum SumState {

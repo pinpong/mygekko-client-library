@@ -9,13 +9,13 @@ export class BaseSystem {
   }
 
   protected async getCompleteStatus(res: string): Promise<string> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig[res]);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, [res]);
 
     return await this.client.systemStatusRequest(res);
   }
 
   protected async getStatusById(res: string, id: string): Promise<string> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig[res]);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, [res]);
 
     return await this.client.itemStatusRequest(res, id);
   }

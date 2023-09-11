@@ -2,7 +2,6 @@ import { BaseSystem } from '../base';
 import { SmsEmail, SmsEmailState } from './types';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
-import { EnergyManager } from '../energyManagers/types';
 
 const res = 'smsemail';
 
@@ -19,14 +18,14 @@ export class SmsEmails extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<EnergyManager[]> {
+  async getAll(): Promise<SmsEmail[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<EnergyManager> {
+  async getById(id: string): Promise<SmsEmail> {
     const status = await this.getStatusById(res, id);
     return this.parseItem(this.client.systemConfig[res], status, id);
   }

@@ -10,10 +10,14 @@ export class Lights extends BaseSystem {
     const values = valuesToStringList(status, key);
 
     return {
-      sumState: tryParseFloat(values[0]),
+      sumState: tryParseFloat(values[4]),
       id: key,
       name: system[key].name,
       page: system[key].page,
+      currentState: tryParseFloat(values[0]),
+      dimLevel: tryParseFloat(values[1]),
+      rgbColor: tryParseFloat(values[2]),
+      tunableWhiteLevel: tryParseFloat(values[3]),
     };
   }
 

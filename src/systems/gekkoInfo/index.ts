@@ -19,8 +19,7 @@ export class GekkoInfo extends BaseSystem {
   }
 
   async get(): Promise<GekkoInfoItem> {
-    const system = this.client.systemConfig['globals']['network'];
-    throwErrorIfSystemIsNotEnabled(system);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, ['globals', 'network']);
 
     const status = await this.client.systemStatusRequest(res);
     return this.parseItem(status);

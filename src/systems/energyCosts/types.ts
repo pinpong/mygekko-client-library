@@ -1,25 +1,25 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type EnergyCost = BaseSystem & {
-  currentPower?: number;
-  totalEnergyToday?: number;
-  totalEnergyMonth?: number;
-  totalEnergy?: number;
-  nominalPower?: number;
-  energyUnit?: string;
-  powerUnit?: string;
-  totalEnergyToday0h6h?: number;
-  totalEnergyToday6h12h?: number;
-  totalEnergyToday12h18h?: number;
-  totalEnergyToday18h24h?: number;
-  totalEnergyYesterday0h6h?: number;
-  totalEnergyYesterday6h12h?: number;
-  totalEnergyYesterday12h18h?: number;
-  totalEnergyYesterday18h24h?: number;
-  totalEnergyThisYear?: number;
-  totalEnergyInPeriod?: number;
-  startDateTotalEnergyInPeriod?: string;
-  counterDirection?: CounterDirection;
+export type EnergyCost = BaseSystemType & {
+  currentPower: number | null;
+  totalEnergyToday: number | null;
+  totalEnergyMonth: number | null;
+  totalEnergy: number | null;
+  nominalPower: number | null;
+  energyUnit: string | null;
+  powerUnit: string | null;
+  totalEnergyToday0h6h: number | null;
+  totalEnergyToday6h12h: number | null;
+  totalEnergyToday12h18h: number | null;
+  totalEnergyToday18h24h: number | null;
+  totalEnergyYesterday0h6h: number | null;
+  totalEnergyYesterday6h12h: number | null;
+  totalEnergyYesterday12h18h: number | null;
+  totalEnergyYesterday18h24h: number | null;
+  totalEnergyThisYear: number | null;
+  totalEnergyInPeriod: number | null;
+  startDateTotalEnergyInPeriod: string | null;
+  counterDirection: CounterDirection | null;
 };
 
 export enum CounterDirection {

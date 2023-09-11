@@ -1,11 +1,11 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type ControlCircuit = BaseSystem & {
-  sensorValue?: number;
-  sensorType?: ControlCircuitSensorType;
-  pump1WorkingPowerLevel?: number;
-  pump2WorkingPowerLevel?: number;
-  pump3WorkingPowerLevel?: number;
+export type ControlCircuit = BaseSystemType & {
+  sensorValue: number | null;
+  sensorType: ControlCircuitSensorType | null;
+  pump1WorkingPowerLevel: number | null;
+  pump2WorkingPowerLevel: number | null;
+  pump3WorkingPowerLevel: number | null;
 };
 
 export enum ControlCircuitSensorType {

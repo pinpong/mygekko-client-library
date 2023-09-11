@@ -1,10 +1,10 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type HotWaterCirculation = BaseSystem & {
-  pumpType?: HotWaterCirculationPumpType;
-  currentState?: HotWaterCirculationState;
-  returnWaterTemperature?: number;
-  returnWaterTemperatureSetPoint?: number;
+export type HotWaterCirculation = BaseSystemType & {
+  pumpType: HotWaterCirculationPumpType | null;
+  currentState: HotWaterCirculationState | null;
+  returnWaterTemperature: number | null;
+  returnWaterTemperatureSetPoint: number | null;
 };
 
 export enum HotWaterCirculationPumpType {

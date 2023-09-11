@@ -2,7 +2,6 @@ import { BaseSystem } from '../base';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { AlarmSystem } from './types';
-import { AirConditioner } from '../airConditioners/types';
 
 const res = 'alarmsystem';
 
@@ -18,11 +17,13 @@ export class AlarmSystems extends BaseSystem {
       alarmSystemState: tryParseFloat(values[0]),
       alarmDevices: [
         {
+          zone: '1',
           type: values[1],
           sharpState: tryParseFloat(values[2]),
           systemState: tryParseFloat(values[3]),
         },
         {
+          zone: '2',
           type: values[4],
           sharpState: tryParseFloat(values[5]),
           systemState: tryParseFloat(values[6]),
@@ -39,7 +40,7 @@ export class AlarmSystems extends BaseSystem {
     });
   }
 
-  async getById(id: string): Promise<AirConditioner> {
+  async getById(id: string): Promise<AlarmSystem> {
     const status = await this.getStatusById(res, id);
     return this.parseItem(this.client.systemConfig[res], status, id);
   }

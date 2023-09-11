@@ -1,30 +1,31 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Vent = BaseSystem & {
-  ventLevel?: VentLevel;
-  deviceModel?: VentDeviceModel;
-  workingMode?:
+export type Vent = BaseSystemType & {
+  ventLevel: VentLevel | null;
+  deviceModel: VentDeviceModel | null;
+  workingMode:
     | VentWorkingModeProxxonV1
     | VentWorkingModeProxxonV2
     | VentWorkingModeWestaflex
     | VentWorkingModeStiebelTecalor
     | VentWorkingModeIndividual
-    | VentWorkingModePluggit;
-  bypassState?: VentBypassState;
-  maximumWorkingLevel?: VentLevel;
-  relativeHumidity?: number;
-  airQuality?: number;
-  co2?: number;
-  supplyAirTemperature?: number;
-  exhaustAirTemperature?: number;
-  outsideAirTemperature?: number;
-  outgoingAirTemperature?: number;
-  supplyAirWorkingLevel?: number;
-  exhaustAirWorkingLevel?: number;
-  subWorkingMode?: SubWorkingModeProxxon | SubWorkingMode;
-  coolingModeState?: CoolingModeState;
-  dehumidificationState?: DehumidificationState;
-  bypassMode?: VentBypassState;
+    | VentWorkingModePluggit
+    | null;
+  bypassState: VentBypassState | null;
+  maximumWorkingLevel: VentLevel | null;
+  relativeHumidity: number | null;
+  airQuality: number | null;
+  co2: number | null;
+  supplyAirTemperature: number | null;
+  exhaustAirTemperature: number | null;
+  outsideAirTemperature: number | null;
+  outgoingAirTemperature: number | null;
+  supplyAirWorkingLevel: number | null;
+  exhaustAirWorkingLevel: number | null;
+  subWorkingMode: SubWorkingModeProxxon | SubWorkingMode | null;
+  coolingModeState: CoolingModeState | null;
+  dehumidificationState: DehumidificationState | null;
+  bypassMode: VentBypassState | null;
 };
 
 export enum VentLevel {

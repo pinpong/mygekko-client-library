@@ -16,6 +16,7 @@ export class Actions extends BaseSystem {
       page: system[key].page,
       currentState: tryParseFloat(values[0]),
       startCondition: tryParseFloat(values[1]),
+      runtime: tryParseFloat(values[2]),
     };
   }
 

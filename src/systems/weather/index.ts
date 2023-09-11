@@ -24,8 +24,7 @@ export class Weather extends BaseSystem {
   }
 
   async get(): Promise<WeatherItem> {
-    const system = this.client.systemConfig['globals']['meteo'];
-    throwErrorIfSystemIsNotEnabled(system);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, ['globals', 'meteo']);
 
     const status = await this.client.systemStatusRequest(res);
     return this.parseItem(status);

@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-unfetch';
 import { CLIENT_ERROR } from './errors';
 import { Clocks } from './systems/clocks';
 import { Accesses } from './systems/accesses';
@@ -29,6 +28,7 @@ import { Trends } from './systems/trends';
 import { Vents } from './systems/vents';
 import { WallBoxes } from './systems/wallBoxes';
 import { Weather } from './systems/weather';
+import axios, { isAxiosError } from 'axios';
 
 type ClientConfig = {
   baseUrl: string;
@@ -51,7 +51,7 @@ export abstract class Client {
   private readonly baseUrl: string;
   private readonly authQueryString: string;
 
-  systemConfig: string | null;
+  systemConfig: string = '';
 
   readonly accesses = new Accesses(this);
   readonly actions = new Actions(this);
@@ -110,37 +110,40 @@ export abstract class Client {
   }
 
   private async internalRequest(endpoint: string): Promise<string> {
-    let response: Response;
     try {
-      response = await fetch(`${this.baseUrl}${endpoint}${this.authQueryString}`, {});
-    } catch (e) {
-      throw new Error(e);
-    }
-    if (response.ok) {
-      return response.body.toString().startsWith('OK') ? {} : await response.json();
-    }
-
-    switch (response.status) {
-      case 400:
-        throw new Error(CLIENT_ERROR.BAD_REQUEST);
-      case 403:
-        throw new Error(CLIENT_ERROR.BAD_LOGIN);
-      case 404:
-        throw new Error(CLIENT_ERROR.RESOURCE_NOT_FOUND);
-      case 405:
-        throw new Error(CLIENT_ERROR.PERMISSION_DENIED);
-      case 410:
-        throw new Error(CLIENT_ERROR.GEKKO_OFFLINE);
-      case 429:
-        throw new Error(CLIENT_ERROR.TO_MANY_REQUEST);
-      case 444:
-        throw new Error(CLIENT_ERROR.NOT_EXECUTED);
-      case 500:
-        throw new Error(CLIENT_ERROR.INTERNAL_SERVER_ERROR);
-      case 503:
-        throw new Error(CLIENT_ERROR.SERVICE_NOT_AVAILABLE);
-      default:
-        throw Error(`${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${response.status}`);
+      const response = await axios.get(`${this.baseUrl}${endpoint}${this.authQueryString}`);
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        switch (error.response.status) {
+          case 400:
+            throw new Error(CLIENT_ERROR.BAD_REQUEST);
+          case 403:
+            throw new Error(CLIENT_ERROR.BAD_LOGIN);
+          case 404:
+            throw new Error(CLIENT_ERROR.RESOURCE_NOT_FOUND);
+          case 405:
+            throw new Error(CLIENT_ERROR.PERMISSION_DENIED);
+          case 410:
+            throw new Error(CLIENT_ERROR.GEKKO_OFFLINE);
+          case 429:
+            throw new Error(CLIENT_ERROR.TO_MANY_REQUEST);
+          case 444:
+            throw new Error(CLIENT_ERROR.NOT_EXECUTED);
+          case 500:
+            throw new Error(CLIENT_ERROR.INTERNAL_SERVER_ERROR);
+          case 503:
+            throw new Error(CLIENT_ERROR.SERVICE_NOT_AVAILABLE);
+          default:
+            throw Error(`${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${error.response.status}`);
+        }
+      } else if (isAxiosError(error) && error.request) {
+        throw new Error(error.message);
+      } else if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error('Unknown error');
+      }
     }
   }
 
