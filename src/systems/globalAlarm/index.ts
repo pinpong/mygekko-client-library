@@ -6,10 +6,10 @@ import { GlobalAlarmItem } from "./types";
 const res = "globals/alarm";
 
 export class GlobalAlarm extends BaseSystem {
-  private parseItem(status: string, key: string): GlobalAlarmItem {
+  private parseItem(status: string): GlobalAlarmItem {
     return {
       sumState: null,
-      id: key,
+      id: null,
       name: null,
       page: null,
       state: tryParseFloat(status["sumstate"]["value"]),
@@ -21,6 +21,6 @@ export class GlobalAlarm extends BaseSystem {
     throwErrorIfSystemIsNotEnabled(system);
 
     const status = await this.client.systemStatusRequest(res);
-    return this.parseItem(status, null);
+    return this.parseItem(status);
   }
 }

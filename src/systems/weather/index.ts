@@ -6,10 +6,10 @@ import { WeatherItem } from "./types";
 const res = "globals/meteo";
 
 export class Weather extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): WeatherItem {
+  private parseItem(status: string): WeatherItem {
     return {
       sumState: null,
-      id: key,
+      id: null,
       name: null,
       page: null,
       twilight: tryParseFloat(status["twilight"]["value"]),
@@ -28,6 +28,6 @@ export class Weather extends BaseSystem {
     throwErrorIfSystemIsNotEnabled(system);
 
     const status = await this.client.systemStatusRequest(res);
-    return this.parseItem(system, status, null);
+    return this.parseItem(status);
   }
 }

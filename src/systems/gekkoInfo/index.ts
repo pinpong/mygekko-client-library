@@ -5,10 +5,10 @@ import { GekkoInfoItem } from "./types";
 const res = "globals/network";
 
 export class GekkoInfo extends BaseSystem {
-  private parseItem(status: string, key: string): GekkoInfoItem {
+  private parseItem(status: string): GekkoInfoItem {
     return {
       sumState: null,
-      id: key,
+      id: null,
       name: null,
       page: null,
       gekkoName: status["gekkoname"]["value"],
@@ -23,6 +23,6 @@ export class GekkoInfo extends BaseSystem {
     throwErrorIfSystemIsNotEnabled(system);
 
     const status = await this.client.systemStatusRequest(res);
-    return this.parseItem(status, null);
+    return this.parseItem(status);
   }
 }
