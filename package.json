@@ -1,5 +1,5 @@
 {
-  "name": "myGEKKO-javascript-client-library",
+  "name": "mygekko-client-library",
   "version": "0.0.1",
   "description": "",
   "keywords": [
@@ -39,6 +39,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pinpong/myGEKKO-javascript-client-library.git"
+    "url": "git+https://github.com/pinpong/mygekko-client-library.git"
   }
 }

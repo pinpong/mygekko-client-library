@@ -1,7 +1,7 @@
 ## Installation
 
 ```sh
-yarn add myGEKKO-javascript-client-library
+yarn add mygekko-client-library
 ```
 
 ### Using the client library
@@ -9,7 +9,7 @@ yarn add myGEKKO-javascript-client-library
 This is a very simple example. This creates a remote client and retrieves the details of all blinds:
 
 ```js
-import { RemoteClient } from "myGEKKO-javascript-client-library";
+import { RemoteClient } from "mygekko-client-library";
 
 const client = new RemoteClient({
   username: "test",
@@ -29,7 +29,7 @@ try {
 And this creates a local client and retrieves the details of all blinds:
 
 ```js
-import { LocalClient } from "myGEKKO-javascript-client-library";
+import { LocalClient } from "mygekko-client-library";
 
 const client = new LocalClient({
   ip: "127.0.1",
