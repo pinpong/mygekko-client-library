@@ -90,14 +90,21 @@ export abstract class Client {
 
   public async initialize(): Promise<void> {
     if (this.systemConfig) {
-      throw Error("Already initialized");
+      throw Error(CLIENT_ERROR.ALREADY_INITIALIZED);
+    }
+    this.systemConfig = await this.internalRequest("?");
+  }
+
+  public async rescan(): Promise<void> {
+    if (!this.systemConfig) {
+      throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
     }
     this.systemConfig = await this.internalRequest("?");
   }
 
   async request(endpoint: string): Promise<string> {
     if (!this.systemConfig) {
-      throw Error("Not initialized");
+      throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
     }
     return await this.internalRequest(endpoint);
   }

@@ -1,3 +1,5 @@
+import { CLIENT_ERROR } from "../errors";
+
 export function valuesToStringList(values: string, key: string): string[] {
   try {
     if (values[key]) {
@@ -8,7 +10,7 @@ export function valuesToStringList(values: string, key: string): string[] {
       return (values["sumstate"]["value"] as string).slice(0, -1).split(";");
     }
   } catch (e) {
-    throw new Error("Can not parse status");
+    throw new Error(CLIENT_ERROR.CANNOT_PARSE_STATUS);
   }
 }
 
