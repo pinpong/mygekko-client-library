@@ -1,0 +1,25 @@
+name: Lint
+on:
+  push:
+    branches: [ "dev", "main" ]
+  pull_request:
+    branches: [ "dev", "main" ]
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: install
+        run: yarn install
+
+      - name: test
+        run: yarn run test
+
+      - name: format
+        run: yarn run prettier --check .
+
+      - name: linting
+        run:  yarn run lint --max-warnings=0
