@@ -17,7 +17,7 @@
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "test": "jest",
     "format": "yarn prettier . --write",
     "lint": "eslint ."
