@@ -3,6 +3,7 @@ import {
   systemFilteredByItems,
   valuesToStringList,
 } from '../../src/utils/stringUtils';
+import { CLIENT_ERROR } from '../../src/errors';
 
 test('valuesToStringList', () => {
   expect(valuesToStringList(JSON.parse('{"sumstate":{"value":"0;0;3;kW;10.001;"}}'), null)).toEqual(
@@ -14,7 +15,7 @@ test('valuesToStringList', () => {
 
   expect(() => {
     valuesToStringList(JSON.parse('{"item0":{"sumstate":{"value":"0;0;0;0;0;"}}}'), 'item1');
-  }).toThrow('Can not parse status');
+  }).toThrow(CLIENT_ERROR.CANNOT_PARSE_STATUS);
 });
 
 test('systemFilteredByItems', () => {
