@@ -1,5 +1,5 @@
 import { BaseSystem } from "../base";
-import { MultiRoom, MultiRoomState } from "./types";
+import { MultiRoom, MultiRoomState, PlayList } from "./types";
 import { tryParseFloat } from "../../utils/numberUtils";
 import {
   systemFilteredByItems,
@@ -12,7 +12,7 @@ export class MultiRooms extends BaseSystem {
   private parseItem(system: string, status: string, key: string): MultiRoom {
     const values = valuesToStringList(status, key);
 
-    const item: MultiRoom = {
+    return {
       sumState: null,
       id: key,
       name: system[key].name,
@@ -22,14 +22,20 @@ export class MultiRooms extends BaseSystem {
       currentPlayingTime: tryParseFloat(values[2]),
       currentAudioTitle: values[3],
       currentPlaylistIndex: tryParseFloat(values[4]),
-      currentSongIndex: tryParseFloat(values[22]),
+      playList: this.parsePlayList(values),
+      currentSongIndex: tryParseFloat(values[21]),
     };
+  }
 
+  private parsePlayList(values: string[]): PlayList[] {
+    const items: PlayList[] = [];
     for (let i = 5; i < 21; i++) {
-      item.playList.push({ index: i, name: values[i] });
+      items.push({
+        index: i - 5,
+        name: values[i],
+      });
     }
-
-    return item;
+    return items;
   }
 
   async getAll(): Promise<MultiRoom[]> {
