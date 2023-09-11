@@ -12,9 +12,9 @@ This is a very simple example. This creates a remote client and retrieves the de
 import { RemoteClient } from "mygekko-client-library";
 
 const client = new RemoteClient({
-  username: "test",
-  gekkoId: "test",
-  apiKey: "test",
+  username: "test@test.com",
+  gekkoId: "XXXX-XXXX-XXXX-XXXX",
+  apiKey: "damnSecure",
 });
 
 try {
@@ -33,8 +33,8 @@ import { LocalClient } from "mygekko-client-library";
 
 const client = new LocalClient({
   ip: "127.0.1",
-  username: "test",
-  password: "test",
+  username: "user",
+  password: "damnSecure",
 });
 
 try {
