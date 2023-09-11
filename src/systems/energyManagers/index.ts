@@ -1,19 +1,12 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { EnergyManager } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { EnergyManager } from './types';
 
-const res = "energymanager";
+const res = 'energymanager';
 
 export class EnergyManagers extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): EnergyManager {
+  private parseItem(system: string, status: string, key: string): EnergyManager {
     const values = valuesToStringList(status, key);
 
     return {

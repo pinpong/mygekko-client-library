@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Fireplace } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Fireplace } from './types';
 
-const res = "stoven";
+const res = 'stoven';
 
 export class Fireplaces extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Fireplace {

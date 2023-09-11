@@ -1,13 +1,10 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { AlarmSystem } from "./types";
-import { AirConditioner } from "../airConditioners/types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { AlarmSystem } from './types';
+import { AirConditioner } from '../airConditioners/types';
 
-const res = "alarmsystem";
+const res = 'alarmsystem';
 
 export class AlarmSystems extends BaseSystem {
   private parseItem(system: string, status: string, key: string): AlarmSystem {

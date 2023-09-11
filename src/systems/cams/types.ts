@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type Cam = BaseSystem & {
   newRecordCount?: number;

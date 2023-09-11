@@ -1,9 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
-import { WeatherItem } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { throwErrorIfSystemIsNotEnabled } from '../../utils/systemCheck';
+import { WeatherItem } from './types';
 
-const res = "globals/meteo";
+const res = 'globals/meteo';
 
 export class Weather extends BaseSystem {
   private parseItem(status: string): WeatherItem {
@@ -12,19 +12,19 @@ export class Weather extends BaseSystem {
       id: null,
       name: null,
       page: null,
-      twilight: tryParseFloat(status["twilight"]["value"]),
-      humidity: tryParseFloat(status["humidity"]["value"]),
-      brightness: tryParseFloat(status["brightness"]["value"]),
-      brightnessWest: tryParseFloat(status["brightnessw"]["value"]),
-      brightnessEast: tryParseFloat(status["brightnesso"]["value"]),
-      wind: tryParseFloat(status["wind"]["value"]),
-      temperature: tryParseFloat(status["temperature"]["value"]),
-      rain: tryParseFloat(status["rain"]["value"]),
+      twilight: tryParseFloat(status['twilight']['value']),
+      humidity: tryParseFloat(status['humidity']['value']),
+      brightness: tryParseFloat(status['brightness']['value']),
+      brightnessWest: tryParseFloat(status['brightnessw']['value']),
+      brightnessEast: tryParseFloat(status['brightnesso']['value']),
+      wind: tryParseFloat(status['wind']['value']),
+      temperature: tryParseFloat(status['temperature']['value']),
+      rain: tryParseFloat(status['rain']['value']),
     };
   }
 
   async get(): Promise<WeatherItem> {
-    const system = this.client.systemConfig["globals"]["meteo"];
+    const system = this.client.systemConfig['globals']['meteo'];
     throwErrorIfSystemIsNotEnabled(system);
 
     const status = await this.client.systemStatusRequest(res);

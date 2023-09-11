@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type Action = BaseSystem & {
   currentState?: ActionState;
@@ -7,12 +7,12 @@ export type Action = BaseSystem & {
 };
 
 export enum ActionState {
-  "locked" = 0,
-  "open" = 1,
-  "keepOpen" = 2,
+  'locked' = 0,
+  'open' = 1,
+  'keepOpen' = 2,
 }
 
 export enum StartConditionState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }

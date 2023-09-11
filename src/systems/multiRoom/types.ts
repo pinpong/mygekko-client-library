@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type MultiRoom = BaseSystem & {
   currentState?: MultiRoomState;
@@ -11,8 +11,8 @@ export type MultiRoom = BaseSystem & {
 };
 
 export enum MultiRoomState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export type PlayList = {

@@ -1,23 +1,12 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import {
-  AirConditioner,
-  AirConditionerState,
-  AirConditionerWorkingMode,
-} from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { AirConditioner, AirConditionerState, AirConditionerWorkingMode } from './types';
 
-const res = "air_handling_unit";
+const res = 'air_handling_unit';
 
 export class AirConditioners extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): AirConditioner {
+  private parseItem(system: string, status: string, key: string): AirConditioner {
     const values = valuesToStringList(status, key);
 
     return {

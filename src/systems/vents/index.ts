@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base";
+import { BaseSystem } from '../base';
 import {
   CoolingModeState,
   DehumidificationState,
@@ -11,14 +11,11 @@ import {
   VentWorkingModeProxxonV2,
   VentWorkingModeStiebelTecalor,
   VentWorkingModeWestaflex,
-} from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+} from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "vents";
+const res = 'vents';
 
 export class Vents extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Vent {
@@ -69,7 +66,7 @@ export class Vents extends BaseSystem {
       | VentWorkingModeWestaflex
       | VentWorkingModeStiebelTecalor
       | VentWorkingModeIndividual
-      | VentWorkingModePluggit,
+      | VentWorkingModePluggit
   ): Promise<void> {
     await this.client.changeRequest(res, id, `M${mode}`);
   }
@@ -100,17 +97,11 @@ export class Vents extends BaseSystem {
     await this.client.changeRequest(res, id, `BY${state}`);
   }
 
-  async setCoolingModeState(
-    id: string,
-    state: CoolingModeState,
-  ): Promise<void> {
+  async setCoolingModeState(id: string, state: CoolingModeState): Promise<void> {
     await this.client.changeRequest(res, id, `C${state}`);
   }
 
-  async setDehumidificationState(
-    id: string,
-    state: DehumidificationState,
-  ): Promise<void> {
+  async setDehumidificationState(id: string, state: DehumidificationState): Promise<void> {
     await this.client.changeRequest(res, id, `D${state}`);
   }
 }

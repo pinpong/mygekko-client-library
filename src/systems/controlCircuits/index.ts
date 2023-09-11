@@ -1,19 +1,12 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { ControlCircuit } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { ControlCircuit } from './types';
 
-const res = "controlcircuits";
+const res = 'controlcircuits';
 
 export class ControlCircuits extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): ControlCircuit {
+  private parseItem(system: string, status: string, key: string): ControlCircuit {
     const values = valuesToStringList(status, key);
 
     return {

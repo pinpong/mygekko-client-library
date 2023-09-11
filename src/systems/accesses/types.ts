@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type Access = BaseSystem & {
   currentState?: AccessState;
@@ -8,18 +8,18 @@ export type Access = BaseSystem & {
 };
 
 export enum AccessState {
-  "close" = 0,
-  "open" = 1,
-  "keepOpen" = 2,
+  'close' = 0,
+  'open' = 1,
+  'keepOpen' = 2,
 }
 
 export enum StartConditionState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum AccessType {
-  "door" = 0,
-  "gage" = 1,
-  "barrier" = 2,
+  'door' = 0,
+  'gage' = 1,
+  'barrier' = 2,
 }

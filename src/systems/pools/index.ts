@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { Pool } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { Pool } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "pools";
+const res = 'pools';
 
 export class Pools extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Pool {

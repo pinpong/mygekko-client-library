@@ -1,19 +1,12 @@
-import { BaseSystem } from "../base";
-import { HeatingSystem } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { HeatingSystem } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "heatingsystems";
+const res = 'heatingsystems';
 
 export class HeatingSystems extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): HeatingSystem {
+  private parseItem(system: string, status: string, key: string): HeatingSystem {
     const values = valuesToStringList(status, key);
 
     return {

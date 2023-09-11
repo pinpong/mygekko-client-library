@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type Light = BaseSystem & {
   currentState?: LightState;
@@ -8,6 +8,6 @@ export type Light = BaseSystem & {
 };
 
 export enum LightState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }

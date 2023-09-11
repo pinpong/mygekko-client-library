@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type AlarmSystem = BaseSystem & {
   alarmSystemState?: AlarmSystemState;
@@ -14,23 +14,23 @@ export type AlarmDevice = {
 };
 
 export enum AlarmSystemState {
-  "ok" = 0,
-  "alarm" = 1,
-  "keepOpen" = 2,
+  'ok' = 0,
+  'alarm' = 1,
+  'keepOpen' = 2,
 }
 
 export enum AlarmSystemTypeState {
-  "ok" = 0,
-  "alarmButtonUnSharp" = 2,
-  "alarm" = 3,
+  'ok' = 0,
+  'alarmButtonUnSharp' = 2,
+  'alarm' = 3,
 }
 
 export enum AlarmSystemSharpState {
-  "unSharp" = 0,
-  "sharp" = 1,
+  'unSharp' = 0,
+  'sharp' = 1,
 }
 
 export enum AlarmSystemDeviceModel {
-  "standard" = 1,
-  "complex400_V1" = 2,
+  'standard' = 1,
+  'complex400_V1' = 2,
 }

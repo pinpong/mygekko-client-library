@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type HotWaterSystem = BaseSystem & {
   deviceModel?: HotWaterSystemDeviceModel;
@@ -11,19 +11,19 @@ export type HotWaterSystem = BaseSystem & {
 };
 
 export enum HotWaterSystemState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum HotWaterSystemDeviceModel {
-  "individual" = 0,
-  "buderus" = 1,
-  "stiebel" = 2,
-  "tecalor" = 3,
-  "vaillant" = 4,
+  'individual' = 0,
+  'buderus' = 1,
+  'stiebel' = 2,
+  'tecalor' = 3,
+  'vaillant' = 4,
 }
 
 export enum HotWaterCoolingModeState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }

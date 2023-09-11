@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type EnergyManager = BaseSystem & {
   netMeterState?: NetState;
@@ -29,40 +29,40 @@ export type EnergyManager = BaseSystem & {
 };
 
 export enum NetState {
-  "notOk" = 0,
-  "ok" = 1,
+  'notOk' = 0,
+  'ok' = 1,
 }
 
 export enum SolarState {
-  "notActive" = 0,
-  "active" = 1,
+  'notActive' = 0,
+  'active' = 1,
 }
 
 export enum BatteryState {
-  "notActive" = 0,
-  "active" = 1,
+  'notActive' = 0,
+  'active' = 1,
 }
 
 export enum EMSState {
-  "disabled" = 0,
-  "enabled" = 1,
+  'disabled' = 0,
+  'enabled' = 1,
 }
 
 export enum EMSEnabledState {
-  "disabled" = 0,
-  "enabled" = 1,
+  'disabled' = 0,
+  'enabled' = 1,
 }
 
 export enum LoadSheddingState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum BatteryType {
-  "unavailable" = 0,
-  "e3dc-s10" = 1,
-  "byd" = 2,
-  "vartastorage" = 3,
-  "individual" = 4,
-  "bySunSpecInverters" = 5,
+  'unavailable' = 0,
+  'e3dc-s10' = 1,
+  'byd' = 2,
+  'vartastorage' = 3,
+  'individual' = 4,
+  'bySunSpecInverters' = 5,
 }

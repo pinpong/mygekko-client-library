@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type HotWaterCirculation = BaseSystem & {
   pumpType?: HotWaterCirculationPumpType;
@@ -8,12 +8,12 @@ export type HotWaterCirculation = BaseSystem & {
 };
 
 export enum HotWaterCirculationPumpType {
-  "onOff" = 0,
-  "pwm" = 1,
-  "percentage",
+  'onOff' = 0,
+  'pwm' = 1,
+  'percentage',
 }
 
 export enum HotWaterCirculationState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }

@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Trend } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Trend } from './types';
 
-const res = "trends";
+const res = 'trends';
 
 export class Trends extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Trend {

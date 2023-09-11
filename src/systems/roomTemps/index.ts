@@ -1,23 +1,16 @@
-import { BaseSystem } from "../base";
+import { BaseSystem } from '../base';
 import {
   RoomTemperature,
   RoomTemperatureWorkingModeKnx,
   RoomTemperatureWorkingModeStandard,
-} from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+} from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "roomTemps";
+const res = 'roomTemps';
 
 export class RoomTemperatures extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): RoomTemperature {
+  private parseItem(system: string, status: string, key: string): RoomTemperature {
     const values = valuesToStringList(status, key);
 
     return {
@@ -61,7 +54,7 @@ export class RoomTemperatures extends BaseSystem {
 
   async setWorkingMode(
     id: string,
-    mode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx,
+    mode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx
   ): Promise<void> {
     await this.client.changeRequest(res, id, `M${mode}`);
   }

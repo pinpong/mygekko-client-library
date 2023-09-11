@@ -1,19 +1,12 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { HotWaterCirculation, HotWaterCirculationState } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { HotWaterCirculation, HotWaterCirculationState } from './types';
 
-const res = "hotwater_circulations";
+const res = 'hotwater_circulations';
 
 export class HotWaterCirculations extends BaseSystem {
-  private parseItem(
-    system: string,
-    status: string,
-    key: string,
-  ): HotWaterCirculation {
+  private parseItem(system: string, status: string, key: string): HotWaterCirculation {
     const values = valuesToStringList(status, key);
 
     return {

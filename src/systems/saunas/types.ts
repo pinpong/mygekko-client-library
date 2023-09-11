@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type Sauna = BaseSystem & {
   workingMode?: SaunaWorkingMode;
@@ -12,17 +12,17 @@ export type Sauna = BaseSystem & {
 };
 
 export enum SaunaWorkingMode {
-  "off" = 0,
-  "onOrFinished" = 1,
-  "bio" = 2,
+  'off' = 0,
+  'onOrFinished' = 1,
+  'bio' = 2,
 }
 
 export enum SaunaState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum SaunaErrorState {
-  "noError" = 0,
-  "error" = 1,
+  'noError' = 0,
+  'error' = 1,
 }

@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { Clock, ClockState } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { Clock, ClockState } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "clocks";
+const res = 'clocks';
 
 export class Clocks extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Clock {

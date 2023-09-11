@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Light, LightState } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Light, LightState } from './types';
 
-const res = "lights";
+const res = 'lights';
 
 export class Lights extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Light {
@@ -40,10 +37,7 @@ export class Lights extends BaseSystem {
     await this.client.changeRequest(res, id, `D${dimLevel}`);
   }
 
-  async setTunableWhiteLevel(
-    id: string,
-    tunableWhiteLevel: number,
-  ): Promise<void> {
+  async setTunableWhiteLevel(id: string, tunableWhiteLevel: number): Promise<void> {
     await this.client.changeRequest(res, id, `TW${tunableWhiteLevel}`);
   }
 

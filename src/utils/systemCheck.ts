@@ -1,4 +1,4 @@
-import { CLIENT_ERROR } from "../errors";
+import { CLIENT_ERROR } from '../errors';
 
 export function throwErrorIfSystemIsNotEnabled(system?: string): void {
   if (!system) {

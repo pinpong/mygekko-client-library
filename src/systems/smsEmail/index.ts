@@ -1,13 +1,10 @@
-import { BaseSystem } from "../base";
-import { SmsEmail, SmsEmailState } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { EnergyManager } from "../energyManagers/types";
+import { BaseSystem } from '../base';
+import { SmsEmail, SmsEmailState } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { EnergyManager } from '../energyManagers/types';
 
-const res = "smsemail";
+const res = 'smsemail';
 
 export class SmsEmails extends BaseSystem {
   private parseItem(system: string, status: string, key: string): SmsEmail {

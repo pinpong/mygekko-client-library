@@ -1,5 +1,5 @@
-import { Client } from "../../index";
-import { throwErrorIfSystemIsNotEnabled } from "../../utils/systemCheck";
+import { Client } from '../../index';
+import { throwErrorIfSystemIsNotEnabled } from '../../utils/systemCheck';
 
 export class BaseSystem {
   client: Client;

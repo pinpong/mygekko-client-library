@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type HeatingSystem = BaseSystem & {
   deviceModel?: HeatingSystemDeviceModel;
@@ -9,19 +9,19 @@ export type HeatingSystem = BaseSystem & {
 };
 
 export enum HeatingSystemDeviceModel {
-  "individual" = 0,
-  "buderus" = 1,
-  "stiebel" = 2,
-  "tecalor" = 3,
-  "vaillant" = 4,
+  'individual' = 0,
+  'buderus' = 1,
+  'stiebel' = 2,
+  'tecalor' = 3,
+  'vaillant' = 4,
 }
 
 export enum HeatingSystemCoolingState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum HeatingSystemState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }

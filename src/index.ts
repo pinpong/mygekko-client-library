@@ -1,34 +1,34 @@
-import fetch from "isomorphic-unfetch";
-import { CLIENT_ERROR } from "./errors";
-import { Clocks } from "./systems/clocks";
-import { Accesses } from "./systems/accesses";
-import { Actions } from "./systems/actions";
-import { AirConditioners } from "./systems/airConditioners";
-import { AlarmSystems } from "./systems/alarmSystems";
-import { Blinds } from "./systems/blinds";
-import { Cams } from "./systems/cams";
-import { ControlCircuits } from "./systems/controlCircuits";
-import { EnergyCosts } from "./systems/energyCosts";
-import { EnergyManagers } from "./systems/energyManagers";
-import { Fireplaces } from "./systems/fireplaces";
-import { GekkoInfo } from "./systems/gekkoInfo";
-import { GlobalAlarm } from "./systems/globalAlarm";
-import { HeatingCircuits } from "./systems/heatingCircuit";
-import { HeatingSystems } from "./systems/heatingSystem";
-import { HotWaterCirculations } from "./systems/hotWaterCirculation";
-import { HotWaterSystems } from "./systems/hotWaterSystems";
-import { Lights } from "./systems/lights";
-import { Loads } from "./systems/loads";
-import { Logics } from "./systems/logics";
-import { MultiRooms } from "./systems/multiRoom";
-import { Pools } from "./systems/pools";
-import { RoomTemperatures } from "./systems/roomTemps";
-import { Saunas } from "./systems/saunas";
-import { SmsEmails } from "./systems/smsEmail";
-import { Trends } from "./systems/trends";
-import { Vents } from "./systems/vents";
-import { WallBoxes } from "./systems/wallBoxes";
-import { Weather } from "./systems/weather";
+import fetch from 'isomorphic-unfetch';
+import { CLIENT_ERROR } from './errors';
+import { Clocks } from './systems/clocks';
+import { Accesses } from './systems/accesses';
+import { Actions } from './systems/actions';
+import { AirConditioners } from './systems/airConditioners';
+import { AlarmSystems } from './systems/alarmSystems';
+import { Blinds } from './systems/blinds';
+import { Cams } from './systems/cams';
+import { ControlCircuits } from './systems/controlCircuits';
+import { EnergyCosts } from './systems/energyCosts';
+import { EnergyManagers } from './systems/energyManagers';
+import { Fireplaces } from './systems/fireplaces';
+import { GekkoInfo } from './systems/gekkoInfo';
+import { GlobalAlarm } from './systems/globalAlarm';
+import { HeatingCircuits } from './systems/heatingCircuit';
+import { HeatingSystems } from './systems/heatingSystem';
+import { HotWaterCirculations } from './systems/hotWaterCirculation';
+import { HotWaterSystems } from './systems/hotWaterSystems';
+import { Lights } from './systems/lights';
+import { Loads } from './systems/loads';
+import { Logics } from './systems/logics';
+import { MultiRooms } from './systems/multiRoom';
+import { Pools } from './systems/pools';
+import { RoomTemperatures } from './systems/roomTemps';
+import { Saunas } from './systems/saunas';
+import { SmsEmails } from './systems/smsEmail';
+import { Trends } from './systems/trends';
+import { Vents } from './systems/vents';
+import { WallBoxes } from './systems/wallBoxes';
+import { Weather } from './systems/weather';
 
 type ClientConfig = {
   baseUrl: string;
@@ -92,14 +92,14 @@ export abstract class Client {
     if (this.systemConfig) {
       throw Error(CLIENT_ERROR.ALREADY_INITIALIZED);
     }
-    this.systemConfig = await this.internalRequest("?");
+    this.systemConfig = await this.internalRequest('?');
   }
 
   public async rescan(): Promise<void> {
     if (!this.systemConfig) {
       throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
     }
-    this.systemConfig = await this.internalRequest("?");
+    this.systemConfig = await this.internalRequest('?');
   }
 
   async request(endpoint: string): Promise<string> {
@@ -112,17 +112,12 @@ export abstract class Client {
   private async internalRequest(endpoint: string): Promise<string> {
     let response: Response;
     try {
-      response = await fetch(
-        `${this.baseUrl}${endpoint}${this.authQueryString}`,
-        {},
-      );
+      response = await fetch(`${this.baseUrl}${endpoint}${this.authQueryString}`, {});
     } catch (e) {
       throw new Error(e);
     }
     if (response.ok) {
-      return response.body.toString().startsWith("OK")
-        ? {}
-        : await response.json();
+      return response.body.toString().startsWith('OK') ? {} : await response.json();
     }
 
     switch (response.status) {
@@ -145,9 +140,7 @@ export abstract class Client {
       case 503:
         throw new Error(CLIENT_ERROR.SERVICE_NOT_AVAILABLE);
       default:
-        throw Error(
-          `${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${response.status}`,
-        );
+        throw Error(`${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${response.status}`);
     }
   }
 
@@ -167,7 +160,7 @@ export abstract class Client {
 export class RemoteClient extends Client {
   constructor(config: RemoteConfig) {
     super({
-      baseUrl: "https://live.my-gekko.com/api/v1/var",
+      baseUrl: 'https://live.my-gekko.com/api/v1/var',
       authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
     });
   }
@@ -176,7 +169,7 @@ export class RemoteClient extends Client {
 export class LocalClient extends Client {
   constructor(config: LocalConfig) {
     super({
-      baseUrl: "http://${config.ip}/api/v1/var",
+      baseUrl: 'http://${config.ip}/api/v1/var',
       authQuery: `username=${config.username}&password=${config.password}`,
     });
   }

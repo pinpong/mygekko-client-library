@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { Logic } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { Logic } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "alarms_logics";
+const res = 'alarms_logics';
 
 export class Logics extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Logic {

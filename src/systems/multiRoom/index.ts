@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { MultiRoom, MultiRoomState, PlayList } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { MultiRoom, MultiRoomState, PlayList } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "multirooms";
+const res = 'multirooms';
 
 export class MultiRooms extends BaseSystem {
   private parseItem(system: string, status: string, key: string): MultiRoom {
@@ -51,13 +48,13 @@ export class MultiRooms extends BaseSystem {
   }
 
   async setState(id: string, state: MultiRoomState): Promise<void> {
-    let value = "STOP";
+    let value = 'STOP';
     switch (state) {
       case MultiRoomState.off:
-        value = "STOP";
+        value = 'STOP';
         break;
       case MultiRoomState.on:
-        value = "PLAY";
+        value = 'PLAY';
         break;
     }
     await this.client.changeRequest(res, id, `${value}`);

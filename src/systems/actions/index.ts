@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Action, ActionState } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Action, ActionState } from './types';
 
-const res = "actions";
+const res = 'actions';
 
 export class Actions extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Action {

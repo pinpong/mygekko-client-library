@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Blind, BlindState } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Blind, BlindState } from './types';
 
-const res = "blinds";
+const res = 'blinds';
 
 export class Blinds extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Blind {

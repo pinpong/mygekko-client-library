@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type ControlCircuit = BaseSystem & {
   sensorValue?: number;
@@ -9,9 +9,9 @@ export type ControlCircuit = BaseSystem & {
 };
 
 export enum ControlCircuitSensorType {
-  "temperaturePT" = 0,
-  "temperatureAnalog" = 1,
-  "pressure" = 2,
-  "humidity" = 3,
-  "individual" = 4,
+  'temperaturePT' = 0,
+  'temperatureAnalog' = 1,
+  'pressure' = 2,
+  'humidity' = 3,
+  'individual' = 4,
 }

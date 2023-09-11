@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type AirConditioner = BaseSystem & {
   supplyAirTemperature?: number;
@@ -29,23 +29,23 @@ export type AirConditioner = BaseSystem & {
 };
 
 export enum AirConditionerSupplyState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum AirConditionerExhaustState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum AirConditionerState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export enum AirConditionerWorkingMode {
-  "off" = 0,
-  "heating" = 1,
-  "cooling" = 2,
-  "auto" = 3,
+  'off' = 0,
+  'heating' = 1,
+  'cooling' = 2,
+  'auto' = 3,
 }

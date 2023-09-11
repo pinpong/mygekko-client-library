@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type WallBox = BaseSystem & {
   pluggedState?: WallBoxPluggedState;
@@ -17,19 +17,19 @@ export type WallBox = BaseSystem & {
 };
 
 export enum WallBoxPluggedState {
-  "notPlugged" = 0,
-  "plugged" = 1,
+  'notPlugged' = 0,
+  'plugged' = 1,
 }
 
 export enum WallBoxChargeState {
-  "off" = 0,
-  "on" = 1,
-  "paused" = 2,
+  'off' = 0,
+  'on' = 1,
+  'paused' = 2,
 }
 
 export enum WallBoxChargeRequestState {
-  "off" = 0,
-  "on" = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 export type WallBoxUser = {

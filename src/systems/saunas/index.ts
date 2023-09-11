@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
-import { Sauna, SaunaWorkingMode } from "./types";
+import { BaseSystem } from '../base';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { Sauna, SaunaWorkingMode } from './types';
 
-const res = "saunas";
+const res = 'saunas';
 
 export class Saunas extends BaseSystem {
   private parseItem(system: string, status: string, key: string): Sauna {

@@ -1,4 +1,4 @@
-import { BaseSystem } from "../base/types";
+import { BaseSystem } from '../base/types';
 
 export type EnergyCost = BaseSystem & {
   currentPower?: number;
@@ -23,6 +23,6 @@ export type EnergyCost = BaseSystem & {
 };
 
 export enum CounterDirection {
-  "consumption" = 0,
-  "production" = 1,
+  'consumption' = 0,
+  'production' = 1,
 }

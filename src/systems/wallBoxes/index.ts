@@ -1,12 +1,9 @@
-import { BaseSystem } from "../base";
-import { WallBox, WallBoxChargeState, WallBoxUser } from "./types";
-import { tryParseFloat } from "../../utils/numberUtils";
-import {
-  systemFilteredByItems,
-  valuesToStringList,
-} from "../../utils/stringUtils";
+import { BaseSystem } from '../base';
+import { WallBox, WallBoxChargeState, WallBoxUser } from './types';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = "emobils";
+const res = 'emobils';
 
 export class WallBoxes extends BaseSystem {
   private parseItem(system: string, status: string, key: string): WallBox {
@@ -36,7 +33,7 @@ export class WallBoxes extends BaseSystem {
   private parseWallBoxUser(status: string, key: string): WallBoxUser[] {
     const items: WallBoxUser[] = [];
     for (let i = 1; i < 7; i++) {
-      const value = status[key][`user${i}_sumstate`]["value"];
+      const value = status[key][`user${i}_sumstate`]['value'];
       if (value != null) {
         items.push({
           id: i,
