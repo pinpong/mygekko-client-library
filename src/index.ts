@@ -169,7 +169,7 @@ export class RemoteClient extends Client {
 export class LocalClient extends Client {
   constructor(config: LocalConfig) {
     super({
-      baseUrl: 'http://${config.ip}/api/v1/var',
+      baseUrl: `http://${config.ip}/api/v1/var`,
       authQuery: `username=${config.username}&password=${config.password}`,
     });
   }
