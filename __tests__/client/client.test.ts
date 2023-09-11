@@ -8,7 +8,15 @@ test("remote client", async () => {
     apiKey: "test",
   });
 
-  client.accesses.getAll();
+  /*
+      try {
+        const blinds = client.blinds.getAll();
+        console.error(blinds);
+        await client.blinds.setPosition("item0", 75);
+      } catch (e) {
+        console.log(e);
+      }
+     */
 
   await expect(async () => await client.initialize()).rejects.toThrow();
 });
@@ -19,6 +27,16 @@ test("local client", async () => {
     username: "test",
     password: "test",
   });
+
+  /*
+      try {
+        const blinds = client.blinds.getAll();
+        console.error(blinds);
+        await client.blinds.setPosition("item0", 75);
+      } catch (e) {
+        console.log(e);
+      }
+     */
 
   await expect(async () => await client.initialize()).rejects.toThrow();
 });
