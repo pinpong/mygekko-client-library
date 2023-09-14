@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { ControlCircuit } from './types';
 
-const res = 'controlcircuits';
+const res = SystemTypes.controlCircuits;
 
 export class ControlCircuits extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): ControlCircuit {
+  private parseItem(config: SystemConfig, status: string, key: string): ControlCircuit {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[2]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       sensorValue: tryParseFloat(values[0]),
       sensorType: tryParseFloat(values[1]),
       pump1WorkingPowerLevel: tryParseFloat(values[3]),
@@ -22,15 +24,28 @@ export class ControlCircuits extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<ControlCircuit[]> {
+  public async getItems(): Promise<ControlCircuit[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<ControlCircuit> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async getItemById(itemId: string): Promise<ControlCircuit> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 }

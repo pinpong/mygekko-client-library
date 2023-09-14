@@ -1,14 +1,14 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Sauna = BaseSystem & {
-  workingMode?: SaunaWorkingMode;
-  currentState?: SaunaState;
-  errorState?: SaunaErrorState;
-  roomTemperature?: number;
-  roomTemperatureSetPoint?: number;
-  burnerTemperature?: number;
-  roomRelativeHumidityLevel?: number;
-  roomRelativeHumiditySetPointLevel?: number;
+export type Sauna = BaseSystemType & {
+  workingMode: SaunaWorkingMode | null;
+  currentState: SaunaState | null;
+  errorState: SaunaErrorState | null;
+  roomTemperature: number | null;
+  roomTemperatureSetPoint: number | null;
+  burnerTemperature: number | null;
+  roomRelativeHumidityLevel: number | null;
+  roomRelativeHumiditySetPointLevel: number | null;
 };
 
 export enum SaunaWorkingMode {

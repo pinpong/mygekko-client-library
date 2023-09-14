@@ -1,31 +1,31 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type EnergyManager = BaseSystem & {
-  netMeterState?: NetState;
-  solarPanelState?: SolarState;
-  batteryState?: BatteryState;
-  netMeterCurrentPower?: number;
-  currentPowerExportedToNet?: number;
-  currentPowerFromSolarPanels?: number;
-  currentPowerFromBattery?: number;
-  currentPowerChargingBattery?: number;
-  currentHomePowerConsumption?: number;
-  currentAlternativePowerConsumption?: number;
-  totalDailyImportedEnergyFromNet?: number;
-  totalDailyExportedEnergyToNet?: number;
-  totalDailyEnergyFromSolarPanels?: number;
-  totalDailyEnergyFromBattery?: number;
-  totalDailyEnergyChargingBattery?: number;
-  totalDailyHomeEnergyConsumption?: number;
-  loadSheddingState?: LoadSheddingState;
-  emsState?: EMSState;
-  batteryModel?: BatteryType;
-  batterySoCLevel?: number;
-  emsEnabledState?: EMSEnabledState;
-  maximumPowerConsumptionFromNet?: number;
-  maximumPowerExportToNet?: number;
-  maximumPowerSolarPanels?: number;
-  maximumPowerBattery?: number;
+export type EnergyManager = BaseSystemType & {
+  netMeterState: NetState | null;
+  solarPanelState: SolarState | null;
+  batteryState: BatteryState | null;
+  netMeterCurrentPower: number | null;
+  currentPowerExportedToNet: number | null;
+  currentPowerFromSolarPanels: number | null;
+  currentPowerFromBattery: number | null;
+  currentPowerChargingBattery: number | null;
+  currentHomePowerConsumption: number | null;
+  currentAlternativePowerConsumption: number | null;
+  totalDailyImportedEnergyFromNet: number | null;
+  totalDailyExportedEnergyToNet: number | null;
+  totalDailyEnergyFromSolarPanels: number | null;
+  totalDailyEnergyFromBattery: number | null;
+  totalDailyEnergyChargingBattery: number | null;
+  totalDailyHomeEnergyConsumption: number | null;
+  loadSheddingState: LoadSheddingState | null;
+  emsState: EMSState | null;
+  batteryModel: BatteryType | null;
+  batterySoCLevel: number | null;
+  emsEnabledState: EMSEnabledState | null;
+  maximumPowerConsumptionFromNet: number | null;
+  maximumPowerExportToNet: number | null;
+  maximumPowerSolarPanels: number | null;
+  maximumPowerBattery: number | null;
 };
 
 export enum NetState {

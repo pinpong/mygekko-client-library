@@ -1,10 +1,10 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Blind = BaseSystem & {
-  currentState?: BlindState;
-  position?: number;
-  rotationLevel?: number;
-  rotationRange?: RotationRange;
+export type Blind = BaseSystemType & {
+  currentState: BlindState | null;
+  position: number | null;
+  rotationLevel: number | null;
+  rotationRange: RotationRange | null;
 };
 
 export enum BlindState {

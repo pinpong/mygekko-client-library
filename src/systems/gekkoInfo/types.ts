@@ -1,8 +1,8 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type GekkoInfoItem = BaseSystem & {
-  gekkoName?: string;
-  language?: string;
-  version?: number;
-  hardware?: string;
+export type GekkoInfoItem = BaseSystemType & {
+  gekkoName: string | null;
+  language: string | null;
+  version: number | null;
+  hardware: string | null;
 };

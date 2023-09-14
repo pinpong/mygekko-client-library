@@ -1,4 +1,8 @@
+import { SystemConfig } from '../../client';
+import { tryParseFloat } from '../../utils/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import {
   CoolingModeState,
   DehumidificationState,
@@ -12,20 +16,18 @@ import {
   VentWorkingModeStiebelTecalor,
   VentWorkingModeWestaflex,
 } from './types';
-import { tryParseFloat } from '../../utils/numberUtils';
-import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 
-const res = 'vents';
+const res = SystemTypes.vents;
 
 export class Vents extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Vent {
+  private parseItem(config: SystemConfig, status: string, key: string): Vent {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[14]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       ventLevel: tryParseFloat(values[0]),
       deviceModel: tryParseFloat(values[1]),
       workingMode: tryParseFloat(values[2]),
@@ -47,19 +49,33 @@ export class Vents extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<Vent[]> {
+  public async getItems(): Promise<Vent[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Vent> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Vent> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
-  async setMode(
-    id: string,
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async setMode(
+    itemId: string,
     mode:
       | VentWorkingModeProxxonV1
       | VentWorkingModeProxxonV2
@@ -68,10 +84,10 @@ export class Vents extends BaseSystem {
       | VentWorkingModeIndividual
       | VentWorkingModePluggit
   ): Promise<void> {
-    await this.client.changeRequest(res, id, `M${mode}`);
+    await this.client.changeRequest(res, itemId, `M${mode}`);
   }
 
-  async setLevel(id: string, ventLevel: VentLevel): Promise<void> {
+  public async setLevel(itemId: string, ventLevel: VentLevel): Promise<void> {
     let level = -1;
     switch (ventLevel) {
       case VentLevel.off:
@@ -90,18 +106,21 @@ export class Vents extends BaseSystem {
         level = 4;
         break;
     }
-    await this.client.changeRequest(res, id, `${level}`);
+    await this.client.changeRequest(res, itemId, `${level}`);
   }
 
-  async setByPassState(id: string, state: VentBypassState): Promise<void> {
-    await this.client.changeRequest(res, id, `BY${state}`);
+  public async setByPassState(itemId: string, state: VentBypassState): Promise<void> {
+    await this.client.changeRequest(res, itemId, `BY${state}`);
   }
 
-  async setCoolingModeState(id: string, state: CoolingModeState): Promise<void> {
-    await this.client.changeRequest(res, id, `C${state}`);
+  public async setCoolingModeState(itemId: string, state: CoolingModeState): Promise<void> {
+    await this.client.changeRequest(res, itemId, `C${state}`);
   }
 
-  async setDehumidificationState(id: string, state: DehumidificationState): Promise<void> {
-    await this.client.changeRequest(res, id, `D${state}`);
+  public async setDehumidificationState(
+    itemId: string,
+    state: DehumidificationState
+  ): Promise<void> {
+    await this.client.changeRequest(res, itemId, `D${state}`);
   }
 }

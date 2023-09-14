@@ -1,16 +1,16 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type AlarmSystem = BaseSystem & {
-  alarmSystemState?: AlarmSystemState;
-  alarmDevices?: AlarmDevice[];
-  deviceModel?: AlarmSystemDeviceModel;
+export type AlarmSystem = BaseSystemType & {
+  alarmSystemState: AlarmSystemState | null;
+  alarmDevices: AlarmDevice[] | null;
+  deviceModel: AlarmSystemDeviceModel | null;
 };
 
 export type AlarmDevice = {
-  zone?: string;
-  type?: string;
-  systemState?: AlarmSystemTypeState;
-  sharpState?: AlarmSystemSharpState;
+  zone: string | null;
+  type: string | null;
+  systemState: AlarmSystemTypeState | null;
+  sharpState: AlarmSystemSharpState | null;
 };
 
 export enum AlarmSystemState {

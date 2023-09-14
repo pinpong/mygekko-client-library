@@ -1,8 +1,8 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Clock = BaseSystem & {
-  currentState?: ClockState;
-  startCondition: StartConditionState;
+export type Clock = BaseSystemType & {
+  currentState: ClockState | null;
+  startCondition: ClockStartConditionState | null;
 };
 
 export enum ClockState {
@@ -11,7 +11,7 @@ export enum ClockState {
   'onCoincidence' = 2,
 }
 
-export enum StartConditionState {
+export enum ClockStartConditionState {
   'off' = 0,
   'on' = 1,
 }

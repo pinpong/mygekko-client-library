@@ -1,37 +1,52 @@
-import { BaseSystem } from '../base';
-import { Clock, ClockState } from './types';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
+import { Clock, ClockState } from './types';
 
-const res = 'clocks';
+const res = SystemTypes.clocks;
 
 export class Clocks extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Clock {
+  private parseItem(config: SystemConfig, status: string, key: string): Clock {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[2]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       currentState: tryParseFloat(values[0]),
       startCondition: tryParseFloat(values[1]),
     };
   }
 
-  async getAll(): Promise<Clock[]> {
+  public async getItems(): Promise<Clock[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Clock> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Clock> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
-  async setState(id: string, state: ClockState): Promise<void> {
-    await this.client.changeRequest(res, id, `${state}`);
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async setState(itemId: string, state: ClockState): Promise<void> {
+    await this.client.changeRequest(res, itemId, `${state}`);
   }
 }

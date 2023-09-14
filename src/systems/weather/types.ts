@@ -1,12 +1,12 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type WeatherItem = BaseSystem & {
-  twilight?: number;
-  humidity?: number;
-  brightness?: number;
-  brightnessWest?: number;
-  brightnessEast?: number;
-  wind?: number;
-  temperature?: number;
-  rain?: number;
+export type WeatherItem = BaseSystemType & {
+  twilight: number | null;
+  humidity: number | null;
+  brightness: number | null;
+  brightnessWest: number | null;
+  brightnessEast: number | null;
+  wind: number | null;
+  temperature: number | null;
+  rain: number | null;
 };

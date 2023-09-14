@@ -1,7 +1,7 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type SmsEmail = BaseSystem & {
-  currentState?: SmsEmailState;
+export type SmsEmail = BaseSystemType & {
+  currentState: SmsEmailState | null;
 };
 
 export enum SmsEmailState {

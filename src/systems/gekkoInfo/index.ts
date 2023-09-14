@@ -1,14 +1,15 @@
+import { throwErrorIfSystemIsNotEnabled } from '../../utils/errorUtils';
 import { BaseSystem } from '../base';
-import { throwErrorIfSystemIsNotEnabled } from '../../utils/systemCheck';
+import { SystemTypes, Trend } from '../base/types';
 import { GekkoInfoItem } from './types';
 
-const res = 'globals/network';
+const res = SystemTypes.network;
 
 export class GekkoInfo extends BaseSystem {
   private parseItem(status: string): GekkoInfoItem {
     return {
       sumState: null,
-      id: null,
+      itemId: null,
       name: null,
       page: null,
       gekkoName: status['gekkoname']['value'],
@@ -18,11 +19,14 @@ export class GekkoInfo extends BaseSystem {
     };
   }
 
-  async get(): Promise<GekkoInfoItem> {
-    const system = this.client.systemConfig['globals']['network'];
-    throwErrorIfSystemIsNotEnabled(system);
+  public async getItem(): Promise<GekkoInfoItem> {
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
 
     const status = await this.client.systemStatusRequest(res);
     return this.parseItem(status);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
   }
 }

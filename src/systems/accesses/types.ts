@@ -1,10 +1,10 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Access = BaseSystem & {
-  currentState?: AccessState;
-  startCondition?: StartConditionState;
-  gateRuntimePercentage?: number;
-  accessType?: AccessType;
+export type Access = BaseSystemType & {
+  currentState: AccessState | null;
+  startCondition: AccessStartConditionState | null;
+  gateRuntimePercentage: number | null;
+  accessType: AccessType | null;
 };
 
 export enum AccessState {
@@ -13,7 +13,7 @@ export enum AccessState {
   'keepOpen' = 2,
 }
 
-export enum StartConditionState {
+export enum AccessStartConditionState {
   'off' = 0,
   'on' = 1,
 }

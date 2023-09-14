@@ -1,28 +1,31 @@
-import { BaseSystem } from '../base';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { AlarmSystem } from './types';
-import { AirConditioner } from '../airConditioners/types';
 
-const res = 'alarmsystem';
+const res = SystemTypes.alarmSystem;
 
 export class AlarmSystems extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): AlarmSystem {
+  private parseItem(config: SystemConfig, status: string, key: string): AlarmSystem {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: null,
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       alarmSystemState: tryParseFloat(values[0]),
       alarmDevices: [
         {
+          zone: '1',
           type: values[1],
           sharpState: tryParseFloat(values[2]),
           systemState: tryParseFloat(values[3]),
         },
         {
+          zone: '2',
           type: values[4],
           sharpState: tryParseFloat(values[5]),
           systemState: tryParseFloat(values[6]),
@@ -32,19 +35,32 @@ export class AlarmSystems extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<AlarmSystem[]> {
+  public async getItems(): Promise<AlarmSystem[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<AirConditioner> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<AlarmSystem> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
-  async setSharped(id: string, zone: number): Promise<void> {
-    await this.client.changeRequest(res, id, `${zone}`);
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async setSharped(itemId: string, zone: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `${zone}`);
   }
 }

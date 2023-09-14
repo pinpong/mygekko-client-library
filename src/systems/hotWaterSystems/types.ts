@@ -1,13 +1,13 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type HotWaterSystem = BaseSystem & {
-  deviceModel?: HotWaterSystemDeviceModel;
-  coolingModeState?: HotWaterCoolingModeState;
-  waterTemperatureSetPoint?: number;
-  waterTemperatureTop?: number;
-  waterTemperatureBottom?: number;
-  collectorTemperature?: number;
-  currentState?: HotWaterSystemState;
+export type HotWaterSystem = BaseSystemType & {
+  deviceModel: HotWaterSystemDeviceModel | null;
+  coolingModeState: HotWaterSystemCoolingModeState | null;
+  waterTemperatureSetPoint: number | null;
+  waterTemperatureTop: number | null;
+  waterTemperatureBottom: number | null;
+  collectorTemperature: number | null;
+  currentState: HotWaterSystemState | null;
 };
 
 export enum HotWaterSystemState {
@@ -23,7 +23,7 @@ export enum HotWaterSystemDeviceModel {
   'vaillant' = 4,
 }
 
-export enum HotWaterCoolingModeState {
+export enum HotWaterSystemCoolingModeState {
   'off' = 0,
   'on' = 1,
 }

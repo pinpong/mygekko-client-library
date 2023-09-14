@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { EnergyManager } from './types';
 
-const res = 'energymanager';
+const res = SystemTypes.energyManagers;
 
 export class EnergyManagers extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): EnergyManager {
+  private parseItem(config: SystemConfig, status: string, key: string): EnergyManager {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[0]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       netMeterState: tryParseFloat(values[1]),
       solarPanelState: tryParseFloat(values[2]),
       batteryState: tryParseFloat(values[3]),
@@ -42,15 +44,28 @@ export class EnergyManagers extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<EnergyManager[]> {
+  public async getItems(): Promise<EnergyManager[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<EnergyManager> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<EnergyManager> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 }

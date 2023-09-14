@@ -1,7 +1,7 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type GlobalAlarmItem = BaseSystem & {
-  state?: GlobalAlarmState;
+export type GlobalAlarmItem = BaseSystemType & {
+  state: GlobalAlarmState | null;
 };
 
 export enum GlobalAlarmState {

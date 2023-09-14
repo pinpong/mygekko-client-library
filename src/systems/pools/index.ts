@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
-import { Pool } from './types';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
+import { Pool } from './types';
 
-const res = 'pools';
+const res = SystemTypes.pools;
 
 export class Pools extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Pool {
+  private parseItem(config: SystemConfig, status: string, key: string): Pool {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[3]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       workingMode: tryParseFloat(values[0]),
       filteringState: tryParseFloat(values[1]),
       backwashState: tryParseFloat(values[2]),
@@ -21,21 +23,34 @@ export class Pools extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<Pool[]> {
+  public async getItems(): Promise<Pool[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Pool> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Pool> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 
   /// TODO: implement all other function
 
-  async setTemperatur(id: string, temperature: number): Promise<void> {
-    await this.client.changeRequest(res, id, `T${temperature}`);
+  public async setTemperatur(itemId: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `T${temperature}`);
   }
 }

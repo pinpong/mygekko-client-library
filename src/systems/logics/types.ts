@@ -1,5 +1,5 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Logic = BaseSystem & {
-  value?: number;
+export type Logic = BaseSystemType & {
+  value: number | null;
 };

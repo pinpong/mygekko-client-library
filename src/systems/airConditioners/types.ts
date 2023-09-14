@@ -1,31 +1,31 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type AirConditioner = BaseSystem & {
-  supplyAirTemperature?: number;
-  supplyAirTemperatureSetPoint?: number;
-  exhaustAirTemperature?: number;
-  exhaustAirTemperatureSetPoint?: number;
-  outsideAirTemperature?: number;
-  outgoingAirTemperature?: number;
-  supplyRelativeHumidityLevel?: number;
-  supplyRelativeHumiditySetPointLevel?: number;
-  exhaustRelativeHumidityLevel?: number;
-  exhaustRelativeHumiditySetPointLevel?: number;
-  airQualityLevel?: number;
-  airQualitySetPointLevel?: number;
-  supplyPressureValue?: number;
-  supplyPressureSetPointValue?: number;
-  exhaustPressureValue?: number;
-  exhaustPressureSetPointValue?: number;
-  workingLevelSetPointLevel?: number;
-  supplyState?: AirConditionerSupplyState;
-  supplyWorkingLevel?: number;
-  supplyFlapOpeningLevel?: number;
-  exhaustState?: AirConditionerExhaustState;
-  exhaustWorkingLevel?: number;
-  exhaustFlapOpeningLevel?: number;
-  currentState?: AirConditionerState;
-  workingMode?: AirConditionerWorkingMode;
+export type AirConditioner = BaseSystemType & {
+  supplyAirTemperature: number | null;
+  supplyAirTemperatureSetPoint: number | null;
+  exhaustAirTemperature: number | null;
+  exhaustAirTemperatureSetPoint: number | null;
+  outsideAirTemperature: number | null;
+  outgoingAirTemperature: number | null;
+  supplyRelativeHumidityLevel: number | null;
+  supplyRelativeHumiditySetPointLevel: number | null;
+  exhaustRelativeHumidityLevel: number | null;
+  exhaustRelativeHumiditySetPointLevel: number | null;
+  airQualityLevel: number | null;
+  airQualitySetPointLevel: number | null;
+  supplyPressureValue: number | null;
+  supplyPressureSetPointValue: number | null;
+  exhaustPressureValue: number | null;
+  exhaustPressureSetPointValue: number | null;
+  workingLevelSetPointLevel: number | null;
+  supplyState: AirConditionerSupplyState | null;
+  supplyWorkingLevel: number | null;
+  supplyFlapOpeningLevel: number | null;
+  exhaustState: AirConditionerExhaustState | null;
+  exhaustWorkingLevel: number | null;
+  exhaustFlapOpeningLevel: number | null;
+  currentState: AirConditionerState | null;
+  workingMode: AirConditionerWorkingMode | null;
 };
 
 export enum AirConditionerSupplyState {

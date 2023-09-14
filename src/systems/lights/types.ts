@@ -1,10 +1,10 @@
-import { BaseSystem } from '../base/types';
+import { BaseSystemType } from '../base/types';
 
-export type Light = BaseSystem & {
-  currentState?: LightState;
-  dimLevel?: number;
-  rgbColor?: number;
-  tunableWhiteLevel?: number;
+export type Light = BaseSystemType & {
+  currentState: LightState | null;
+  dimLevel: number | null;
+  rgbColor: number | null;
+  tunableWhiteLevel: number | null;
 };
 
 export enum LightState {

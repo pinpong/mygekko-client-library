@@ -1,47 +1,66 @@
-import { BaseSystem } from '../base';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { Light, LightState } from './types';
 
-const res = 'lights';
+const res = SystemTypes.lights;
 
 export class Lights extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Light {
+  private parseItem(config: SystemConfig, status: string, key: string): Light {
     const values = valuesToStringList(status, key);
 
     return {
-      sumState: tryParseFloat(values[0]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      sumState: tryParseFloat(values[4]),
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
+      currentState: tryParseFloat(values[0]),
+      dimLevel: tryParseFloat(values[1]),
+      rgbColor: tryParseFloat(values[2]),
+      tunableWhiteLevel: tryParseFloat(values[3]),
     };
   }
 
-  async getAll(): Promise<Light[]> {
+  public async getItems(): Promise<Light[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Light> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Light> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
-  async setState(id: string, state: LightState): Promise<void> {
-    await this.client.changeRequest(res, id, `${state}`);
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
   }
 
-  async setDimLevel(id: string, dimLevel: number): Promise<void> {
-    await this.client.changeRequest(res, id, `D${dimLevel}`);
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 
-  async setTunableWhiteLevel(id: string, tunableWhiteLevel: number): Promise<void> {
-    await this.client.changeRequest(res, id, `TW${tunableWhiteLevel}`);
+  public async setState(itemId: string, state: LightState): Promise<void> {
+    await this.client.changeRequest(res, itemId, `${state}`);
   }
 
-  async setColor(id: string, color: number): Promise<void> {
-    await this.client.changeRequest(res, id, `C${color}`);
+  public async setDimLevel(itemId: string, dimLevel: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `D${dimLevel}`);
+  }
+
+  public async setTunableWhiteLevel(itemId: string, tunableWhiteLevel: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `TW${tunableWhiteLevel}`);
+  }
+
+  public async setColor(itemId: string, color: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `C${color}`);
   }
 }

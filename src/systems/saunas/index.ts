@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { Sauna, SaunaWorkingMode } from './types';
 
-const res = 'saunas';
+const res = SystemTypes.saunas;
 
 export class Saunas extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Sauna {
+  private parseItem(config: SystemConfig, status: string, key: string): Sauna {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[3]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       workingMode: tryParseFloat(values[0]),
       currentState: tryParseFloat(values[1]),
       errorState: tryParseFloat(values[4]),
@@ -25,19 +27,32 @@ export class Saunas extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<Sauna[]> {
+  public async getItems(): Promise<Sauna[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Sauna> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Sauna> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
-  async setMode(id: string, mode: SaunaWorkingMode): Promise<void> {
-    await this.client.changeRequest(res, id, `${mode}`);
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async setMode(itemId: string, mode: SaunaWorkingMode): Promise<void> {
+    await this.client.changeRequest(res, itemId, `${mode}`);
   }
 }
