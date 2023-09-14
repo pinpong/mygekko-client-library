@@ -1,4 +1,10 @@
-import { LocalClient, LocalClientConfig, RemoteClient, RemoteClientConfig, SystemConfig } from './client';
+import {
+  LocalClient,
+  LocalClientConfig,
+  RemoteClient,
+  RemoteClientConfig,
+  SystemConfig,
+} from './client';
 import * as systemTypes from './systems/types';
 import * as colorUtils from './utils/colorUtils';
 
