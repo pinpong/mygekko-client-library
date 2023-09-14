@@ -1,8 +1,8 @@
-import { Config } from '../client';
+import { SystemConfig } from '../client';
 import { CLIENT_ERROR } from '../errors';
 import { SystemTypes } from '../systems/base/types';
 
-export function throwErrorIfSystemIsNotEnabled(systemConfig: Config, res: SystemTypes): void {
+export function throwErrorIfSystemIsNotEnabled(systemConfig: SystemConfig, res: SystemTypes): void {
   if (systemConfig.valueOf() == 0) {
     throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
   }
@@ -12,7 +12,7 @@ export function throwErrorIfSystemIsNotEnabled(systemConfig: Config, res: System
   }
 }
 
-export function throwErrorIfTrendIsNotAvailable(trendConfig: Config, res: SystemTypes): void {
+export function throwErrorIfTrendIsNotAvailable(trendConfig: SystemConfig, res: SystemTypes): void {
   if (trendConfig.valueOf() == 0) {
     throw new Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
   }
@@ -22,7 +22,7 @@ export function throwErrorIfTrendIsNotAvailable(trendConfig: Config, res: System
 }
 
 export function throwErrorIfItemIdIsNoAvailable(
-  config: Config,
+  config: SystemConfig,
   res: SystemTypes,
   itemId: string
 ): void {
@@ -40,7 +40,7 @@ export function throwErrorIfItemIdIsNoAvailable(
   }
 }
 
-function available(config: Config, res: SystemTypes): boolean {
+function available(config: SystemConfig, res: SystemTypes): boolean {
   const values = res.split('/');
   let s = config;
   for (const i of values) {

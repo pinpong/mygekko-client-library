@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { Logic } from './types';
 const res = SystemTypes.alarmsLogics;
 
 export class Logics extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Logic {
+  private parseItem(config: SystemConfig, status: string, key: string): Logic {
     const values = valuesToStringList(status, key);
 
     return {

@@ -23,7 +23,7 @@ import { Loads } from './systems/loads';
 import { Logics } from './systems/logics';
 import { MultiRooms } from './systems/multiRoom';
 import { Pools } from './systems/pools';
-import { RoomTemperatures } from './systems/roomTemps';
+import { RoomTemperatures } from './systems/roomTemperatures';
 import { Saunas } from './systems/saunas';
 import { SmsEmails } from './systems/smsEmail';
 import { Stoves } from './systems/stoves/stoves';
@@ -38,32 +38,32 @@ type ClientConfig = {
   authQuery: string;
 };
 
-type RemoteConfig = {
+export type RemoteClientConfig = {
   username: string;
   gekkoId: string;
   apiKey: string;
 };
 
-type LocalConfig = {
+export type LocalClientConfig = {
   ip: string;
   username: string;
   password: string;
 };
 
-export type Config = string | { [key in SystemTypes]: Config };
+export type SystemConfig = string | { [key in SystemTypes]: SystemConfig };
 
 export abstract class Client {
   private readonly baseUrl: string;
   private readonly authQueryString: string;
 
-  private _systemConfig: Config = '';
-  private _trendConfig: Config = '';
+  private _systemConfig: SystemConfig = '';
+  private _trendConfig: SystemConfig = '';
 
-  public get systemConfig(): Config {
+  public get systemConfig(): SystemConfig {
     return this._systemConfig;
   }
 
-  public get trendConfig(): Config {
+  public get trendConfig(): SystemConfig {
     return this._trendConfig;
   }
 
@@ -216,7 +216,7 @@ export abstract class Client {
 }
 
 export class RemoteClient extends Client {
-  public constructor(config: RemoteConfig) {
+  public constructor(config: RemoteClientConfig) {
     super({
       baseUrl: 'https://live.my-gekko.com/api/v1',
       authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
@@ -225,7 +225,7 @@ export class RemoteClient extends Client {
 }
 
 export class LocalClient extends Client {
-  public constructor(config: LocalConfig) {
+  public constructor(config: LocalClientConfig) {
     super({
       baseUrl: `http://${config.ip}/api/v1`,
       authQuery: `username=${config.username}&password=${config.password}`,

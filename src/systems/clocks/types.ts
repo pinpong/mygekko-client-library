@@ -2,7 +2,7 @@ import { BaseSystemType } from '../base/types';
 
 export type Clock = BaseSystemType & {
   currentState: ClockState | null;
-  startCondition: StartConditionState | null;
+  startCondition: ClockStartConditionState | null;
 };
 
 export enum ClockState {
@@ -11,7 +11,7 @@ export enum ClockState {
   'onCoincidence' = 2,
 }
 
-export enum StartConditionState {
+export enum ClockStartConditionState {
   'off' = 0,
   'on' = 1,
 }

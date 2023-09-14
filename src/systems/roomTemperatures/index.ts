@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -12,7 +12,7 @@ import {
 const res = SystemTypes.roomTemperatures;
 
 export class RoomTemperatures extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): RoomTemperature {
+  private parseItem(config: SystemConfig, status: string, key: string): RoomTemperature {
     const values = valuesToStringList(status, key);
 
     return {

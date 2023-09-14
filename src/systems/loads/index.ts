@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { Load, LoadState } from './types';
 const res = SystemTypes.loads;
 
 export class Loads extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Load {
+  private parseItem(config: SystemConfig, status: string, key: string): Load {
     const values = valuesToStringList(status, key);
 
     return {

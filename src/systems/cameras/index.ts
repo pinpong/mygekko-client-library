@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { Camera } from './types';
 const res = SystemTypes.cameras;
 
 export class Cameras extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Camera {
+  private parseItem(config: SystemConfig, status: string, key: string): Camera {
     const values = valuesToStringList(status, key);
 
     return {

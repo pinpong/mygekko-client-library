@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { Clock, ClockState } from './types';
 const res = SystemTypes.clocks;
 
 export class Clocks extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Clock {
+  private parseItem(config: SystemConfig, status: string, key: string): Clock {
     const values = valuesToStringList(status, key);
 
     return {

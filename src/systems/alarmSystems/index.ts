@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { AlarmSystem } from './types';
 const res = SystemTypes.alarmSystem;
 
 export class AlarmSystems extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): AlarmSystem {
+  private parseItem(config: SystemConfig, status: string, key: string): AlarmSystem {
     const values = valuesToStringList(status, key);
 
     return {

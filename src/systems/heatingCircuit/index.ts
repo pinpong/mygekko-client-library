@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { HeatingCircuit } from './types';
 const res = SystemTypes.heatingCircuits;
 
 export class HeatingCircuits extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): HeatingCircuit {
+  private parseItem(config: SystemConfig, status: string, key: string): HeatingCircuit {
     const values = valuesToStringList(status, key);
 
     return {

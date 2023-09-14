@@ -1,12 +1,8 @@
-import { LocalClient, RemoteClient } from './client';
-import {decimalToHexColor, hexToDecimal, rgbToDecimal, rgbToHex, tunableWhiteToHex } from './utils/colorUtils';
+import { LocalClient, LocalClientConfig, RemoteClient, RemoteClientConfig } from './client';
+import * as systemTypes from './systems/types';
+import * as colorUtils from './utils/colorUtils';
 
-export {
-    tunableWhiteToHex,
-    rgbToHex,
-    decimalToHexColor,
-    rgbToDecimal,
-    hexToDecimal,
-};
+export { LocalClient, RemoteClient, LocalClientConfig, RemoteClientConfig };
 
-export { LocalClient, RemoteClient };
+export { systemTypes };
+export { colorUtils };

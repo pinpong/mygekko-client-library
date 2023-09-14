@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { Action, ActionState } from './types';
 const res = SystemTypes.actions;
 
 export class Actions extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Action {
+  private parseItem(config: SystemConfig, status: string, key: string): Action {
     const values = valuesToStringList(status, key);
 
     return {

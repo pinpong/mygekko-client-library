@@ -1,4 +1,4 @@
-import { Config } from '../../client';
+import { SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
@@ -8,7 +8,7 @@ import { MultiRoom, MultiRoomState, PlayList } from './types';
 const res = SystemTypes.multiRooms;
 
 export class MultiRooms extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): MultiRoom {
+  private parseItem(config: SystemConfig, status: string, key: string): MultiRoom {
     const values = valuesToStringList(status, key);
 
     return {
