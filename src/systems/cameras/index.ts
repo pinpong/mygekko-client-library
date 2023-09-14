@@ -3,36 +3,31 @@ import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemTypes, Trend } from '../base/types';
-import { Pool } from './types';
+import { Camera } from './types';
 
-const res = SystemTypes.pools;
+const res = SystemTypes.cameras;
 
-export class Pools extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Pool {
+export class Cameras extends BaseSystem {
+  private parseItem(config: Config, status: string, key: string): Camera {
     const values = valuesToStringList(status, key);
 
     return {
-      sumState: tryParseFloat(values[3]),
+      sumState: null,
       itemId: key,
       name: config[key].name,
       page: config[key].page,
-      workingMode: tryParseFloat(values[0]),
-      filteringState: tryParseFloat(values[1]),
-      backwashState: tryParseFloat(values[2]),
-      waterTemperature: tryParseFloat(values[4]),
+      newRecordCount: tryParseFloat(values[0]),
+      imageUrl: config[key]['imagepath'] ?? null,
+      streamUrl: config[key]['streampath'] ?? null,
+      cgiUrl: config[key]['cgipath'] ?? null,
     };
   }
 
-  public async getItems(): Promise<Pool[]> {
+  public async getItems(): Promise<Camera[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
-  }
-
-  public async getItemById(itemId: string): Promise<Pool> {
-    const status = await this.getStatusById(res, itemId);
-    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
@@ -48,9 +43,8 @@ export class Pools extends BaseSystem {
     return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 
-  /// TODO: implement all other function
-
-  public async setTemperatur(itemId: string, temperature: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `T${temperature}`);
+  public async getItemById(itemId: string): Promise<Camera> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 }

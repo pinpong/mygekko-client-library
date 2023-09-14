@@ -1,25 +1,30 @@
-import { BaseSystem } from '../base';
+import { throwErrorIfSystemIsNotEnabled } from '../../utils/errorUtils';
 import { tryParseFloat } from '../../utils/numberUtils';
-import { throwErrorIfSystemIsNotEnabled } from '../../utils/systemCheck';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { GlobalAlarmItem } from './types';
 
-const res = 'globals/alarm';
+const res = SystemTypes.alarm;
 
 export class GlobalAlarm extends BaseSystem {
   private parseItem(status: string): GlobalAlarmItem {
     return {
       sumState: null,
-      id: null,
+      itemId: null,
       name: null,
       page: null,
       state: tryParseFloat(status['sumstate']['value']),
     };
   }
 
-  async get(): Promise<GlobalAlarmItem> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, ['globals', 'alarm']);
+  public async getItem(): Promise<GlobalAlarmItem> {
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
 
     const status = await this.client.systemStatusRequest(res);
     return this.parseItem(status);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
   }
 }

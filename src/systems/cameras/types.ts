@@ -1,6 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
-export type Cam = BaseSystemType & {
+export type Camera = BaseSystemType & {
   newRecordCount: number | null;
   imageUrl: string | null;
   streamUrl: string | null;

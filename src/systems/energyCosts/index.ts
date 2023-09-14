@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
+import { Config } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
 import { EnergyCost } from './types';
 
-const res = 'energycosts';
+const res = SystemTypes.energyCosts;
 
 export class EnergyCosts extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): EnergyCost {
+  private parseItem(config: Config, status: string, key: string): EnergyCost {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[15]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       currentPower: tryParseFloat(values[0]),
       totalEnergyToday: tryParseFloat(values[1]),
       totalEnergyMonth: tryParseFloat(values[2]),
@@ -36,15 +38,28 @@ export class EnergyCosts extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<EnergyCost[]> {
+  public async getItems(): Promise<EnergyCost[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<EnergyCost> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<EnergyCost> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 }

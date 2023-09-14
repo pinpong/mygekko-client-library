@@ -1,15 +1,15 @@
 import { BaseSystemType } from '../base/types';
 
-export type Trend = BaseSystemType & {
-  trendsVariables: TrendVariable[] | null;
+export type Analysis = BaseSystemType & {
+  analysisVariables: AnalysisVariable[] | null;
 };
 
-export enum TrendState {
+export enum AnalysisState {
   'off' = 0,
   'on' = 1,
 }
 
-export enum TrendType {
+export enum AnalysisType {
   'logic' = 0,
   'dIn' = 1,
   'dOut' = 2,
@@ -20,9 +20,9 @@ export enum TrendType {
   'pt1000' = 7,
 }
 
-export type TrendVariable = {
-  currentState: TrendState | null;
-  type: TrendType | null;
+export type AnalysisVariable = {
+  currentState: AnalysisState | null;
+  type: AnalysisType | null;
   name: string | null;
   value: number | null;
   unit: string | null;

@@ -3,34 +3,34 @@ import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemTypes, Trend } from '../base/types';
-import { Pool } from './types';
+import { Stove } from './types';
 
-const res = SystemTypes.pools;
+const res = SystemTypes.stoves;
 
-export class Pools extends BaseSystem {
-  private parseItem(config: Config, status: string, key: string): Pool {
+export class Stoves extends BaseSystem {
+  private parseItem(config: Config, status: string, key: string): Stove {
     const values = valuesToStringList(status, key);
 
     return {
-      sumState: tryParseFloat(values[3]),
+      sumState: tryParseFloat(values[4]),
       itemId: key,
       name: config[key].name,
       page: config[key].page,
-      workingMode: tryParseFloat(values[0]),
-      filteringState: tryParseFloat(values[1]),
-      backwashState: tryParseFloat(values[2]),
-      waterTemperature: tryParseFloat(values[4]),
+      temperature: tryParseFloat(values[0]),
+      flapOpeningLevel: tryParseFloat(values[1]),
+      currentState: tryParseFloat(values[2]),
+      workingState: tryParseFloat(values[3]),
     };
   }
 
-  public async getItems(): Promise<Pool[]> {
+  public async getItems(): Promise<Stove[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  public async getItemById(itemId: string): Promise<Pool> {
+  public async getItemById(itemId: string): Promise<Stove> {
     const status = await this.getStatusById(res, itemId);
     return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
@@ -46,11 +46,5 @@ export class Pools extends BaseSystem {
     count: number
   ): Promise<Trend> {
     return await this.getTrendStatus(res, itemId, startDate, endDate, count);
-  }
-
-  /// TODO: implement all other function
-
-  public async setTemperatur(itemId: string, temperature: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `T${temperature}`);
   }
 }

@@ -10,6 +10,9 @@ export const CLIENT_ERROR = {
   SERVICE_NOT_AVAILABLE: 'request/service-not-available',
   SYSTEM_NOT_INITIALIZED: 'client/client-not-initialized',
   ALREADY_INITIALIZED: 'client/client-already-initialized',
-  SYSTEM_NOT_ENABLED: 'client/system-not-enabled',
+  SYSTEM_NOT_SUPPORTED: 'client/system-not-supported',
+  TREND_NOT_SUPPORTED: 'client/trend-not-supported',
   CANNOT_PARSE_STATUS: 'client/cannot-parse-status',
+  ITEM_ID_NOT_FOUND: 'client/item-id-not-found',
+  UNKNOWN_ERROR: 'client/unknown-error',
 };

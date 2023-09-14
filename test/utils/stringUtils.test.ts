@@ -1,9 +1,9 @@
+import { CLIENT_ERROR } from '../../src/errors';
 import {
   systemFilteredByGroup,
   systemFilteredByItems,
   valuesToStringList,
 } from '../../src/utils/stringUtils';
-import { CLIENT_ERROR } from '../../src/errors';
 
 test('valuesToStringList', () => {
   expect(valuesToStringList(JSON.parse('{"sumstate":{"value":"0;0;3;kW;10.001;"}}'), null)).toEqual(

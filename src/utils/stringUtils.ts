@@ -12,10 +12,10 @@ export function valuesToStringList(values: string, key: string | null): string[]
   }
 }
 
-export function systemFilteredByItems(system: string): string[] {
-  return Object.keys(system).filter((key) => key.includes('item'));
+export function systemFilteredByItems(systemConfig: string): string[] {
+  return Object.keys(systemConfig).filter((key) => key.includes('item'));
 }
 
-export function systemFilteredByGroup(system: string): string[] {
-  return Object.keys(system).filter((key) => key.includes('group'));
+export function systemFilteredByGroup(systemConfig: string): string[] {
+  return Object.keys(systemConfig).filter((key) => key.includes('group'));
 }

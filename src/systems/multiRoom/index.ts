@@ -1,19 +1,21 @@
-import { BaseSystem } from '../base';
-import { MultiRoom, MultiRoomState, PlayList } from './types';
+import { Config } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
+import { MultiRoom, MultiRoomState, PlayList } from './types';
 
-const res = 'multirooms';
+const res = SystemTypes.multiRooms;
 
 export class MultiRooms extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): MultiRoom {
+  private parseItem(config: Config, status: string, key: string): MultiRoom {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: null,
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
       currentState: tryParseFloat(values[0]),
       currentVolume: tryParseFloat(values[1]),
       currentPlayingTime: tryParseFloat(values[2]),
@@ -35,19 +37,32 @@ export class MultiRooms extends BaseSystem {
     return items;
   }
 
-  async getAll(): Promise<MultiRoom[]> {
+  public async getItems(): Promise<MultiRoom[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<MultiRoom> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<MultiRoom> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
-  async setState(id: string, state: MultiRoomState): Promise<void> {
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+  }
+
+  public async setState(itemId: string, state: MultiRoomState): Promise<void> {
     let value = 'STOP';
     switch (state) {
       case MultiRoomState.off:
@@ -57,22 +72,22 @@ export class MultiRooms extends BaseSystem {
         value = 'PLAY';
         break;
     }
-    await this.client.changeRequest(res, id, `${value}`);
+    await this.client.changeRequest(res, itemId, `${value}`);
   }
 
-  async setVolume(id: string, volume: number): Promise<void> {
-    await this.client.changeRequest(res, id, `V${volume}`);
+  public async setVolume(itemId: string, volume: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `V${volume}`);
   }
 
-  async setPreviousSong(id: string): Promise<void> {
-    await this.client.changeRequest(res, id, `N-1`);
+  public async setPreviousSong(itemId: string): Promise<void> {
+    await this.client.changeRequest(res, itemId, `N-1`);
   }
 
-  async setNextSong(id: string): Promise<void> {
-    await this.client.changeRequest(res, id, `N+1`);
+  public async setNextSong(itemId: string): Promise<void> {
+    await this.client.changeRequest(res, itemId, `N+1`);
   }
 
-  async setPlayList(id: string, playListIndex: number): Promise<void> {
-    await this.client.changeRequest(res, id, `C${playListIndex}`);
+  public async setPlayList(itemId: string, playListIndex: number): Promise<void> {
+    await this.client.changeRequest(res, itemId, `C${playListIndex}`);
   }
 }

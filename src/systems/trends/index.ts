@@ -1,20 +1,22 @@
-import { BaseSystem } from '../base';
+import { Config } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
-import { Trend } from './types';
+import { BaseSystem } from '../base';
+import { SystemTypes, Trend } from '../base/types';
+import { Analysis } from './types';
 
-const res = 'trends';
+const res = SystemTypes.analyses;
 
-export class Trends extends BaseSystem {
-  private parseItem(system: string, status: string, key: string): Trend {
+export class Analyses extends BaseSystem {
+  private parseItem(config: Config, status: string, key: string): Analysis {
     const values = valuesToStringList(status, key);
 
     return {
       sumState: tryParseFloat(values[20]),
-      id: key,
-      name: system[key].name,
-      page: system[key].page,
-      trendsVariables: [
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page,
+      analysisVariables: [
         {
           currentState: tryParseFloat(values[0]),
           type: tryParseFloat(values[1]),
@@ -47,15 +49,28 @@ export class Trends extends BaseSystem {
     };
   }
 
-  async getAll(): Promise<Trend[]> {
+  public async getItems(): Promise<Analysis[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
       return this.parseItem(this.client.systemConfig[res], status, key);
     });
   }
 
-  async getById(id: string): Promise<Trend> {
-    const status = await this.getStatusById(res, id);
-    return this.parseItem(this.client.systemConfig[res], status, id);
+  public async getItemById(itemId: string): Promise<Analysis> {
+    const status = await this.getStatusById(res, itemId);
+    return this.parseItem(this.client.systemConfig[res], status, itemId);
+  }
+
+  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
+    return await this.getTrendsStatus(res, startDate, endDate, count);
+  }
+
+  public async getTrendByItemId(
+    itemId: string,
+    startDate: string,
+    endDate: string,
+    count: number
+  ): Promise<Trend> {
+    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
   }
 }

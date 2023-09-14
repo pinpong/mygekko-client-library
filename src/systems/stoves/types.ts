@@ -1,13 +1,13 @@
 import { BaseSystemType } from '../base/types';
 
-export type Fireplace = BaseSystemType & {
+export type Stove = BaseSystemType & {
   temperature: number | null;
   flapOpeningLevel: number | null;
-  currentState: FireplaceState | null;
-  workingState: FireplaceWorkingState | null;
+  currentState: StovesState | null;
+  workingState: StoveWorkingState | null;
 };
 
-export enum FireplaceState {
+export enum StovesState {
   'stoveIdle' = 0,
   'closeDoor' = 5,
   'enkindleRecognized' = 7,
@@ -16,7 +16,7 @@ export enum FireplaceState {
   'stoveCooledOff' = 13,
 }
 
-export enum FireplaceWorkingState {
+export enum StoveWorkingState {
   'idle' = 0,
   'active' = 1,
 }
