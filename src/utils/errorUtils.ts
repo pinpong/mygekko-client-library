@@ -1,8 +1,13 @@
 import { SystemConfig } from '../client';
 import { CLIENT_ERROR } from '../errors';
-import { SystemTypes } from '../systems/base/types';
+import { SystemType } from '../systems/base/types';
 
-export function throwErrorIfSystemIsNotEnabled(systemConfig: SystemConfig, res: SystemTypes): void {
+/**
+ * Throws error if system is not enabled
+ * @param {SystemConfig} systemConfig  the config of myGEKKO device.
+ * @param {SystemType} res the system type
+ */
+export function throwErrorIfSystemIsNotEnabled(systemConfig: SystemConfig, res: SystemType): void {
   if (systemConfig.valueOf() == 0) {
     throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
   }
@@ -12,7 +17,13 @@ export function throwErrorIfSystemIsNotEnabled(systemConfig: SystemConfig, res: 
   }
 }
 
-export function throwErrorIfTrendIsNotAvailable(trendConfig: SystemConfig, res: SystemTypes): void {
+/**
+ * Throws error if trend is not enabled
+ * @param {SystemConfig} trendConfig the config of myGEKKO device.
+ * @param {SystemType} res the system type
+ * @throws
+ */
+export function throwErrorIfTrendIsNotEnabled(trendConfig: SystemConfig, res: SystemType): void {
   if (trendConfig.valueOf() == 0) {
     throw new Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
   }
@@ -21,9 +32,16 @@ export function throwErrorIfTrendIsNotAvailable(trendConfig: SystemConfig, res: 
   }
 }
 
-export function throwErrorIfItemIdIsNoAvailable(
+/**
+ * Throws error if itemId is not found
+ * @param {SystemConfig} config  the config of myGEKKO device.
+ * @param {SystemType} res the system type.
+ * @param {string} itemId  the item id.
+ * @throws
+ */
+export function throwErrorIfItemIdIsNoFound(
   config: SystemConfig,
-  res: SystemTypes,
+  res: SystemType,
   itemId: string
 ): void {
   const values = res.split('/');
@@ -40,7 +58,13 @@ export function throwErrorIfItemIdIsNoAvailable(
   }
 }
 
-function available(config: SystemConfig, res: SystemTypes): boolean {
+/**
+ * Checks if config includes system type
+ * @param {SystemConfig} config the config of myGEKKO device.
+ * @param {SystemType} res the system type.
+ * @returns {boolean} true if available otherwise false
+ */
+function available(config: SystemConfig, res: SystemType): boolean {
   const values = res.split('/');
   let s = config;
   for (const i of values) {

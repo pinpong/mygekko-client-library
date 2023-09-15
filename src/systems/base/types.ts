@@ -1,10 +1,16 @@
+/** The system base */
 export type BaseSystemType = {
+  /** The item id */
   itemId: string | null;
+  /** The item name */
   name: string | null;
+  /** The item page */
   page: string | null;
+  /** The item sumstate */
   sumState: SumState | null;
 };
 
+/** The system sum states */
 export enum SumState {
   'ok' = 0,
   'manualOf' = 1,
@@ -13,7 +19,8 @@ export enum SumState {
   'alarm' = 4,
 }
 
-export enum SystemTypes {
+/** The supported systems */
+export enum SystemType {
   'globals' = 'globals',
   'weather' = 'globals/meteo',
   'network' = 'globals/network',
@@ -46,18 +53,30 @@ export enum SystemTypes {
   'stoves' = 'stoves',
 }
 
+/** The trend */
 export type Trend = {
+  /** The trend item id */
   itemId: string | null;
+  /** The trend name */
   name: string | null;
+  /** The trends */
   trends: TrendItem[] | null;
 };
 
+/** The trend item */
 export type TrendItem = {
+  /** The trend id */
   trendId: string | null;
+  /** The trend item description */
   description: string | null;
+  /** The trend item unit */
   unit: string | null;
+  /** The trend data */
   data: number[] | null;
+  /** The trend data count */
   dataCount: number | null;
+  /** The trend start date */
   startDate: string;
+  /** The trend end date */
   endDate: string;
 };

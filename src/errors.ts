@@ -1,3 +1,6 @@
+/**
+ * A list of all possible errors
+ */
 export const CLIENT_ERROR = {
   BAD_LOGIN: 'auth/bad-login',
   PERMISSION_DENIED: 'auth/permission-denied',
