@@ -24,7 +24,7 @@ export * from './roomTemperatures/types';
 export * from './saunas/types';
 export * from './smsEmail/types';
 export * from './stoves/types';
-export * from './trends/types';
+export * from './analyses/types';
 export * from './vents/types';
 export * from './wallBoxes/types';
 export * from './weather/types';

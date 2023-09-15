@@ -1,17 +1,18 @@
-/* eslint-env node */
+/** @type {import("eslint")} */
 module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:import/errors',
+    'plugin:jsdoc/recommended',
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   root: true,
-  ignorePatterns: ['dist/*', '*.test.ts'],
   env: {
     es6: true,
+    jest: true,
   },
   settings: {
     'import/resolver': {
@@ -32,5 +33,7 @@ module.exports = {
         alphabetize: { order: 'asc', caseInsensitive: true },
       },
     ],
+    'import/no-unresolved': ['error'],
+    'no-undef': ['error'],
   },
 };

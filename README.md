@@ -28,6 +28,12 @@ try {
   const blinds = client.blinds.getAll();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
+  const blindsTrends = client.blinds.getTrends(
+    '2023-01-01T00:00:00+01:00',
+    '2023-01-06T00:00:00+01:00',
+    500
+  );
+  console.log(blindsTrends);
 } catch (e) {
   console.log(e);
 }
@@ -48,7 +54,23 @@ try {
   const blinds = client.blinds.getAll();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
+  const blindsTrends = client.blinds.getTrends(
+    '2023-01-01T00:00:00+01:00',
+    '2023-01-06T00:00:00+01:00',
+    500
+  );
+  console.log(blindsTrends);
 } catch (e) {
   console.log(e);
 }
+```
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests.
+
+```sh
+yarn install && yarn prepare
 ```

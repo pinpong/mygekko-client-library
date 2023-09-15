@@ -1,35 +1,64 @@
-import { Client } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemStatusResponse } from '../../client';
 import {
-  throwErrorIfItemIdIsNoAvailable,
+  throwErrorIfItemIdIsNoFound,
   throwErrorIfSystemIsNotEnabled,
-  throwErrorIfTrendIsNotAvailable,
+  throwErrorIfTrendIsNotEnabled,
 } from '../../utils/errorUtils';
-import { SystemTypes, Trend, TrendItem } from './types';
+import { SystemType, Trend, TrendItem } from './types';
 
 export class BaseSystem {
-  protected readonly client: Client;
+  /** The client instance */
+  protected readonly client: LocalClient | RemoteClient;
 
-  public constructor(client: Client) {
+  /**
+   * The base system constructor.
+   * @param {LocalClient | RemoteClient} client the client.
+   */
+  public constructor(client: LocalClient | RemoteClient) {
     this.client = client;
   }
 
-  protected async getCompleteStatus(res: SystemTypes): Promise<string> {
+  /**
+   * Return the complete status by system.
+   * @param {SystemType} res the system type
+   * @returns {string} the response
+   * @throws {Error}
+   */
+  protected async getCompleteStatus(res: SystemType): Promise<SystemStatusResponse> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
 
     return await this.client.systemStatusRequest(res);
   }
 
-  protected async getStatusById(res: SystemTypes, itemId: string): Promise<string> {
+  /**
+   * Return the status by system and item id.
+   * @param {SystemType} res the system type
+   * @param {string} itemId the item id
+   * @returns {string} the response
+   * @throws {Error}
+   */
+  protected async getStatusById(res: SystemType, itemId: string): Promise<ItemStatusResponse> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
-    throwErrorIfItemIdIsNoAvailable(this.client.trendConfig, res, itemId);
+    throwErrorIfItemIdIsNoFound(this.client.trendConfig, res, itemId);
 
     return await this.client.itemStatusRequest(res, itemId);
   }
 
+  /**
+   * Return a parsed trend.
+   * @param {SystemType} res the system type
+   * @param {string} item the item
+   * @param {string} itemId the item id
+   * @param {string} startDate the start date as date string
+   * @param {string} endDate the start date as date string
+   * @param {number} count  the data count
+   * @returns {Promise<Trend>} the response
+   * @throws {Error}
+   */
   private async parseItemTrend(
-    res: SystemTypes,
+    res: SystemType,
     item: string,
-    key: string,
+    itemId: string,
     startDate: string,
     endDate: string,
     count: number
@@ -37,32 +66,48 @@ export class BaseSystem {
     const trendItems: TrendItem[] = [];
 
     for (const trendId of Object.keys(item['trends'])) {
-      const response = await this.client.getTrend(res, trendId, startDate, endDate, count);
+      const response = await this.client.getTrendByItemId(
+        res,
+        itemId,
+        trendId,
+        startDate,
+        endDate,
+        count
+      );
 
       trendItems.push({
         trendId: trendId,
-        data: response['trendData'],
-        dataCount: response['datacount'],
-        description: item['description'],
+        data: response.trendData,
+        dataCount: response.datacount,
+        description: item['trends'][trendId]['description'],
         endDate: endDate,
         startDate: startDate,
-        unit: response['unit'],
+        unit: item['trends'][trendId]['unit'],
       });
     }
     return {
-      itemId: key,
+      itemId: itemId,
       name: item['name'],
       trends: trendItems,
     };
   }
 
-  protected async getTrendsStatus(
-    res: SystemTypes,
+  /**
+   * Return parsed trends.
+   * @param {SystemType} res the system type
+   * @param {string} startDate the start date as date string
+   * @param {string} endDate the start date as date string
+   * @param {number} count  the data count
+   * @returns {Promise<Trend[]>} the response
+   * @throws {Error}
+   */
+  protected async getTrendsStatuses(
+    res: SystemType,
     startDate: string,
     endDate: string,
     count: number
   ): Promise<Trend[]> {
-    throwErrorIfTrendIsNotAvailable(this.client.trendConfig, res);
+    throwErrorIfTrendIsNotEnabled(this.client.trendConfig, res);
 
     const items: Trend[] = [];
     for (const key of Object.keys(this.client.trendConfig[res])) {
@@ -80,15 +125,25 @@ export class BaseSystem {
     return items;
   }
 
+  /**
+   * Return a parsed trend item.
+   * @param {SystemType} res the system type
+   * @param {string} itemId the item id
+   * @param {string} startDate the start date as date string
+   * @param {string} endDate the start date as date string
+   * @param {number} count  the data count
+   * @returns {string} the response
+   * @throws {Error}
+   */
   protected async getTrendStatus(
-    res: SystemTypes,
+    res: SystemType,
     itemId: string,
     startDate: string,
     endDate: string,
     count: number
   ): Promise<Trend> {
-    throwErrorIfTrendIsNotAvailable(this.client.trendConfig, res);
-    throwErrorIfItemIdIsNoAvailable(this.client.trendConfig, res, itemId);
+    throwErrorIfTrendIsNotEnabled(this.client.trendConfig, res);
+    throwErrorIfItemIdIsNoFound(this.client.trendConfig, res, itemId);
 
     return await this.parseItemTrend(
       res,

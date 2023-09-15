@@ -1,13 +1,19 @@
+import { SystemStatusResponse } from '../../client';
 import { throwErrorIfSystemIsNotEnabled } from '../../utils/errorUtils';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { BaseSystem } from '../base';
-import { SystemTypes, Trend } from '../base/types';
+import { SystemType, Trend } from '../base/types';
 import { GlobalAlarmItem } from './types';
 
-const res = SystemTypes.alarm;
+const res = SystemType.alarm;
 
 export class GlobalAlarm extends BaseSystem {
-  private parseItem(status: string): GlobalAlarmItem {
+  /**
+   * Parses the item
+   * @param {string} status the response from the status request
+   * @returns {GlobalAlarmItem} a parsed item
+   */
+  private parseItem(status: SystemStatusResponse): GlobalAlarmItem {
     return {
       sumState: null,
       itemId: null,
@@ -17,6 +23,11 @@ export class GlobalAlarm extends BaseSystem {
     };
   }
 
+  /**
+   * Returns the  item.
+   * @returns {Promise<GlobalAlarmItem>} a item
+   * @throws {Error}
+   */
   public async getItem(): Promise<GlobalAlarmItem> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
 
@@ -24,7 +35,15 @@ export class GlobalAlarm extends BaseSystem {
     return this.parseItem(status);
   }
 
+  /**
+   * Returns all trends.
+   * @param {string} startDate the start date as date string
+   * @param {string} endDate the start date as date string
+   * @param {number} count  the data count
+   * @returns {Promise<Trend>} a trend
+   * @throws {Error}
+   */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatus(res, startDate, endDate, count);
+    return await this.getTrendsStatuses(res, startDate, endDate, count);
   }
 }

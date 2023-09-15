@@ -1,21 +1,33 @@
+import { ItemStatusResponse, SystemConfig } from '../client';
 import { CLIENT_ERROR } from '../errors';
 
-export function valuesToStringList(values: string, key: string | null): string[] {
+/**
+ * Converts string to list of strings
+ * @param {string} values the string.
+ * @returns {string[]} a list of values
+ */
+export function valuesToStringList(values: ItemStatusResponse): string[] {
   try {
-    if (key && values[key]) {
-      return (values[key]['sumstate']['value'] as string).slice(0, -1).split(';');
-    } else {
-      return (values['sumstate']['value'] as string).slice(0, -1).split(';');
-    }
+    return values.sumstate.value.slice(0, -1).split(';');
   } catch (e) {
     throw new Error(CLIENT_ERROR.CANNOT_PARSE_STATUS);
   }
 }
 
-export function systemFilteredByItems(systemConfig: string): string[] {
+/**
+ * Filters system config by items
+ * @param {SystemConfig} systemConfig  the myGEKKO device system config.
+ * @returns {string[]} a filtered list of items
+ */
+export function systemFilteredByItems(systemConfig: SystemConfig): string[] {
   return Object.keys(systemConfig).filter((key) => key.includes('item'));
 }
 
-export function systemFilteredByGroup(systemConfig: string): string[] {
+/**
+ * Filters system config by groups
+ * @param {SystemConfig} systemConfig  the myGEKKO device system config.
+ * @returns {string[]} a filtered list of groups
+ */
+export function systemFilteredByGroup(systemConfig: SystemConfig): string[] {
   return Object.keys(systemConfig).filter((key) => key.includes('group'));
 }

@@ -1,21 +1,32 @@
-import { SystemConfig } from '../../client';
+import { ItemStatusResponse, SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
 import { BaseSystem } from '../base';
-import { SystemTypes, Trend } from '../base/types';
+import { SystemType, Trend } from '../base/types';
 import { AirConditioner, AirConditionerState, AirConditionerWorkingMode } from './types';
 
-const res = SystemTypes.airConditioner;
+const res = SystemType.airConditioner;
 
 export class AirConditioners extends BaseSystem {
-  private parseItem(config: SystemConfig, status: string, key: string): AirConditioner {
-    const values = valuesToStringList(status, key);
+  /**
+   * Parses the item
+   * @param {SystemConfig} config  the myGEKKO device configuration
+   * @param {string} status the response from the status request
+   * @param {string} itemId  the item id
+   * @returns {AirConditioner} a parsed item
+   */
+  private parseItem(
+    config: SystemConfig,
+    status: ItemStatusResponse,
+    itemId: string
+  ): AirConditioner {
+    const values = valuesToStringList(status);
 
     return {
       sumState: tryParseFloat(values[25]),
-      itemId: key,
-      name: config[key].name,
-      page: config[key].page,
+      itemId: itemId,
+      name: config[itemId].name,
+      page: config[itemId].page,
       supplyAirTemperature: tryParseFloat(values[0]),
       supplyAirTemperatureSetPoint: tryParseFloat(values[1]),
       exhaustAirTemperature: tryParseFloat(values[2]),
@@ -28,10 +39,10 @@ export class AirConditioners extends BaseSystem {
       exhaustRelativeHumiditySetPointLevel: tryParseFloat(values[9]),
       airQualityLevel: tryParseFloat(values[10]),
       airQualitySetPointLevel: tryParseFloat(values[11]),
-      supplyPressureValue: tryParseFloat(values[12]),
-      supplyPressureSetPointValue: tryParseFloat(values[13]),
-      exhaustPressureValue: tryParseFloat(values[14]),
-      exhaustPressureSetPointValue: tryParseFloat(values[15]),
+      supplyPressure: tryParseFloat(values[12]),
+      supplyPressureSetPoint: tryParseFloat(values[13]),
+      exhaustPressure: tryParseFloat(values[14]),
+      exhaustPressureSetPoint: tryParseFloat(values[15]),
       workingLevelSetPointLevel: tryParseFloat(values[16]),
       supplyState: tryParseFloat(values[17]),
       supplyWorkingLevel: tryParseFloat(values[18]),
@@ -44,42 +55,97 @@ export class AirConditioners extends BaseSystem {
     };
   }
 
+  /**
+   * Returns all items.
+   * @returns {Promise<AirConditioner[]>} a item
+   * @throws {Error}
+   */
   public async getItems(): Promise<AirConditioner[]> {
     const status = await this.getCompleteStatus(res);
     return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
-      return this.parseItem(this.client.systemConfig[res], status, key);
+      return this.parseItem(this.client.systemConfig[res], status[key], key);
     });
   }
 
+  /**
+   * Returns a single item by id.
+   * @param {string} itemId  the item id
+   * @returns {Promise<AirConditioner>} a item
+   * @throws {Error}
+   */
   public async getItemById(itemId: string): Promise<AirConditioner> {
     const status = await this.getStatusById(res, itemId);
     return this.parseItem(this.client.systemConfig[res], status, itemId);
   }
 
+  /**
+   * Returns all trends.
+   * @param {string} startDate the start date as date string
+   * @param {string} endDate the start date as date string
+   * @param {number} count  the data count
+   * @returns {Promise<Trend>} a trend
+   * @throws {Error}
+   */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatus(res, startDate, endDate, count);
+    return await this.getTrendsStatuses(res, startDate, endDate, count);
   }
 
+  /**
+   * Sets the state.
+   * @param {string} itemId  the item id
+   * @param {AirConditionerState} state the new state
+   * @throws {Error}
+   */
   public async setState(itemId: string, state: AirConditionerState): Promise<void> {
     await this.client.changeRequest(res, itemId, `${state}`);
   }
 
+  /**
+   * Sets the mode.
+   * @param {string} itemId  the item id
+   * @param {AirConditionerWorkingMode} mode the new mode
+   * @throws {Error}
+   */
   public async setMode(itemId: string, mode: AirConditionerWorkingMode): Promise<void> {
     await this.client.changeRequest(res, itemId, `M${mode}`);
   }
 
+  /**
+   * Sets the power.
+   * @param {string} itemId  the item id
+   * @param {number} power the new power
+   * @throws {Error}
+   */
   public async setPower(itemId: string, power: number): Promise<void> {
     await this.client.changeRequest(res, itemId, `P${power}`);
   }
 
+  /**
+   * Sets the min flap.
+   * @param {string} itemId  the item id
+   * @param {number} flaps the new min flaps
+   * @throws {Error}
+   */
   public async setMinFlap(itemId: string, flaps: number): Promise<void> {
     await this.client.changeRequest(res, itemId, `F${flaps}`);
   }
 
+  /**
+   * Sets the air quality.
+   * @param {string} itemId  the item id
+   * @param {number} airQuality the new air quality
+   * @throws {Error}
+   */
   public async setAirQuality(itemId: string, airQuality: number): Promise<void> {
     await this.client.changeRequest(res, itemId, `Q${airQuality}`);
   }
 
+  /**
+   * Sets the humidity.
+   * @param {string} itemId  the item id
+   * @param {number} humidity the new humidity
+   * @throws {Error}
+   */
   public async setHumidity(itemId: string, humidity: number): Promise<void> {
     await this.client.changeRequest(res, itemId, `H${humidity}`);
   }

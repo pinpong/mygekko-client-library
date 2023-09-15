@@ -11,5 +11,5 @@
     "ignoreDeprecations": "5.0"
   },
   "include": ["./src/**/*"],
-  "exclude": ["./test/**/*"]
+  "exclude": ["./test/**/*", "./docs/**/*", "./dist/**/*"]
 }
