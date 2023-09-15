@@ -1,4 +1,5 @@
-const config = {
+/** @type {import("typedoc")} */
+module.exports = {
   entryPoints: ['src/index.ts'],
   excludePrivate: false,
   excludeProtected: false,
@@ -19,5 +20,3 @@ const config = {
   ],
   internalModule: 'systems',
 };
-
-module.exports = config;

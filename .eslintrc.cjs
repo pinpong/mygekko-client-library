@@ -1,4 +1,4 @@
-/* eslint-env node */
+/** @type {import("eslint")} */
 module.exports = {
   extends: [
     'eslint:recommended',

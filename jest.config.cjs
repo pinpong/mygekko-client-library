@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   verbose: true,
@@ -9,5 +9,3 @@ const config = {
     '^.+\\.mjs$': 'babel-jest',
   },
 };
-
-module.exports = config;

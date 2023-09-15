@@ -17,11 +17,13 @@
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
   "scripts": {
+    "postinstall": "husky install",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable",
     "build": "rm -rf ./dist && tsc",
     "test": "jest",
     "format": "yarn prettier . --write",
-    "lint": "eslint .",
-    "prepare": "husky install"
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
@@ -35,6 +37,8 @@
     "eslint-plugin-jsdoc": "46.8.0",
     "husky": "8.0.3",
     "jest": "29.7.0",
+    "lint-staged": "14.0.1",
+    "pinst": "3.0.0",
     "prettier": "3.0.3",
     "ts-jest": "29.1.1",
     "typedoc": "0.25.1",

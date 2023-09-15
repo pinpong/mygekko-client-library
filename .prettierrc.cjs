@@ -1,5 +1,5 @@
-/** @type {import("prettier").Config} */
-const config = {
+/** @type {import("prettier")} */
+module.exports = {
   trailingComma: 'es5',
   semi: true,
   singleQuote: true,
@@ -10,5 +10,3 @@ const config = {
   importOrderSortSpecifiers: true,
   importOrderCaseInsensitive: true,
 };
-
-module.exports = config;
