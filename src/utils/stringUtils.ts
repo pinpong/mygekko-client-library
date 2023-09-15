@@ -8,7 +8,7 @@ import { CLIENT_ERROR } from '../errors';
  */
 export function valuesToStringList(values: ItemStatusResponse): string[] {
   try {
-    return (values['sumstate']['value'] as string).slice(0, -1).split(';');
+    return values.sumstate.value.slice(0, -1).split(';');
   } catch (e) {
     throw new Error(CLIENT_ERROR.CANNOT_PARSE_STATUS);
   }
