@@ -1,4 +1,4 @@
-name: Check code
+name: Check code quality
 on:
   push:
     branches: ['dev', 'main']
