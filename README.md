@@ -5,6 +5,10 @@
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/code_check)
 
+## Documentation
+
+For more detailed documentation see [docs](https://pinpong.github.io/mygekko-client-library)
+
 ## Installation
 
 ```sh
