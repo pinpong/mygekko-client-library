@@ -20,7 +20,7 @@ export type WallBox = BaseSystemType & {
   chargeUserName: string | null;
   /** The charging duration time as hh:mm:ss */
   chargeDurationTime: number | null;
-  /** The current charging energy as 0-... Kilowatt hour */
+  /** The current charging energy as 0-... kilowatt-hour */
   currentChargingEnergy: number | null;
   /** The charging start time as hh:mm:ss */
   chargeStartTime: string | null;

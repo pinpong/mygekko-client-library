@@ -126,7 +126,7 @@ export class Vents extends BaseSystem {
   }
 
   /**
-   * Sets the vent lelve.
+   * Sets the vent level.
    * @param itemId - The item id.
    * @param ventLevel - The new vent level.
    */

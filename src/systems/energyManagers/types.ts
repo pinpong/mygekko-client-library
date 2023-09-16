@@ -44,13 +44,13 @@ export type EnergyManager = BaseSystemType & {
   batterySoCLevel: number | null;
   /** The ems enabled state */
   emsEnabledState: EMSEnabledState | null;
-  /** The maximum power consumption from net as kilo watt */
+  /** The maximum power consumption from net as kilowatt */
   maximumPowerConsumptionFromNet: number | null;
-  /** The maximum power exported to net as kilo watt */
+  /** The maximum power exported to net as kilowatt */
   maximumPowerExportToNet: number | null;
-  /** The maximum solar panels power as kilo watt */
+  /** The maximum solar panels power as kilowatt */
   maximumPowerSolarPanels: number | null;
-  /** The maximum battery power as kilo watt */
+  /** The maximum battery power as kilowatt */
   maximumPowerBattery: number | null;
 };
 
