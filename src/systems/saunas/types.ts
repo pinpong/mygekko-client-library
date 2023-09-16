@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type Sauna = BaseSystemType & {
   /** The current working mode */
   workingMode: SaunaWorkingMode | null;
@@ -19,20 +20,29 @@ export type Sauna = BaseSystemType & {
   roomRelativeHumiditySetPointLevel: number | null;
 };
 
-/** The sauna working modes */
+/**
+ * The sauna working modes.
+ * @group Systems
+ */
 export enum SaunaWorkingMode {
   'off' = 0,
   'onOrFinished' = 1,
   'bio' = 2,
 }
 
-/** The sauna states */
+/**
+ * The sauna states.
+ * @group Systems
+ */
 export enum SaunaState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The sauna error states */
+/**
+ * The sauna error states.
+ * @group Systems
+ */
 export enum SaunaErrorState {
   'noError' = 0,
   'error' = 1,

@@ -1,37 +1,39 @@
 import axios, { isAxiosError } from 'axios';
 
-import { CLIENT_ERROR } from './errors';
-import { Accesses } from './systems/accesses';
-import { Actions } from './systems/actions';
-import { AirConditioners } from './systems/airConditioners';
-import { AlarmSystems } from './systems/alarmSystems';
-import { Analyses } from './systems/analyses';
+import { CLIENT_ERROR_MESSAGES, ClientError } from './errors';
+import {
+  Accesses,
+  Actions,
+  AirConditioners,
+  AlarmSystems,
+  Analyses,
+  Blinds,
+  Cameras,
+  Clocks,
+  ControlCircuits,
+  EnergyCosts,
+  EnergyManagers,
+  GekkoInfo,
+  GlobalAlarm,
+  HeatingCircuits,
+  HeatingSystems,
+  HotWaterCirculations,
+  HotWaterSystems,
+  Lights,
+  Loads,
+  Logics,
+  MultiRooms,
+  Pools,
+  RoomTemperatures,
+  Saunas,
+  SmsEmails,
+  Stoves,
+  Vents,
+  WallBoxes,
+  Weather,
+} from './systems';
 import { SystemType } from './systems/base/types';
-import { Blinds } from './systems/blinds';
-import { Cameras } from './systems/cameras';
-import { Clocks } from './systems/clocks';
-import { ControlCircuits } from './systems/controlCircuits';
-import { EnergyCosts } from './systems/energyCosts';
-import { EnergyManagers } from './systems/energyManagers';
-import { GekkoInfo } from './systems/gekkoInfo';
-import { GlobalAlarm } from './systems/globalAlarm';
-import { HeatingCircuits } from './systems/heatingCircuit';
-import { HeatingSystems } from './systems/heatingSystem';
-import { HotWaterCirculations } from './systems/hotWaterCirculation';
-import { HotWaterSystems } from './systems/hotWaterSystems';
-import { Lights } from './systems/lights';
-import { Loads } from './systems/loads';
-import { Logics } from './systems/logics';
-import { MultiRooms } from './systems/multiRoom';
-import { Pools } from './systems/pools';
-import { RoomTemperatures } from './systems/roomTemperatures';
-import { Saunas } from './systems/saunas';
-import { SmsEmails } from './systems/smsEmail';
-import { Stoves } from './systems/stoves/stoves';
-import { Vents } from './systems/vents';
-import { WallBoxes } from './systems/wallBoxes';
-import { Weather } from './systems/weather';
-import { throwErrorIfTrendIsNotEnabled } from './utils/errorUtils';
+import { throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
 
 /** The client configuration */
 type ClientConfig = {
@@ -41,7 +43,10 @@ type ClientConfig = {
   authQuery: string;
 };
 
-/** The remote client configuration */
+/**
+ * The remote client configuration.
+ *  @group Client
+ */
 export type RemoteClientConfig = {
   /** The myGEKKO account username */
   username: string;
@@ -51,7 +56,10 @@ export type RemoteClientConfig = {
   apiKey: string;
 };
 
-/** The local client configuration */
+/**
+ * The local client configuration.
+ *  @group Client
+ */
 export type LocalClientConfig = {
   /** The myGEKKO device ip */
   ip: string;
@@ -61,20 +69,35 @@ export type LocalClientConfig = {
   password: string;
 };
 
-/** The system Configuration of myGEKKO device. */
+/**
+ * The system Configuration of myGEKKO device.
+ *  @group Client
+ */
 export type SystemConfig = string | { [key in SystemType]: SystemConfig };
 
-/** The system status response. */
+/**
+ * The system status response.
+ *  @group Client
+ */
 export type SystemStatusResponse = { [itemId: string]: ItemStatusResponse };
 
-/** The system item status response. */
+/**
+ * The system item status response.
+ * @group Client
+ */
 export type ItemStatusResponse = {
+  /**
+   *
+   */
   sumstate: {
     value: string;
   };
 };
 
-/** The trend item */
+/**
+ * The trend item.
+ * @group Client
+ */
 export type TrendItemResponse = {
   /** The return value */
   returnValue: number | null;
@@ -109,16 +132,14 @@ export abstract class Client {
   private _trendConfig: SystemConfig = '';
 
   /**
-   * The myGEKKO device system configuration
-   * @returns {SystemConfig} the myGEKKO device system configuration
+   * The myGEKKO device system configuration.
    */
   public get systemConfig(): SystemConfig {
     return this._systemConfig;
   }
 
   /**
-   * The myGEKKO device trend configuration
-   * @returns {SystemConfig} the myGEKKO device trend configuration
+   * The myGEKKO device trend configuration.
    */
   public get trendConfig(): SystemConfig {
     return this._trendConfig;
@@ -184,49 +205,54 @@ export abstract class Client {
   public readonly weather: Weather = new Weather(this);
 
   /**
-   * The constructor of Client
-   * @param {SystemConfig} config  myGEKKO device configuration
+   * The constructor of Client.
+   * @param config - MyGEKKO device configuration.
    */
   protected constructor(config: ClientConfig) {
     this.baseUrl = config.baseUrl;
     this.authQueryString = config.authQuery;
   }
 
-  /** Initialize the client and load the system and trend configurations */
+  /**
+   * Initialize the client and load the system and trend configurations.
+   * @throws {@link ClientError}
+   */
   public async initialize(): Promise<void> {
     if (this.systemConfig) {
-      throw Error(CLIENT_ERROR.ALREADY_INITIALIZED);
+      throw Error(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
     }
     this._systemConfig = await this.internalRequest<SystemConfig>('/var?');
     this._trendConfig = await this.internalRequest<SystemConfig>('/trend?');
   }
 
-  /** Rescan the myGEKKO device system and trend configurations */
+  /**
+   * Rescan the myGEKKO device system and trend configurations.
+   * @throws {@link ClientError}
+   */
   public async rescan(): Promise<void> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
+      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
     this._systemConfig = await this.internalRequest('/var?');
     this._trendConfig = await this.internalRequest('/trend?');
   }
 
   /**
-   * Makes a http request
-   * @param {string} endpoint the myGEKKO device API endpoint
-   * @returns {string} the response
+   * Makes a http request.
+   * @param endpoint - The myGEKKO device API endpoint.
+   * @throws {@link ClientError}
    */
   public async request<T>(endpoint: string): Promise<T> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR.SYSTEM_NOT_INITIALIZED);
+      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
     return await this.internalRequest<T>(endpoint);
   }
 
   /**
-   * internal http request wrapper.
-   * @param {string} endpoint the myGEKKO device API endpoint
-   * @returns {string} the response
-   * @throws {Error}
+   * Internal http request wrapper.
+   * @param endpoint - The myGEKKO device API endpoint.
+   * @throws {@link ClientError}
    */
   private async internalRequest<T>(endpoint: string): Promise<T> {
     try {
@@ -236,96 +262,108 @@ export abstract class Client {
       if (isAxiosError(error) && error.response) {
         switch (error.response.status) {
           case 400:
-            throw new Error(CLIENT_ERROR.BAD_REQUEST);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.BAD_REQUEST);
           case 403:
-            throw new Error(CLIENT_ERROR.BAD_LOGIN);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.BAD_LOGIN);
           case 404:
-            throw new Error(CLIENT_ERROR.RESOURCE_NOT_FOUND);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.RESOURCE_NOT_FOUND);
           case 405:
-            throw new Error(CLIENT_ERROR.PERMISSION_DENIED);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.PERMISSION_DENIED);
           case 410:
-            throw new Error(CLIENT_ERROR.GEKKO_OFFLINE);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.GEKKO_OFFLINE);
           case 429:
-            throw new Error(CLIENT_ERROR.TO_MANY_REQUEST);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.TO_MANY_REQUEST);
           case 444:
-            throw new Error(CLIENT_ERROR.NOT_EXECUTED);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.NOT_EXECUTED);
           case 500:
-            throw new Error(CLIENT_ERROR.INTERNAL_SERVER_ERROR);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
           case 503:
-            throw new Error(CLIENT_ERROR.SERVICE_NOT_AVAILABLE);
+            throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
           default:
-            throw Error(`${CLIENT_ERROR.SERVICE_NOT_AVAILABLE}: ${error.response.status}`);
+            throw new Error(
+              `${CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE}: ${error.response.status}`
+            );
         }
       } else if (isAxiosError(error) && error.request) {
         throw new Error(error.message);
       } else if (error instanceof Error) {
         throw new Error(error.message);
       } else {
-        throw new Error(CLIENT_ERROR.UNKNOWN_ERROR);
+        throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR);
       }
     }
   }
 
   /**
    * Makes system status http request to the myGEKKO device API.
-   * @param {SystemType}  res the myGEKKO device API endpoint
-   * @returns {string} the response
+   * @param systemType - The myGEKKO device API endpoint.
+   * @throws {@link ClientError}
    */
-  public async systemStatusRequest(res: SystemType): Promise<SystemStatusResponse> {
-    return await this.request<SystemStatusResponse>(`/var/${res}/status?`);
+  public async systemStatusRequest(systemType: SystemType): Promise<SystemStatusResponse> {
+    return await this.request<SystemStatusResponse>(`/var/${systemType}/status?`);
   }
 
   /**
    * Makes system status http request to the myGEKKO device API for a single item.
-   * @param {SystemType}  res the myGEKKO device API endpoint
-   * @param {string} itemId the item id
-   * @returns {string} the response
+   * @param systemType - The myGEKKO device API endpoint.
+   * @param itemId - The item id.
+   * @throws {@link ClientError}
    */
-  public async itemStatusRequest(res: SystemType, itemId: string): Promise<ItemStatusResponse> {
-    return await this.request<ItemStatusResponse>(`/var/${res}/${itemId}/status?`);
+  public async itemStatusRequest(
+    systemType: SystemType,
+    itemId: string
+  ): Promise<ItemStatusResponse> {
+    return await this.request<ItemStatusResponse>(`/var/${systemType}/${itemId}/status?`);
   }
 
   /**
    * Makes update request to the myGEKKO device API.
-   * @param {SystemType}  res the myGEKKO device API endpoint
-   * @param {string} itemId  the item id
-   * @param {string} query the query params
-   * @returns {string} the response
+   * @param systemType - The myGEKKO device API endpoint.
+   * @param itemId - The item id.
+   * @param query - The query params.
+   * @throws {@link ClientError}
    */
-  public async changeRequest(res: SystemType, itemId: string, query: string): Promise<string> {
-    return await this.request<string>(`/var/${res}/${itemId}/scmd/set?value=${query}&`);
+  public async changeRequest(
+    systemType: SystemType,
+    itemId: string,
+    query: string
+  ): Promise<string> {
+    return await this.request<string>(`/var/${systemType}/${itemId}/scmd/set?value=${query}&`);
   }
 
   /**
    * Makes status request to the myGEKKO device API to get a single item trend by system.
-   * @param {SystemType}  res the myGEKKO device API endpoint
-   * @param {string} itemId  the item id
-   * @param {string} trendId the item trend id
-   * @param {string} startDate the start date as valid date string
-   * @param {string} endDate the end date as valid date string
-   * @param {number} count  the data count
-   * @returns {string} the response
+   * @param systemType - The myGEKKO device API endpoint.
+   * @param itemId - The item id.
+   * @param trendId - The item trend id.
+   * @param startDate - The start date as valid date string.
+   * @param endDate - The end date as valid date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrendByItemId(
-    res: SystemType,
+    systemType: SystemType,
     itemId: string,
     trendId: string,
     startDate: string,
     endDate: string,
     count: number
   ): Promise<TrendItemResponse> {
-    throwErrorIfTrendIsNotEnabled(this.systemConfig, res);
+    throwErrorIfTrendIsNotEnabled(this.systemConfig, systemType);
     return await this.request<TrendItemResponse>(
-      `/trend/${res}/${itemId}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
+      `/trend/${systemType}/${itemId}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
     );
   }
 }
 
-/** The remote client class. */
+/**
+ * The remote client class.
+ * @group Client
+ */
 export class RemoteClient extends Client {
   /**
    * The local client constructor.
-   * @param {SystemConfig} config  the local client configuration.
+   * @param config - The local client configuration.
    */
   public constructor(config: RemoteClientConfig) {
     super({
@@ -335,11 +373,14 @@ export class RemoteClient extends Client {
   }
 }
 
-/** The local client class. */
+/**
+ * The local client class.
+ *  @group Client
+ */
 export class LocalClient extends Client {
   /**
    * The local client constructor.
-   * @param {SystemConfig} config  the remote client configuration.
+   * @param config - The remote client configuration.
    */
   public constructor(config: LocalClientConfig) {
     super({

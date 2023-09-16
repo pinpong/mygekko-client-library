@@ -3,29 +3,32 @@ import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { systemFilteredByItems, valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType, Trend } from '../base/types';
-import { Logic } from './types';
+import { Stove } from './types';
 
-const systemType = SystemType.alarmsLogics;
+const systemType = SystemType.stoves;
 
 /**
  * @group Systems
  */
-export class Logics extends BaseSystem {
+export class Stoves extends BaseSystem {
   /**
    * Parses the item.
    * @param config - The myGEKKO device configuration.
    * @param status - The response from the status request.
    * @param itemId - The item id.
    */
-  private parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Logic {
+  private parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Stove {
     const values = valuesToStringList(status);
 
     return {
-      sumState: null,
+      sumState: tryParseFloat(values[4]),
       itemId: itemId,
       name: config[itemId].name,
       page: config[itemId].page,
-      value: tryParseFloat(values[0]),
+      temperature: tryParseFloat(values[0]),
+      flapOpeningLevel: tryParseFloat(values[1]),
+      currentState: tryParseFloat(values[2]),
+      workingState: tryParseFloat(values[3]),
     };
   }
 
@@ -33,7 +36,7 @@ export class Logics extends BaseSystem {
    * Returns all items.
    * @throws {@link ClientError}
    */
-  public async getItems(): Promise<Logic[]> {
+  public async getItems(): Promise<Stove[]> {
     const status = await this.getCompleteStatus(systemType);
     return systemFilteredByItems(this.client.systemConfig[systemType]).map((key) => {
       return this.parseItem(this.client.systemConfig[systemType], status[key], key);
@@ -45,7 +48,7 @@ export class Logics extends BaseSystem {
    * @param itemId - The item id.
    * @throws {@link ClientError}
    */
-  public async getItemById(itemId: string): Promise<Logic> {
+  public async getItemById(itemId: string): Promise<Stove> {
     const status = await this.getStatusById(systemType, itemId);
     return this.parseItem(this.client.systemConfig[systemType], status, itemId);
   }

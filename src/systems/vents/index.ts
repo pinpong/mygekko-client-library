@@ -1,13 +1,13 @@
 import { ItemStatusResponse, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/numberUtils';
-import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType, Trend } from '../base/types';
 import {
-  CoolingModeState,
-  DehumidificationState,
   Vent,
   VentBypassState,
+  VentCoolingModeState,
+  VentDehumidificationState,
   VentLevel,
   VentWorkingModeIndividual,
   VentWorkingModePluggit,
@@ -17,15 +17,17 @@ import {
   VentWorkingModeWestaflex,
 } from './types';
 
-const res = SystemType.vents;
+const systemType = SystemType.vents;
 
+/**
+ * @group Systems
+ */
 export class Vents extends BaseSystem {
   /**
-   * Parses the item
-   * @param {SystemConfig} config  the myGEKKO device configuration
-   * @param {string} status the response from the status request
-   * @param {string} itemId  the item id
-   * @returns {Vent} a parsed item
+   * Parses the item.
+   * @param config - The myGEKKO device configuration.
+   * @param status - The response from the status request.
+   * @param itemId - The item id.
    */
   private parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Vent {
     const values = valuesToStringList(status);
@@ -58,47 +60,43 @@ export class Vents extends BaseSystem {
 
   /**
    * Returns all items.
-   * @returns {Promise<Vent[]>} a item
-   * @throws {Error}
+   * @throws {@link ClientError}
    */
   public async getItems(): Promise<Vent[]> {
-    const status = await this.getCompleteStatus(res);
-    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
-      return this.parseItem(this.client.systemConfig[res], status[key], key);
+    const status = await this.getCompleteStatus(systemType);
+    return systemFilteredByItems(this.client.systemConfig[systemType]).map((key) => {
+      return this.parseItem(this.client.systemConfig[systemType], status[key], key);
     });
   }
 
   /**
    * Returns a single item by id.
-   * @param {string} itemId  the item id
-   * @returns {Promise<Vent>} a item
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @throws {@link ClientError}
    */
   public async getItemById(itemId: string): Promise<Vent> {
-    const status = await this.getStatusById(res, itemId);
-    return this.parseItem(this.client.systemConfig[res], status, itemId);
+    const status = await this.getStatusById(systemType, itemId);
+    return this.parseItem(this.client.systemConfig[systemType], status, itemId);
   }
 
   /**
    * Returns all trends.
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatuses(res, startDate, endDate, count);
+    return await this.getTrendsStatuses(systemType, startDate, endDate, count);
   }
 
   /**
    * Returns a single trend by item id.
-   * @param {string} itemId  the item id
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrendByItemId(
     itemId: string,
@@ -106,13 +104,13 @@ export class Vents extends BaseSystem {
     endDate: string,
     count: number
   ): Promise<Trend> {
-    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+    return await this.getTrendStatus(systemType, itemId, startDate, endDate, count);
   }
 
   /**
    * Sets the mode.
-   * @param {string} itemId  the item id
-   * @param {VentWorkingModeProxxonV1 | VentWorkingModeProxxonV2 | VentWorkingModeWestaflex | VentWorkingModeStiebelTecalor | VentWorkingModeIndividual | VentWorkingModePluggit} mode the new mode
+   * @param itemId - The item id.
+   * @param mode - The new mode.
    */
   public async setMode(
     itemId: string,
@@ -124,13 +122,13 @@ export class Vents extends BaseSystem {
       | VentWorkingModeIndividual
       | VentWorkingModePluggit
   ): Promise<void> {
-    await this.client.changeRequest(res, itemId, `M${mode}`);
+    await this.client.changeRequest(systemType, itemId, `M${mode}`);
   }
 
   /**
    * Sets the vent lelve.
-   * @param {string} itemId  the item id
-   * @param  {VentLevel} ventLevel the new vent level
+   * @param itemId - The item id.
+   * @param ventLevel - The new vent level.
    */
   public async setLevel(itemId: string, ventLevel: VentLevel): Promise<void> {
     let level = -1;
@@ -151,36 +149,36 @@ export class Vents extends BaseSystem {
         level = 4;
         break;
     }
-    await this.client.changeRequest(res, itemId, `${level}`);
+    await this.client.changeRequest(systemType, itemId, `${level}`);
   }
 
   /**
    * Sets the bypass state.
-   * @param {string} itemId  the item id
-   * @param {VentBypassState} state the new bypass state
+   * @param itemId - The item id.
+   * @param state - The new bypass state.
    */
   public async setByPassState(itemId: string, state: VentBypassState): Promise<void> {
-    await this.client.changeRequest(res, itemId, `BY${state}`);
+    await this.client.changeRequest(systemType, itemId, `BY${state}`);
   }
 
   /**
    * Sets the cooling mode state.
-   * @param {string} itemId  the item id
-   * @param {CoolingModeState} state the new cooling mode state
+   * @param itemId - The item id.
+   * @param state - The new cooling mode state.
    */
-  public async setCoolingModeState(itemId: string, state: CoolingModeState): Promise<void> {
-    await this.client.changeRequest(res, itemId, `C${state}`);
+  public async setCoolingModeState(itemId: string, state: VentCoolingModeState): Promise<void> {
+    await this.client.changeRequest(systemType, itemId, `C${state}`);
   }
 
   /**
    * Sets the dehumidification state.
-   * @param {string} itemId  the item id
-   * @param {DehumidificationState} state the new dehumidification state
+   * @param itemId - The item id.
+   * @param state - The new dehumidification state.
    */
   public async setDehumidificationState(
     itemId: string,
-    state: DehumidificationState
+    state: VentDehumidificationState
   ): Promise<void> {
-    await this.client.changeRequest(res, itemId, `D${state}`);
+    await this.client.changeRequest(systemType, itemId, `D${state}`);
   }
 }

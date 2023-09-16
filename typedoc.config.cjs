@@ -1,22 +1,19 @@
 /** @type {import("typedoc")} */
 module.exports = {
-  entryPoints: ['src/index.ts'],
-  excludePrivate: false,
+  $schema: 'https://typedoc.org/schema.json',
+  entryPoints: ['./src/index.ts'],
+  excludePrivate: true,
   excludeProtected: false,
-  excludeInternal: false,
+  excludeInternal: true,
   out: 'docs',
-  requiredToBeDocumented: [
-    'Enum',
-    'EnumMember',
-    'Variable',
-    'Function',
-    'Class',
-    'Interface',
-    'Property',
-    'Method',
-    'GetSignature',
-    'SetSignature',
-    'TypeAlias',
-  ],
-  internalModule: 'systems',
+  treatWarningsAsErrors: true,
+  githubPages: true,
+  navigation: {
+    includeCategories: false,
+    includeGroups: true,
+    fullTree: false,
+  },
+  navigationLinks: {
+    GitHub: 'https://github.com/pinpong/mygekko-client-library',
+  },
 };

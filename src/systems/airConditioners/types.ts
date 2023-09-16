@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type AirConditioner = BaseSystemType & {
   /** The supply air temperature -100-100 as C° */
   supplyAirTemperature: number | null;
@@ -25,13 +26,13 @@ export type AirConditioner = BaseSystemType & {
   airQualityLevel: number | null;
   /** The air quality 0-100 as % */
   airQualitySetPointLevel: number | null;
-  /** The supply pressure 0-... as Pa */
+  /** The supply pressure 0-... As Pa */
   supplyPressure: number | null;
-  /** The supply pressure set point 0-... as Pa */
+  /** The supply pressure set point 0-... As Pa */
   supplyPressureSetPoint: number | null;
-  /** The exhaust pressure 0-... as Pa */
+  /** The exhaust pressure 0-... As Pa */
   exhaustPressure: number | null;
-  /** The exhaust pressure set point 0-... as Pa */
+  /** The exhaust pressure set point 0-... As Pa */
   exhaustPressureSetPoint: number | null;
   /** The working level set point level 0-100 as % */
   workingLevelSetPointLevel: number | null;
@@ -53,25 +54,37 @@ export type AirConditioner = BaseSystemType & {
   workingMode: AirConditionerWorkingMode | null;
 };
 
-/** The air conditioner supply states */
+/**
+ * The air conditioner supply states.
+ * @group Systems
+ */
 export enum AirConditionerSupplyState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The air conditioner exhaust states */
+/**
+ * The air conditioner exhaust states.
+ * @group Systems
+ */
 export enum AirConditionerExhaustState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The air conditioner states */
+/**
+ * The air conditioner states.
+ * @group Systems
+ */
 export enum AirConditionerState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The air conditioner working modes */
+/**
+ * The air conditioner working modes.
+ * @group Systems
+ */
 export enum AirConditionerWorkingMode {
   'off' = 0,
   'heating' = 1,

@@ -1,9 +1,9 @@
-import { CLIENT_ERROR } from '../../src/errors';
+import { CLIENT_ERROR_MESSAGES } from '../../src';
 import {
   systemFilteredByGroup,
   systemFilteredByItems,
   valuesToStringList,
-} from '../../src/utils/stringUtils';
+} from '../../src/utils/extensions/stringUtils';
 
 test('valuesToStringList', () => {
   expect(valuesToStringList(JSON.parse('{"sumstate":{"value":"0;0;3;kW;10.001;"}}'))).toEqual([
@@ -23,7 +23,7 @@ test('valuesToStringList', () => {
 
   expect(() => {
     valuesToStringList(JSON.parse('{}'));
-  }).toThrow(CLIENT_ERROR.CANNOT_PARSE_STATUS);
+  }).toThrow(CLIENT_ERROR_MESSAGES.CANNOT_PARSE_STATUS);
 });
 
 test('systemFilteredByItems', () => {

@@ -1,17 +1,19 @@
 import { SystemStatusResponse, TrendItemResponse } from '../../client';
-import { throwErrorIfSystemIsNotEnabled } from '../../utils/errorUtils';
-import { tryParseFloat } from '../../utils/numberUtils';
+import { throwErrorIfSystemIsNotEnabled } from '../../utils/errors/errorUtils';
+import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { BaseSystem } from '../base';
 import { SystemType, Trend, TrendItem } from '../base/types';
 import { WeatherItem } from './types';
 
-const res = SystemType.weather;
+const systemType = SystemType.weather;
 
+/**
+ * @group Systems
+ */
 export class Weather extends BaseSystem {
   /**
-   * Parses the item @param status the response from the status request
-   * @param {string} status the current myGEKKO device status
-   * @returns {WeatherItem} a parsed item
+   * Parses the item.
+   * @param status - The current myGEKKO device status.
    */
   private parseItem(status: SystemStatusResponse): WeatherItem {
     return {
@@ -32,15 +34,14 @@ export class Weather extends BaseSystem {
 
   /**
    * Returns parsed weather item trend.
-   * @param {string} res the start date as date string
-   * @param {string} item the start date as date string
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a parsed item
+   * @param systemType - The start date as date string.
+   * @param item - The start date as date string.
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
    */
   private async parseWeatherItemTrend(
-    res: SystemType,
+    systemType: SystemType,
     item: string,
     startDate: string,
     endDate: string,
@@ -50,7 +51,7 @@ export class Weather extends BaseSystem {
 
     for (const trendId of Object.keys(item)) {
       const response = await this.client.request<TrendItemResponse>(
-        `/trend/${res}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
+        `/trend/${systemType}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
       );
 
       trendItems.push({
@@ -72,26 +73,24 @@ export class Weather extends BaseSystem {
 
   /**
    * Returns item.
-   * @returns {Promise<WeatherItem>} a item
-   * @throws {Error}
+   * @throws {@link ClientError}
    */
   public async getItem(): Promise<WeatherItem> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, systemType);
 
-    const status = await this.client.systemStatusRequest(res);
+    const status = await this.client.systemStatusRequest(systemType);
     return this.parseItem(status);
   }
 
   /**
    * Returns all trends.
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, res);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, systemType);
 
     return await this.parseWeatherItemTrend(
       'meteo' as SystemType,

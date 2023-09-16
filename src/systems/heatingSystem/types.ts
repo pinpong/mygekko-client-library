@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type HeatingSystem = BaseSystemType & {
   /** The device model */
   deviceModel: HeatingSystemDeviceModel | null;
@@ -13,7 +14,10 @@ export type HeatingSystem = BaseSystemType & {
   currentState: HeatingSystemState | null;
 };
 
-/** The heating system device models */
+/**
+ * The heating system device models.
+ * @group Systems
+ */
 export enum HeatingSystemDeviceModel {
   'individual' = 0,
   'buderus' = 1,
@@ -22,13 +26,19 @@ export enum HeatingSystemDeviceModel {
   'vaillant' = 4,
 }
 
-/** The heating system cooling states */
+/**
+ * The heating system cooling states.
+ * @group Systems
+ */
 export enum HeatingSystemCoolingState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The heating system states */
+/**
+ * The heating system states.
+ * @group Systems
+ */
 export enum HeatingSystemState {
   'off' = 0,
   'on' = 1,

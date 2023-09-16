@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type Vent = BaseSystemType & {
   /** The current vent level */
   ventLevel: VentLevel | null;
@@ -37,16 +38,19 @@ export type Vent = BaseSystemType & {
   /** The current exhaust air working level as 0-100 % */
   exhaustAirWorkingLevel: number | null;
   /** The current sub working mode */
-  subWorkingMode: SubWorkingModeProxxon | SubWorkingMode | null;
+  subWorkingMode: VentSubWorkingModeProxxon | VentSubWorkingMode | null;
   /** The current cooling working mode state */
-  coolingModeState: CoolingModeState | null;
+  coolingModeState: VentCoolingModeState | null;
   /** The current dehumidification state */
-  dehumidificationState: DehumidificationState | null;
+  dehumidificationState: VentDehumidificationState | null;
   /** The current bypass state */
   bypassMode: VentBypassState | null;
 };
 
-/** The vent levels */
+/**
+ * The vent levels.
+ * @group Systems
+ */
 export enum VentLevel {
   'off' = 0,
   'level1' = 1,
@@ -55,7 +59,10 @@ export enum VentLevel {
   'level4' = 4,
 }
 
-/** The vent device models */
+/**
+ * The vent device models.
+ * @group Systems
+ */
 export enum VentDeviceModel {
   'standard' = 0,
   'pluggit' = 1,
@@ -65,13 +72,19 @@ export enum VentDeviceModel {
   'zimmermannV2' = 5,
 }
 
-/** The proxxon v1 device working modes */
+/**
+ * The proxxon v1 device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModeProxxonV1 {
   'off' = 0,
   'on' = 1,
 }
 
-/** The proxxon v2 device working modes */
+/**
+ * The proxxon v2 device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModeProxxonV2 {
   'off' = 0,
   'ecoSummer' = 1,
@@ -80,25 +93,37 @@ export enum VentWorkingModeProxxonV2 {
   'ovenOperation' = 4,
 }
 
-/** The westaflex device working modes */
+/**
+ * The westaflex device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModeWestaflex {
   'off' = 0,
   'on' = 1,
 }
 
-/** The stiebel tecalor device working modes */
+/**
+ * The stiebel tecalor device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModeStiebelTecalor {
   'off' = 0,
   'on' = 1,
 }
 
-/** The individual device working modes */
+/**
+ * The individual device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModeIndividual {
   'off' = 0,
   'on' = 1,
 }
 
-/** The pluggit device working modes */
+/**
+ * The pluggit device working modes.
+ * @group Systems
+ */
 export enum VentWorkingModePluggit {
   'auto' = 0,
   'manual' = 1,
@@ -106,34 +131,49 @@ export enum VentWorkingModePluggit {
   'pluggitWeek' = 3,
 }
 
-/** The vent bypass states */
+/**
+ * The vent bypass states.
+ * @group Systems
+ */
 export enum VentBypassState {
   'auto' = 0,
   'manual' = 1,
   'summer' = 2,
 }
 
-/** The vent cooling mode states */
-export enum CoolingModeState {
+/**
+ * The vent cooling mode states.
+ * @group Systems
+ */
+export enum VentCoolingModeState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The proxxon v1 device sub working modes */
-export enum SubWorkingModeProxxon {
+/**
+ * The proxxon v1 device sub working modes.
+ * @group Systems
+ */
+export enum VentSubWorkingModeProxxon {
   'middleTemp+offset' = 0,
   'onlyOffset' = 1,
 }
 
-/** The sub working modes */
-export enum SubWorkingMode {
+/**
+ * The sub working modes.
+ * @group Systems
+ */
+export enum VentSubWorkingMode {
   'exhaust' = 0,
   'exhaustAndSupply' = 1,
   'exhaustAndSupplyAndHeatRecovery' = 2,
 }
 
-/** The dehumidification states */
-export enum DehumidificationState {
+/**
+ * The dehumidification states.
+ * @group Systems
+ */
+export enum VentDehumidificationState {
   'off' = 0,
   'on' = 1,
 }

@@ -1,19 +1,21 @@
 import { ItemStatusResponse, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/numberUtils';
-import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType, Trend } from '../base/types';
 import { HeatingCircuit } from './types';
 
-const res = SystemType.heatingCircuits;
+const systemType = SystemType.heatingCircuits;
 
+/**
+ * @group Systems
+ */
 export class HeatingCircuits extends BaseSystem {
   /**
-   * Parses the item
-   * @param {SystemConfig} config  the myGEKKO device configuration
-   * @param {string} status the response from the status request
-   * @param {string} itemId  the item id
-   * @returns {HeatingCircuit} a parsed item
+   * Parses the item.
+   * @param config - The myGEKKO device configuration.
+   * @param status - The response from the status request.
+   * @param itemId - The item id.
    */
   private parseItem(
     config: SystemConfig,
@@ -41,47 +43,43 @@ export class HeatingCircuits extends BaseSystem {
 
   /**
    * Returns all items.
-   * @returns {Promise<HeatingCircuit[]>} a item
-   * @throws {Error}
+   * @throws {@link ClientError}
    */
   public async getItems(): Promise<HeatingCircuit[]> {
-    const status = await this.getCompleteStatus(res);
-    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
-      return this.parseItem(this.client.systemConfig[res], status[key], key);
+    const status = await this.getCompleteStatus(systemType);
+    return systemFilteredByItems(this.client.systemConfig[systemType]).map((key) => {
+      return this.parseItem(this.client.systemConfig[systemType], status[key], key);
     });
   }
 
   /**
    * Returns a single item by id.
-   * @param {string} itemId  the item id
-   * @returns {Promise<HeatingCircuit>} a item
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @throws {@link ClientError}
    */
   public async getItemById(itemId: string): Promise<HeatingCircuit> {
-    const status = await this.getStatusById(res, itemId);
-    return this.parseItem(this.client.systemConfig[res], status, itemId);
+    const status = await this.getStatusById(systemType, itemId);
+    return this.parseItem(this.client.systemConfig[systemType], status, itemId);
   }
 
   /**
    * Returns all trends.
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatuses(res, startDate, endDate, count);
+    return await this.getTrendsStatuses(systemType, startDate, endDate, count);
   }
 
   /**
    * Returns a single trend by item id.
-   * @param {string} itemId  the item id
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrendByItemId(
     itemId: string,
@@ -89,6 +87,6 @@ export class HeatingCircuits extends BaseSystem {
     endDate: string,
     count: number
   ): Promise<Trend> {
-    return await this.getTrendStatus(res, itemId, startDate, endDate, count);
+    return await this.getTrendStatus(systemType, itemId, startDate, endDate, count);
   }
 }

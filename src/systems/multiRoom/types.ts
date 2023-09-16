@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type MultiRoom = BaseSystemType & {
   /** The current state */
   currentState: MultiRoomState | null;
@@ -11,20 +12,24 @@ export type MultiRoom = BaseSystemType & {
   currentAudioTitle: string | null;
   /** The current play list indes */
   currentPlaylistIndex: number | null;
-  /** The current play list as {@link PlayList[]} */
-  playList: PlayList[] | null;
+  /** The current play list */
+  playList: MultiRoomPlayList[] | null;
   /** The current song index */
   currentSongIndex: number | null;
 };
 
-/** The multiroom states */
+/**
+ * The multiroom states.
+ * @group Systems
+ */
 export enum MultiRoomState {
   'off' = 0,
   'on' = 1,
 }
 
 /** The play list item */
-export type PlayList = {
+/** @group Systems */
+export type MultiRoomPlayList = {
   /** The play list index */
   index: number | null;
   /** The play list name */
