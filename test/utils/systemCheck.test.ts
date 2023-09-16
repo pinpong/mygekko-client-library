@@ -1,10 +1,10 @@
-import { CLIENT_ERROR } from '../../src/errors';
-import { SystemType } from '../../src/systems/base/types';
+import { CLIENT_ERROR_MESSAGES } from '../../src';
+import { SystemType } from '../../src';
 import {
   throwErrorIfItemIdIsNoFound,
   throwErrorIfSystemIsNotEnabled,
   throwErrorIfTrendIsNotEnabled,
-} from '../../src/utils/errorUtils';
+} from '../../src/utils/errors/errorUtils';
 
 test('throwErrorIfSystemIsNotEnabled', () => {
   expect(() =>
@@ -12,9 +12,9 @@ test('throwErrorIfSystemIsNotEnabled', () => {
   ).not.toThrow();
   expect(() =>
     throwErrorIfSystemIsNotEnabled('{"blinds": {"item0":{}}}', SystemType.lights)
-  ).toThrow(CLIENT_ERROR.SYSTEM_NOT_SUPPORTED);
+  ).toThrow(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
   expect(() => throwErrorIfSystemIsNotEnabled('', SystemType.blinds)).toThrow(
-    CLIENT_ERROR.SYSTEM_NOT_INITIALIZED
+    CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED
   );
 });
 
@@ -24,9 +24,9 @@ test('throwErrorIfTrendIsNotAvailable', () => {
   ).not.toThrow();
   expect(() =>
     throwErrorIfTrendIsNotEnabled('{"blinds": {"item0":{}}}', SystemType.lights)
-  ).toThrow(CLIENT_ERROR.TREND_NOT_SUPPORTED);
+  ).toThrow(CLIENT_ERROR_MESSAGES.TREND_NOT_SUPPORTED);
   expect(() => throwErrorIfTrendIsNotEnabled('', SystemType.blinds)).toThrow(
-    CLIENT_ERROR.SYSTEM_NOT_INITIALIZED
+    CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED
   );
 });
 
@@ -45,7 +45,7 @@ test('throwErrorIfItemIdIsNoAvailable', () => {
 
   expect(() =>
     throwErrorIfItemIdIsNoFound(JSON.parse('{"blinds": {"item0":{}}}'), SystemType.blinds, 'item3')
-  ).toThrow(CLIENT_ERROR.ITEM_ID_NOT_FOUND);
+  ).toThrow(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
 
   expect(() =>
     throwErrorIfItemIdIsNoFound(
@@ -53,5 +53,5 @@ test('throwErrorIfItemIdIsNoAvailable', () => {
       SystemType.weather,
       'item3'
     )
-  ).toThrow(CLIENT_ERROR.ITEM_ID_NOT_FOUND);
+  ).toThrow(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
 });

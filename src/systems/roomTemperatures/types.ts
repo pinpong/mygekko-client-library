@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type RoomTemperature = BaseSystemType & {
   /** The current temperature as -100-100 C° */
   temperature: number | null;
@@ -9,7 +10,7 @@ export type RoomTemperature = BaseSystemType & {
   valveOpeningLevel: number | null;
   /** The current working mode */
   workingMode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx | null;
-  /** reserved */
+  /** Reserved */
   reserved: string | null;
   /** The current temperature adjust as -100-100 C° */
   temperatureAdjustment: number | null;
@@ -25,7 +26,10 @@ export type RoomTemperature = BaseSystemType & {
   deviceModel: RoomTemperatureDeviceModel | null;
 };
 
-/** The room temperature standard device working modes */
+/**
+ * The room temperature standard device working modes.
+ * @group Systems
+ */
 export enum RoomTemperatureWorkingModeStandard {
   'off' = 0,
   'comfort' = 8,
@@ -34,7 +38,10 @@ export enum RoomTemperatureWorkingModeStandard {
   'standby' = 256,
 }
 
-/** The room temperature knx device working modes */
+/**
+ * The room temperature knx device working modes.
+ * @group Systems
+ */
 export enum RoomTemperatureWorkingModeKnx {
   'auto' = 0,
   'comfort' = 1,
@@ -43,13 +50,19 @@ export enum RoomTemperatureWorkingModeKnx {
   'buildingProtection' = 4,
 }
 
-/** The room temperature cooling state */
+/**
+ * The room temperature cooling state.
+ * @group Systems
+ */
 export enum RoomTemperatureCoolingState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The room temperature device model */
+/**
+ * The room temperature device model.
+ * @group Systems
+ */
 export enum RoomTemperatureDeviceModel {
   'standard' = 0,
   'knx' = 1,

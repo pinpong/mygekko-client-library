@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type HotWaterSystem = BaseSystemType & {
   /** The device model */
   deviceModel: HotWaterSystemDeviceModel | null;
@@ -17,13 +18,19 @@ export type HotWaterSystem = BaseSystemType & {
   currentState: HotWaterSystemState | null;
 };
 
-/** The hot water system states */
+/**
+ * The hot water system states.
+ * @group Systems
+ */
 export enum HotWaterSystemState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The hot water system device models */
+/**
+ * The hot water system device models.
+ * @group Systems
+ */
 export enum HotWaterSystemDeviceModel {
   'individual' = 0,
   'buderus' = 1,
@@ -32,7 +39,10 @@ export enum HotWaterSystemDeviceModel {
   'vaillant' = 4,
 }
 
-/** The hot water system cooling mode states */
+/**
+ * The hot water system cooling mode states.
+ * @group Systems
+ */
 export enum HotWaterSystemCoolingModeState {
   'off' = 0,
   'on' = 1,

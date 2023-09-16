@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type Stove = BaseSystemType & {
   /** The current temperature as 20-1000 C° */
   temperature: number | null;
@@ -11,7 +12,10 @@ export type Stove = BaseSystemType & {
   workingState: StoveWorkingState | null;
 };
 
-/** The stove states */
+/**
+ * The stove states.
+ * @group Systems
+ */
 export enum StovesState {
   'stoveIdle' = 0,
   'closeDoor' = 5,
@@ -21,7 +25,10 @@ export enum StovesState {
   'stoveCooledOff' = 13,
 }
 
-/** The stove working states */
+/**
+ * The stove working states.
+ * @group Systems
+ */
 export enum StoveWorkingState {
   'idle' = 0,
   'active' = 1,

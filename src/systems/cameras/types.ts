@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type Camera = BaseSystemType & {
   /** The current new records count */
   newRecordCount: number | null;

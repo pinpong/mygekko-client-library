@@ -1,17 +1,24 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type Analysis = BaseSystemType & {
   /** The current variables */
   analysisVariables: AnalysisVariable[] | null;
 };
 
-/** The analysis states */
+/**
+ * The analysis states.
+ * @group Systems
+ */
 export enum AnalysisState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The analysis types */
+/**
+ * The analysis types.
+ * @group Systems
+ */
 export enum AnalysisType {
   'logic' = 0,
   'dIn' = 1,
@@ -24,6 +31,7 @@ export enum AnalysisType {
 }
 
 /** The analysis variable */
+/** @group Systems */
 export type AnalysisVariable = {
   /** The current analysis state */
   currentState: AnalysisState | null;

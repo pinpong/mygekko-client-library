@@ -1,7 +1,7 @@
 /**
- * Calculates the color from tunable white level
- * @param {number} value the tunable white level
- * @returns {string} a hex color
+ * Calculates the color from tunable white level.
+ * @param value - The tunable white level.
+ * @group Utils
  */
 export function tunableWhiteToHex(value: number): string {
   let r: number, g: number, b: number;
@@ -18,31 +18,31 @@ export function tunableWhiteToHex(value: number): string {
 }
 
 /**
- * Calculates the hex color from rgb color
- * @param {number} r the 24 bits red color
- * @param {number} g the 24 bits green color
- * @param {number} b the 24 bits blue color
- * @returns {string} a hex color
+ * Calculates the hex color from rgb color.
+ * @param r - The 24 bits red color.
+ * @param g - The 24 bits green color.
+ * @param b - The 24 bits blue color.
+ * @group Utils
  */
 export function rgbToHex(r: number, g: number, b: number): string {
   return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
 }
 
 /**
- * Calculates the decimal color from rgb color
- * @param {number} r the 24 bits red color
- * @param {number} g the 24 bits green color
- * @param {number} b the 24 bits blue color
- * @returns {number} a decimal color
+ * Calculates the decimal color from rgb color.
+ * @param r - The 24 bits red color.
+ * @param g - The 24 bits green color.
+ * @param b - The 24 bits blue color.
+ * @group Utils
  */
 export function rgbToDecimal(r: number, g: number, b: number): number {
   return (r << 16) + (g << 8) + b;
 }
 
 /**
- * Calculates decimal color from hex color
- * @param {string} hex the hex color
- * @returns {number} a decimal color
+ * Calculates decimal color from hex color.
+ * @param hex - The hex color.
+ * @group Utils
  */
 export function hexToDecimal(hex: string): number {
   const r = parseInt(hex.substring(1, 3), 16);
@@ -52,9 +52,9 @@ export function hexToDecimal(hex: string): number {
 }
 
 /**
- * Calculates the hex color from decimal color
- * @param {number} decimal the decimal color
- * @returns {string} a hex color
+ * Calculates the hex color from decimal color.
+ * @param decimal - The decimal color.
+ * @group Utils
  */
 export function decimalToHexColor(decimal: number): string {
   const r = (decimal >> 16) & 0xff;

@@ -1,19 +1,21 @@
 import { ItemStatusResponse, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/numberUtils';
-import { systemFilteredByItems, valuesToStringList } from '../../utils/stringUtils';
+import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { systemFilteredByItems, valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType, Trend } from '../base/types';
 import { AirConditioner, AirConditionerState, AirConditionerWorkingMode } from './types';
 
-const res = SystemType.airConditioner;
+const systemType = SystemType.airConditioner;
 
+/**
+ * @group Systems
+ */
 export class AirConditioners extends BaseSystem {
   /**
-   * Parses the item
-   * @param {SystemConfig} config  the myGEKKO device configuration
-   * @param {string} status the response from the status request
-   * @param {string} itemId  the item id
-   * @returns {AirConditioner} a parsed item
+   * Parses the item.
+   * @param config - The myGEKKO device configuration.
+   * @param status - The response from the status request.
+   * @param itemId - The item id.
    */
   private parseItem(
     config: SystemConfig,
@@ -57,96 +59,93 @@ export class AirConditioners extends BaseSystem {
 
   /**
    * Returns all items.
-   * @returns {Promise<AirConditioner[]>} a item
-   * @throws {Error}
+   * @throws {@link ClientError}
    */
   public async getItems(): Promise<AirConditioner[]> {
-    const status = await this.getCompleteStatus(res);
-    return systemFilteredByItems(this.client.systemConfig[res]).map((key) => {
-      return this.parseItem(this.client.systemConfig[res], status[key], key);
+    const status = await this.getCompleteStatus(systemType);
+    return systemFilteredByItems(this.client.systemConfig[systemType]).map((key) => {
+      return this.parseItem(this.client.systemConfig[systemType], status[key], key);
     });
   }
 
   /**
    * Returns a single item by id.
-   * @param {string} itemId  the item id
-   * @returns {Promise<AirConditioner>} a item
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @throws {@link ClientError}
    */
   public async getItemById(itemId: string): Promise<AirConditioner> {
-    const status = await this.getStatusById(res, itemId);
-    return this.parseItem(this.client.systemConfig[res], status, itemId);
+    const status = await this.getStatusById(systemType, itemId);
+    return this.parseItem(this.client.systemConfig[systemType], status, itemId);
   }
 
   /**
    * Returns all trends.
-   * @param {string} startDate the start date as date string
-   * @param {string} endDate the start date as date string
-   * @param {number} count  the data count
-   * @returns {Promise<Trend>} a trend
-   * @throws {Error}
+   * @param startDate - The start date as date string.
+   * @param endDate - The start date as date string.
+   * @param count - The data count.
+   * @throws {@link ClientError}
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatuses(res, startDate, endDate, count);
+    return await this.getTrendsStatuses(systemType, startDate, endDate, count);
   }
 
   /**
    * Sets the state.
-   * @param {string} itemId  the item id
-   * @param {AirConditionerState} state the new state
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param state - The new state.
+   * @throws {@link ClientError}
    */
   public async setState(itemId: string, state: AirConditionerState): Promise<void> {
-    await this.client.changeRequest(res, itemId, `${state}`);
+    await this.client.changeRequest(systemType, itemId, `${state}`);
   }
 
   /**
    * Sets the mode.
-   * @param {string} itemId  the item id
-   * @param {AirConditionerWorkingMode} mode the new mode
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param mode - The new mode.
+   * @throws {@link ClientError}
    */
   public async setMode(itemId: string, mode: AirConditionerWorkingMode): Promise<void> {
-    await this.client.changeRequest(res, itemId, `M${mode}`);
+    await this.client.changeRequest(systemType, itemId, `M${mode}`);
   }
 
   /**
    * Sets the power.
-   * @param {string} itemId  the item id
-   * @param {number} power the new power
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param power - The new power.
+   * @throws {@link ClientError}
    */
   public async setPower(itemId: string, power: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `P${power}`);
+    await this.client.changeRequest(systemType, itemId, `P${power}`);
   }
 
   /**
    * Sets the min flap.
-   * @param {string} itemId  the item id
-   * @param {number} flaps the new min flaps
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param flaps - The new min flaps.
+   * @throws {@link ClientError}
    */
   public async setMinFlap(itemId: string, flaps: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `F${flaps}`);
+    await this.client.changeRequest(systemType, itemId, `F${flaps}`);
   }
 
   /**
    * Sets the air quality.
-   * @param {string} itemId  the item id
-   * @param {number} airQuality the new air quality
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param airQuality - The new air quality.
+   * @throws {@link ClientError}
    */
   public async setAirQuality(itemId: string, airQuality: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `Q${airQuality}`);
+    await this.client.changeRequest(systemType, itemId, `Q${airQuality}`);
   }
 
   /**
    * Sets the humidity.
-   * @param {string} itemId  the item id
-   * @param {number} humidity the new humidity
-   * @throws {Error}
+   * @param itemId - The item id.
+   * @param humidity - The new humidity.
+   * @throws {@link ClientError}
    */
   public async setHumidity(itemId: string, humidity: number): Promise<void> {
-    await this.client.changeRequest(res, itemId, `H${humidity}`);
+    await this.client.changeRequest(systemType, itemId, `H${humidity}`);
   }
 }

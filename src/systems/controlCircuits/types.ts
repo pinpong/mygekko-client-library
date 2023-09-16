@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type ControlCircuit = BaseSystemType & {
   /** The current sensor value -10000,10000 */
   sensor: number | null;
@@ -13,7 +14,10 @@ export type ControlCircuit = BaseSystemType & {
   pump3WorkingPowerLevel: number | null;
 };
 
-/** The control circuits sensor types */
+/**
+ * The control circuits sensor types.
+ * @group Systems
+ */
 export enum ControlCircuitSensorType {
   'temperaturePT' = 0,
   'temperatureAnalog' = 1,

@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type AlarmSystem = BaseSystemType & {
   /** The alarm state */
   alarmSystemState: AlarmSystemState | null;
@@ -10,6 +11,7 @@ export type AlarmSystem = BaseSystemType & {
 };
 
 /** The alarm device */
+/** @group Systems */
 export type AlarmDevice = {
   /** The alarm zone */
   zone: string | null;
@@ -21,27 +23,39 @@ export type AlarmDevice = {
   sharpState: AlarmSystemDeviceSharpState | null;
 };
 
-/** The alarm system state */
+/**
+ * The alarm system state.
+ * @group Systems
+ */
 export enum AlarmSystemState {
   'ok' = 0,
   'alarm' = 1,
   'keepOpen' = 2,
 }
 
-/** The alarm system device type state */
+/**
+ * The alarm system device type state.
+ * @group Systems
+ */
 export enum AlarmSystemDeviceState {
   'ok' = 0,
   'alarmButtonUnSharp' = 2,
   'alarm' = 3,
 }
 
-/** The alarm system device sharp state */
+/**
+ * The alarm system device sharp state.
+ * @group Systems
+ */
 export enum AlarmSystemDeviceSharpState {
   'unSharp' = 0,
   'sharp' = 1,
 }
 
-/** The alarm system device model */
+/**
+ * The alarm system device model.
+ * @group Systems
+ */
 export enum AlarmSystemDeviceModel {
   'standard' = 1,
   'complex400_V1' = 2,

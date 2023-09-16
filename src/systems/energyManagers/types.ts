@@ -1,5 +1,6 @@
 import { BaseSystemType } from '../base/types';
 
+/** @group Systems */
 export type EnergyManager = BaseSystemType & {
   /** The current net meter state */
   netMeterState: NetState | null;
@@ -43,53 +44,74 @@ export type EnergyManager = BaseSystemType & {
   batterySoCLevel: number | null;
   /** The ems enabled state */
   emsEnabledState: EMSEnabledState | null;
-  /** The maximum power consumption from net as kilo watt */
+  /** The maximum power consumption from net as kilowatt */
   maximumPowerConsumptionFromNet: number | null;
-  /** The maximum power exported to net as kilo watt */
+  /** The maximum power exported to net as kilowatt */
   maximumPowerExportToNet: number | null;
-  /** The maximum solar panels power as kilo watt */
+  /** The maximum solar panels power as kilowatt */
   maximumPowerSolarPanels: number | null;
-  /** The maximum battery power as kilo watt */
+  /** The maximum battery power as kilowatt */
   maximumPowerBattery: number | null;
 };
 
-/** The net states */
+/**
+ * The net states.
+ * @group Systems
+ */
 export enum NetState {
   'notOk' = 0,
   'ok' = 1,
 }
 
-/** The solar panels states */
+/**
+ * The solar panels states.
+ * @group Systems
+ */
 export enum SolarState {
   'notActive' = 0,
   'active' = 1,
 }
 
-/** The battery states */
+/**
+ * The battery states.
+ * @group Systems
+ */
 export enum BatteryState {
   'notActive' = 0,
   'active' = 1,
 }
 
-/** The ems states */
+/**
+ * The ems states.
+ * @group Systems
+ */
 export enum EMSState {
   'disabled' = 0,
   'enabled' = 1,
 }
 
-/** The ems enabled states */
+/**
+ * The ems enabled states.
+ * @group Systems
+ */
 export enum EMSEnabledState {
   'disabled' = 0,
   'enabled' = 1,
 }
 
-/** The load shedding states */
+/**
+ * The load shedding states.
+ * @group Systems
+ */
 export enum LoadSheddingState {
   'off' = 0,
   'on' = 1,
 }
 
-/** The battery types */
+/**
+ * The battery types.
+ * @group Systems
+ */
 export enum BatteryType {
   'unavailable' = 0,
   'e3dc-s10' = 1,

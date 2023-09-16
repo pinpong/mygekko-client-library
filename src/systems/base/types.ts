@@ -1,4 +1,5 @@
 /** The system base */
+/** @group Systems */
 export type BaseSystemType = {
   /** The item id */
   itemId: string | null;
@@ -10,7 +11,10 @@ export type BaseSystemType = {
   sumState: SumState | null;
 };
 
-/** The system sum states */
+/**
+ * The system sum states.
+ * @group Systems
+ */
 export enum SumState {
   'ok' = 0,
   'manualOf' = 1,
@@ -19,7 +23,10 @@ export enum SumState {
   'alarm' = 4,
 }
 
-/** The supported systems */
+/**
+ * The supported systems.
+ * @group Systems
+ */
 export enum SystemType {
   'globals' = 'globals',
   'weather' = 'globals/meteo',
@@ -54,6 +61,7 @@ export enum SystemType {
 }
 
 /** The trend */
+/** @group Systems */
 export type Trend = {
   /** The trend item id */
   itemId: string | null;
@@ -64,6 +72,7 @@ export type Trend = {
 };
 
 /** The trend item */
+/** @group Systems */
 export type TrendItem = {
   /** The trend id */
   trendId: string | null;
