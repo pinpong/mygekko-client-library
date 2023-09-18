@@ -1,13 +1,13 @@
 .idea/
 .vscode/
 node_modules/
-build
 .DS_Store
 *.tgz
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .npm/
+.husky/
 build/
 dist/
 temp/

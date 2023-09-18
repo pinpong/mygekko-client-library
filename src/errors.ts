@@ -17,6 +17,8 @@ export enum CLIENT_ERROR_MESSAGES {
   TO_MANY_REQUEST = 'request/tom-many-request',
   /** Status code 444 */
   NOT_EXECUTED = 'request/not-executed',
+  /** Status code 470 */
+  SERVICE_NOT_REGISTERED_OR_EXPIRED = 'request/service-not-registered-or-expired',
   /** Status code 500 */
   INTERNAL_SERVER_ERROR = 'request/internal-server-error',
   /** Status code 503 */
