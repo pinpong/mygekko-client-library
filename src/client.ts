@@ -275,6 +275,8 @@ export abstract class Client {
             throw new ClientError(CLIENT_ERROR_MESSAGES.TO_MANY_REQUEST);
           case 444:
             throw new ClientError(CLIENT_ERROR_MESSAGES.NOT_EXECUTED);
+          case 470:
+            throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_REGISTERED_OR_EXPIRED);
           case 500:
             throw new ClientError(CLIENT_ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
           case 503:
