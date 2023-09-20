@@ -14,8 +14,6 @@
   "type": "module",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "module": "dist/index.module.js",
-  "unpkg": "dist/index.umd.js",
   "scripts": {
     "postinstall": "husky install && husky set .husky/pre-commit \"yarn test\" && husky add .husky/pre-commit \"yarn lint-staged\"",
     "prepack": "pinst --disable",
