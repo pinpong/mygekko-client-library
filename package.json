@@ -1,6 +1,6 @@
 {
   "name": "mygekko-client-library",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MyGekko javascript client library",
   "keywords": [
     "mygekko",
@@ -11,11 +11,9 @@
   ],
   "author": "pinpong",
   "license": "Apache-2.0",
-  "type": "module",
+  "type": "commonjs",
   "source": "src/index.ts",
   "main": "dist/index.js",
-  "module": "dist/index.module.js",
-  "unpkg": "dist/index.umd.js",
   "scripts": {
     "postinstall": "husky install && husky set .husky/pre-commit \"yarn test\" && husky add .husky/pre-commit \"yarn lint-staged\"",
     "prepack": "pinst --disable",
@@ -52,5 +50,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/pinpong/mygekko-client-library.git"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
