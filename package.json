@@ -1,6 +1,6 @@
 {
   "name": "mygekko-client-library",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MyGekko javascript client library",
   "keywords": [
     "mygekko",
@@ -11,7 +11,7 @@
   ],
   "author": "pinpong",
   "license": "Apache-2.0",
-  "type": "module",
+  "type": "commonjs",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "scripts": {
@@ -50,5 +50,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/pinpong/mygekko-client-library.git"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
