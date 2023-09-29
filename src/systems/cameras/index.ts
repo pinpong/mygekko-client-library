@@ -1,83 +1,36 @@
-import { ItemStatusResponse, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
-import { systemFilteredByItems, valuesToStringList } from '../../utils/extensions/stringUtils';
+import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
-import { SystemType, Trend } from '../base/types';
+import { SystemType } from '../base/types';
 import { Camera } from './types';
-
-const systemType = SystemType.cameras;
 
 /**
  * @group Systems
  */
-export class Cameras extends BaseSystem {
-  /**
-   * Parses the item.
-   * @param config - The myGEKKO device configuration.
-   * @param status - The response from the status request.
-   * @param itemId - The item id.
-   */
-  private parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Camera {
-    const values = valuesToStringList(status);
+export class Cameras extends BaseSystem<Camera> {
+  public constructor(client: LocalClient | RemoteClient) {
+    /**
+     * Parses the item.
+     * @param config - The myGEKKO device configuration.
+     * @param status - The response from the status request.
+     * @param itemId - The item id.
+     */
+    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Camera {
+      const values = valuesToStringList(status);
 
-    return {
-      sumState: null,
-      itemId: itemId,
-      name: config[itemId].name,
-      page: config[itemId].page,
-      newRecordCount: tryParseFloat(values[0]),
-      imageUrl: config[itemId]['imagepath'] ?? null,
-      streamUrl: config[itemId]['streampath'] ?? null,
-      cgiUrl: config[itemId]['cgipath'] ?? null,
-    };
-  }
+      return {
+        sumState: null,
+        itemId: itemId,
+        name: config[itemId].name,
+        page: config[itemId].page,
+        newRecordCount: tryParseFloat(values[0]),
+        imageUrl: config[itemId]['imagepath'] ?? null,
+        streamUrl: config[itemId]['streampath'] ?? null,
+        cgiUrl: config[itemId]['cgipath'] ?? null,
+      };
+    }
 
-  /**
-   * Returns all items.
-   * @throws {@link ClientError}
-   */
-  public async getItems(): Promise<Camera[]> {
-    const status = await this.getCompleteStatus(systemType);
-    return systemFilteredByItems(this.client.systemConfig[systemType]).map((key) => {
-      return this.parseItem(this.client.systemConfig[systemType], status[key], key);
-    });
-  }
-
-  /**
-   * Returns all trends.
-   * @param startDate - The start date as date string.
-   * @param endDate - The start date as date string.
-   * @param count - The data count.
-   * @throws {@link ClientError}
-   */
-  public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend[]> {
-    return await this.getTrendsStatuses(systemType, startDate, endDate, count);
-  }
-
-  /**
-   * Returns a single trend by item id.
-   * @param itemId - The item id.
-   * @param startDate - The start date as date string.
-   * @param endDate - The start date as date string.
-   * @param count - The data count.
-   * @throws {@link ClientError}
-   */
-  public async getTrendByItemId(
-    itemId: string,
-    startDate: string,
-    endDate: string,
-    count: number
-  ): Promise<Trend> {
-    return await this.getTrendStatus(systemType, itemId, startDate, endDate, count);
-  }
-
-  /**
-   * Returns a single item by id.
-   * @param itemId - The item id.
-   * @throws {@link ClientError}
-   */
-  public async getItemById(itemId: string): Promise<Camera> {
-    const status = await this.getStatusById(systemType, itemId);
-    return this.parseItem(this.client.systemConfig[systemType], status, itemId);
+    super(client, SystemType.cameras, parseItem);
   }
 }
