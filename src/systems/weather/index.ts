@@ -1,35 +1,37 @@
-import { SystemStatusResponse, TrendItemResponse } from '../../client';
+import { LocalClient, RemoteClient, SystemStatusResponse, TrendItemResponse } from '../../client';
 import { throwErrorIfSystemIsNotEnabled } from '../../utils/errors/errorUtils';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
-import { BaseSystem } from '../base';
+import { BaseSubSystem } from '../base';
 import { SystemType, Trend, TrendItem } from '../base/types';
 import { WeatherItem } from './types';
-
-const systemType = SystemType.weather;
 
 /**
  * @group Systems
  */
-export class Weather extends BaseSystem {
-  /**
-   * Parses the item.
-   * @param status - The current myGEKKO device status.
-   */
-  private parseItem(status: SystemStatusResponse): WeatherItem {
-    return {
-      sumState: null,
-      itemId: null,
-      name: null,
-      page: null,
-      twilight: tryParseFloat(status['twilight']['value']),
-      humidity: tryParseFloat(status['humidity']['value']),
-      brightness: tryParseFloat(status['brightness']['value']),
-      brightnessWest: tryParseFloat(status['brightnessw']['value']),
-      brightnessEast: tryParseFloat(status['brightnesso']['value']),
-      wind: tryParseFloat(status['wind']['value']),
-      temperature: tryParseFloat(status['temperature']['value']),
-      rain: tryParseFloat(status['rain']['value']),
-    };
+export class Weather extends BaseSubSystem<WeatherItem> {
+  public constructor(client: LocalClient | RemoteClient) {
+    /**
+     * Parses the item.
+     * @param status - The response from the status request.
+     */
+    function parseItem(status: SystemStatusResponse): WeatherItem {
+      return {
+        sumState: null,
+        itemId: null,
+        name: null,
+        page: null,
+        twilight: tryParseFloat(status['twilight']['value']),
+        humidity: tryParseFloat(status['humidity']['value']),
+        brightness: tryParseFloat(status['brightness']['value']),
+        brightnessWest: tryParseFloat(status['brightnessw']['value']),
+        brightnessEast: tryParseFloat(status['brightnesso']['value']),
+        wind: tryParseFloat(status['wind']['value']),
+        temperature: tryParseFloat(status['temperature']['value']),
+        rain: tryParseFloat(status['rain']['value']),
+      };
+    }
+
+    super(client, SystemType.energyManagers, parseItem);
   }
 
   /**
@@ -76,9 +78,9 @@ export class Weather extends BaseSystem {
    * @throws {@link ClientError}
    */
   public async getItem(): Promise<WeatherItem> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, systemType);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
-    const status = await this.client.systemStatusRequest(systemType);
+    const status = await this.client.systemStatusRequest(this.systemType);
     return this.parseItem(status);
   }
 
@@ -90,7 +92,7 @@ export class Weather extends BaseSystem {
    * @throws {@link ClientError}
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend> {
-    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, systemType);
+    throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
     return await this.parseWeatherItemTrend(
       'meteo' as SystemType,
