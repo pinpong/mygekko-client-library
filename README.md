@@ -2,8 +2,9 @@
 ![npm](https://img.shields.io/npm/v/mygekko-client-library)
 ![npm](https://img.shields.io/npm/dy/mygekko-client-library)
 ![GitHub issues](https://img.shields.io/github/issues/pinpong/mygekko-client-library)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/code_check)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_release.yml?label=lint)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_release.yml?label=release%20build)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_docs.yml?label=release%20docs)
 
 ## Documentation
 
