@@ -24,13 +24,13 @@ This is a very simple example. This creates a remote client and retrieves the de
 import { RemoteClient } from 'mygekko-client-library';
 
 const client = new RemoteClient({
-  username: 'test@test.com',
-  gekkoId: 'XXXX-XXXX-XXXX-XXXX',
-  apiKey: 'damnSecure',
+  username: '<your-mygekko-user-email>',
+  gekkoId: '<your-gekko-id>',
+  apiKey: '<your-mygekko-api-remote-key>',
 });
 
 try {
-  const blinds = client.blinds.getAll();
+  const blinds = client.blinds.getItems();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
   const blindsTrends = client.blinds.getTrends(
@@ -50,13 +50,13 @@ And this creates a local client and retrieves the details of all blinds:
 import { LocalClient } from 'mygekko-client-library';
 
 const client = new LocalClient({
-  ip: '127.0.1',
-  username: 'user',
-  password: 'damnSecure',
+  ip: '<your-mygekko-ip-address>',
+  username: '<your-mygekko-username>',
+  password: '<your-mygekko-password>',
 });
 
 try {
-  const blinds = client.blinds.getAll();
+  const blinds = client.blinds.getItems();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
   const blindsTrends = client.blinds.getTrends(

@@ -10,7 +10,7 @@ test('remote client', async () => {
 
   /*
       try {
-        const blinds = client.blinds.getAll();
+        const blinds = client.blinds.getItems();
         console.error(blinds);
         await client.blinds.setPosition("item0", 75);
       } catch (e) {
@@ -30,7 +30,7 @@ test('local client', async () => {
 
   /*
       try {
-        const blinds = client.blinds.getAll();
+        const blinds = client.blinds.getItems();
         console.error(blinds);
         await client.blinds.setPosition("item0", 75);
       } catch (e) {
