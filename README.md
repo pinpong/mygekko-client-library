@@ -30,7 +30,7 @@ const client = new RemoteClient({
 });
 
 try {
-  const blinds = client.blinds.getAll();
+  const blinds = client.blinds.getItems();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
   const blindsTrends = client.blinds.getTrends(
@@ -56,7 +56,7 @@ const client = new LocalClient({
 });
 
 try {
-  const blinds = client.blinds.getAll();
+  const blinds = client.blinds.getItems();
   console.log(blinds);
   await client.blinds.setPosition('item0', 75);
   const blindsTrends = client.blinds.getTrends(
