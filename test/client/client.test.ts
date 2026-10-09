@@ -1,41 +1,38 @@
-import { LocalClient, RemoteClient } from '../../src/client';
+import axios from 'axios';
+
+import { CLIENT_ERROR_MESSAGES, LocalClient, RemoteClient } from '../../src';
+import { MockGekko } from '../mock/mockGekko';
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 test('remote client', async () => {
-  const client = new RemoteClient({
-    username: 'test',
-    gekkoId: 'test',
-    apiKey: 'test',
-  });
+  const mock = new MockGekko();
+  mock.install();
+  const client = new RemoteClient({ username: 'test', gekkoId: 'test', apiKey: 'test' });
 
-  /*
-      try {
-        const blinds = client.blinds.getItems();
-        console.error(blinds);
-        await client.blinds.setPosition("item0", 75);
-      } catch (e) {
-        console.log(e);
-      }
-     */
+  await client.initialize();
+  expect(jest.mocked(axios.get).mock.calls[0][0]).toBe(
+    'https://live.my-gekko.com/api/v1/var?username=test&key=test&gekkoid=test'
+  );
+  expect(client.connectionType).toBe('remote');
 
-  await expect(async () => await client.initialize()).rejects.toThrow();
+  mock.failWith = 403;
+  await expect(client.blinds.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.BAD_LOGIN);
 });
 
 test('local client', async () => {
-  const client = new LocalClient({
-    ip: '127.0.1',
-    username: 'test',
-    password: 'test',
-  });
+  const mock = new MockGekko();
+  mock.install();
+  const client = new LocalClient({ ip: 'mock', username: 'test', password: 'test' });
 
-  /*
-      try {
-        const blinds = client.blinds.getItems();
-        console.error(blinds);
-        await client.blinds.setPosition("item0", 75);
-      } catch (e) {
-        console.log(e);
-      }
-     */
+  await client.initialize();
+  expect(jest.mocked(axios.get).mock.calls[0][0]).toBe(
+    'http://mock/api/v1/var?username=test&password=test'
+  );
+  expect(client.connectionType).toBe('local');
 
-  await expect(async () => await client.initialize()).rejects.toThrow();
+  mock.failWith = 403;
+  await expect(client.blinds.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.BAD_LOGIN);
 });
