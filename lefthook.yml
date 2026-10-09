@@ -9,7 +9,9 @@ pre-commit:
       stage_fixed: true
 
     - name: lint
-      glob: '*.ts'
+      glob: '*.{cjs,mjs,js,ts}'
+      exclude:
+        - '.yarn/**'
       run: yarn eslint --fix --max-warnings=0 {staged_files}
       stage_fixed: true
 
