@@ -8,6 +8,7 @@ import {
   VentBypassState,
   VentCoolingModeState,
   VentDehumidificationState,
+  VentDeviceModel,
   VentLevel,
   VentWorkingModeIndividual,
   VentWorkingModePluggit,
@@ -145,5 +146,82 @@ export class Vents extends BaseSystem<Vent> {
    */
   public async toggle(itemId: string): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
+
+  /**
+   * Returns the working modes of a device model by name, the meaning of a mode depends on the model.
+   * @param deviceModel - The device model.
+   */
+  public getWorkingModes(deviceModel: VentDeviceModel | null): { [name: string]: number } {
+    switch (deviceModel) {
+      case VentDeviceModel.pluggit:
+        return {
+          auto: VentWorkingModePluggit.auto,
+          manual: VentWorkingModePluggit.manual,
+          pluggitAuto: VentWorkingModePluggit.pluggitAuto,
+          pluggitWeek: VentWorkingModePluggit.pluggitWeek,
+        };
+      case VentDeviceModel.zimmermannV2:
+        return {
+          off: VentWorkingModeProxxonV2.off,
+          ecoSummer: VentWorkingModeProxxonV2.ecoSummer,
+          ecoWinter: VentWorkingModeProxxonV2.ecoWinter,
+          comfort: VentWorkingModeProxxonV2.comfort,
+          ovenOperation: VentWorkingModeProxxonV2.ovenOperation,
+        };
+      default:
+        return { off: VentWorkingModeIndividual.off, on: VentWorkingModeIndividual.on };
+    }
+  }
+
+  /**
+   * Checks if the level of a vent can be set in its current working mode.
+   * @param item - The item.
+   */
+  public isLevelSupported(item: Pick<Vent, 'deviceModel' | 'workingMode'>): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return (
+        item.workingMode === VentWorkingModeProxxonV2.ecoSummer ||
+        item.workingMode === VentWorkingModeProxxonV2.ecoWinter
+      );
+    }
+    return item.deviceModel !== null;
+  }
+
+  /**
+   * Checks if a vent can be switched off by its level.
+   * @param item - The item.
+   */
+  public isLevelOffSupported(
+    item: Pick<Vent, 'deviceModel' | 'workingMode' | 'ventLevel'>
+  ): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return item.workingMode === VentWorkingModeProxxonV2.off || item.ventLevel === VentLevel.off;
+    }
+    return item.deviceModel !== null;
+  }
+
+  /**
+   * Checks if the bypass state of a vent can be set.
+   * @param item - The item.
+   */
+  public isBypassSupported(item: Pick<Vent, 'deviceModel'>): boolean {
+    return (
+      item.deviceModel === VentDeviceModel.standard || item.deviceModel === VentDeviceModel.pluggit
+    );
+  }
+
+  /**
+   * Checks if the cooling mode of a vent can be set in its current working mode.
+   * @param item - The item.
+   */
+  public isCoolingSupported(item: Pick<Vent, 'deviceModel' | 'workingMode'>): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return (
+        item.workingMode === VentWorkingModeProxxonV2.comfort ||
+        item.workingMode === VentWorkingModeProxxonV2.ecoSummer
+      );
+    }
+    return this.isBypassSupported(item);
   }
 }

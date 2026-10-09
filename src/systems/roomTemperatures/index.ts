@@ -5,6 +5,7 @@ import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
 import {
   RoomTemperature,
+  RoomTemperatureDeviceModel,
   RoomTemperatureWorkingModeKnx,
   RoomTemperatureWorkingModeStandard,
 } from './types';
@@ -77,5 +78,31 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
     mode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx
   ): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `M${mode}`);
+  }
+
+  /**
+   * Returns the working modes of a device model by name, the meaning of a mode depends on the model.
+   * @param deviceModel - The device model.
+   */
+  public getWorkingModes(deviceModel: RoomTemperatureDeviceModel | null): {
+    [name: string]: number;
+  } {
+    if (deviceModel === RoomTemperatureDeviceModel.knx) {
+      return {
+        auto: RoomTemperatureWorkingModeKnx.auto,
+        comfort: RoomTemperatureWorkingModeKnx.comfort,
+        standby: RoomTemperatureWorkingModeKnx.standby,
+        economy: RoomTemperatureWorkingModeKnx.economy,
+        buildingProtection: RoomTemperatureWorkingModeKnx.buildingProtection,
+      };
+    }
+    return {
+      off: RoomTemperatureWorkingModeStandard.off,
+      on: RoomTemperatureWorkingModeStandard.on,
+      comfort: RoomTemperatureWorkingModeStandard.comfort,
+      reduced: RoomTemperatureWorkingModeStandard.reduced,
+      manual: RoomTemperatureWorkingModeStandard.manual,
+      standby: RoomTemperatureWorkingModeStandard.standby,
+    };
   }
 }
