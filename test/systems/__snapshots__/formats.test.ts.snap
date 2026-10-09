@@ -4,7 +4,7 @@ exports[`accesses reads the values in the order of the device format 1`] = `
 [
   "0 accessControllerActionState <- currentState",
   "1 elementInfo <- sumState",
-  "2 accessState <- startCondition",
+  "2 accessState <- accessState",
   "3 gateRuntimeLevel <- gateRuntimePercentage",
   "4 accessType <- accessType",
 ]
@@ -21,10 +21,10 @@ exports[`actions reads the values in the order of the device format 1`] = `
 exports[`alarmSystems reads the values in the order of the device format 1`] = `
 [
   "0 alarmState <- alarmSystemState",
-  "1 zone1DeviceStatus <- alarmDevices.0.type",
+  "1 zone1DeviceStatus <- alarmDevices.0.deviceStatus",
   "2 zone1SharpState <- alarmDevices.0.sharpState",
   "3 zone1AlarmState <- alarmDevices.0.systemState",
-  "4 zone2DeviceStatus <- alarmDevices.1.type",
+  "4 zone2DeviceStatus <- alarmDevices.1.deviceStatus",
   "5 zone2SharpState <- alarmDevices.1.sharpState",
   "6 zone2AlarmState <- alarmDevices.1.systemState",
   "7 deviceModel <- deviceModel",

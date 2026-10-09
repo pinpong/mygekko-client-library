@@ -22,6 +22,7 @@ export class Lights extends BaseSystem<Light> {
       itemId: string
     ): Light {
       const values = valuesToStringList(status);
+      const dimLevel = tryParseFloat(values[1]);
 
       return {
         sumState: tryParseFloat(values[4]),
@@ -29,7 +30,8 @@ export class Lights extends BaseSystem<Light> {
         name: config[itemId].name,
         page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
-        dimLevel: tryParseFloat(values[1]),
+        // the device reports dim levels outside of 0-100 at times
+        dimLevel: dimLevel === null ? null : Math.min(Math.max(dimLevel, 0), 100),
         rgbColor: tryParseFloat(values[2]),
         tunableWhiteLevel: tryParseFloat(values[3]),
       };

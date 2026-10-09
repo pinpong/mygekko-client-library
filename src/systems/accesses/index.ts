@@ -29,7 +29,7 @@ export class Accesses extends BaseSystem<Access> {
         name: config[itemId].name,
         page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
-        startCondition: tryParseFloat(values[2]),
+        accessState: tryParseFloat(values[2]),
         gateRuntimePercentage: tryParseFloat(values[3]),
         accessType: tryParseFloat(values[4]),
       };

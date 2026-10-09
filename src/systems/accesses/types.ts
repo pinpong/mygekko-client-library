@@ -7,8 +7,8 @@ import { BaseSystemType } from '../base/types';
 export type Access = BaseSystemType & {
   /** The current state */
   currentState: AccessState | null;
-  /** The start condition state */
-  startCondition: AccessStartConditionState | null;
+  /** The state of the access itself */
+  accessState: AccessDoorState | null;
   /** The runtime percentage 0-100 as % */
   gateRuntimePercentage: number | null;
   /** The access type */
@@ -26,12 +26,12 @@ export enum AccessState {
 }
 
 /**
- * The access start condition states.
+ * The states of the access itself.
  * @group Systems
  */
-export enum AccessStartConditionState {
-  'off' = 0,
-  'on' = 1,
+export enum AccessDoorState {
+  'closed' = 0,
+  'open' = 1,
 }
 
 /**

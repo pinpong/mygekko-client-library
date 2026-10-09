@@ -202,7 +202,9 @@ export class BaseSystem<T> extends Base {
   public async getItems(): Promise<T[]> {
     const status = await this.getCompleteStatus(this.systemType);
     return systemFilteredByItems(this.client.systemConfig[this.systemType]).map((key) => {
-      return this.parseItem(this.client.systemConfig[this.systemType], status[key], key);
+      // an item without a status keeps its place with empty values
+      const itemStatus = status[key] ?? { sumstate: { value: '' } };
+      return this.parseItem(this.client.systemConfig[this.systemType], itemStatus, key);
     });
   }
 

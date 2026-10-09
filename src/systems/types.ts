@@ -1,4 +1,4 @@
-export { Access, AccessState, AccessStartConditionState, AccessType } from './accesses/types';
+export { Access, AccessState, AccessDoorState, AccessType } from './accesses/types';
 export { Action, ActionState, ActionStartConditionState } from './actions/types';
 export { SystemType, Trend, BaseSystemType, SumState, SystemGroup, TrendItem } from './base/types';
 export {
@@ -13,6 +13,7 @@ export {
   AlarmSystemState,
   AlarmDevice,
   AlarmSystemDeviceState,
+  AlarmSystemDeviceStatus,
   AlarmSystemDeviceModel,
   AlarmSystemDeviceSharpState,
 } from './alarmSystems/types';

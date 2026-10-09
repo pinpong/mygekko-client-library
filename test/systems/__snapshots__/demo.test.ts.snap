@@ -3,33 +3,33 @@
 exports[`accesses 1`] = `
 [
   {
+    "accessState": 0,
     "accessType": 0,
     "currentState": 0,
     "gateRuntimePercentage": 0,
     "itemId": "item0",
     "name": "Haustür",
     "page": null,
-    "startCondition": 0,
     "sumState": 0,
   },
   {
+    "accessState": 0,
     "accessType": 0,
     "currentState": 1,
     "gateRuntimePercentage": 0,
     "itemId": "item1",
     "name": "Garagentür",
     "page": null,
-    "startCondition": 0,
     "sumState": 0,
   },
   {
+    "accessState": 0,
     "accessType": 0,
     "currentState": 2,
     "gateRuntimePercentage": 0,
     "itemId": "item2",
     "name": "Toreinfahrt",
     "page": null,
-    "startCondition": 0,
     "sumState": 0,
   },
 ]
@@ -209,16 +209,16 @@ exports[`alarmSystems 1`] = `
   {
     "alarmDevices": [
       {
+        "deviceStatus": 1,
         "sharpState": 0,
         "systemState": 0,
-        "type": "1",
-        "zone": "1",
+        "zone": "Bereich 1",
       },
       {
+        "deviceStatus": 1,
         "sharpState": 0,
         "systemState": 0,
-        "type": "1",
-        "zone": "2",
+        "zone": "Bereich 2",
       },
     ],
     "alarmSystemState": 0,

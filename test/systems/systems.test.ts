@@ -1,6 +1,7 @@
 import {
   ActionState,
   BlindState,
+  CLIENT_ERROR_MESSAGES,
   LightState,
   LocalClient,
   PoolWorkingMode,
@@ -15,7 +16,7 @@ import { MockGekko } from '../mock/mockGekko';
  * @param status - The status values by system.
  */
 function createClient(config: object, status: object): Promise<LocalClient> {
-  return new MockGekko({ config, trend: {}, status }).createClient();
+  return new MockGekko({ config: { globals: {}, ...config }, trend: {}, status }).createClient();
 }
 
 afterEach(() => {
@@ -311,14 +312,65 @@ test('groups', async () => {
 
 test('supported systems', async () => {
   const client = await createClient(
-    { globals: { meteo: {} }, lights: { item0: { name: 'Licht' } }, emobils: {} },
+    { globals: { meteo: {}, network: {}, alarm: {} }, lights: { item0: {} }, emobils: {} },
     {}
   );
 
   expect(client.supportedSystems).toEqual([
-    SystemType.globals,
     SystemType.weather,
     SystemType.lights,
     SystemType.wallBoxes,
+  ]);
+});
+
+test('rejects a response that is no device config', async () => {
+  const mock = new MockGekko({ config: { error: 'not a gekko' }, trend: {}, status: {} });
+
+  await expect(mock.createClient()).rejects.toThrow(CLIENT_ERROR_MESSAGES.INVALID_CONFIG);
+});
+
+test('access state, alarm zones, dim level and items without status', async () => {
+  const client = await createClient(
+    {
+      accessdoors: { item0: { name: 'Haustür' } },
+      alarmsystem: {
+        item0: { name: 'Alarmanlage', zone1: 'EG', zone2: 'OG' },
+        item1: { name: 'Nebengebäude' },
+      },
+      lights: {
+        item0: { name: 'Sofa' },
+        item1: { name: 'Tisch' },
+        item2: { name: 'Flur' },
+      },
+    },
+    {
+      accessdoors: { item0: { sumstate: { value: '0;0;1;40;0' } } },
+      alarmsystem: {
+        item0: { sumstate: { value: '0;1;0;0;0;1;3;1;' } },
+        item1: { sumstate: { value: '0;1;0;0;1;0;0;1;' } },
+      },
+      lights: {
+        item0: { sumstate: { value: '1;130.00;;;0' } },
+        item1: { sumstate: { value: '1;-5.00;;;0' } },
+      },
+    }
+  );
+
+  expect(await client.accesses.getItems()).toMatchObject([
+    { currentState: 0, sumState: 0, accessState: 1, gateRuntimePercentage: 40, accessType: 0 },
+  ]);
+  expect(await client.alarmSystems.getItems()).toMatchObject([
+    {
+      alarmDevices: [
+        { zone: 'EG', deviceStatus: 1, sharpState: 0, systemState: 0 },
+        { zone: 'OG', deviceStatus: 0, sharpState: 1, systemState: 3 },
+      ],
+    },
+    { alarmDevices: [{ zone: '1' }, { zone: '2' }] },
+  ]);
+  expect(await client.lights.getItems()).toMatchObject([
+    { itemId: 'item0', dimLevel: 100 },
+    { itemId: 'item1', dimLevel: 0 },
+    { itemId: 'item2', name: 'Flur', currentState: null, dimLevel: null, sumState: null },
   ]);
 });

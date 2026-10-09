@@ -54,7 +54,7 @@ import {
 } from './systems';
 import {
   Access,
-  AccessStartConditionState,
+  AccessDoorState,
   AccessState,
   AccessType,
   Action,
@@ -70,6 +70,7 @@ import {
   AlarmSystemDeviceModel,
   AlarmSystemDeviceSharpState,
   AlarmSystemDeviceState,
+  AlarmSystemDeviceStatus,
   AlarmSystemState,
   Analysis,
   AnalysisState,
@@ -201,7 +202,7 @@ export {
 export {
   Access,
   AccessState,
-  AccessStartConditionState,
+  AccessDoorState,
   AccessType,
   Action,
   ActionState,
@@ -221,6 +222,7 @@ export {
   AlarmSystemState,
   AlarmDevice,
   AlarmSystemDeviceState,
+  AlarmSystemDeviceStatus,
   AlarmSystemDeviceModel,
   AlarmSystemDeviceSharpState,
   Blind,

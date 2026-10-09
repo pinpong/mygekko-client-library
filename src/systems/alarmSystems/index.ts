@@ -37,14 +37,14 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
         alarmSystemState: tryParseFloat(values[0]),
         alarmDevices: [
           {
-            zone: '1',
-            type: values[1],
+            zone: config[itemId].zone1 ?? '1',
+            deviceStatus: tryParseFloat(values[1]),
             sharpState: tryParseFloat(values[2]),
             systemState: tryParseFloat(values[3]),
           },
           {
-            zone: '2',
-            type: values[4],
+            zone: config[itemId].zone2 ?? '2',
+            deviceStatus: tryParseFloat(values[4]),
             sharpState: tryParseFloat(values[5]),
             systemState: tryParseFloat(values[6]),
           },

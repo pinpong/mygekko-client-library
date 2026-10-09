@@ -176,6 +176,10 @@ export type ItemConfig = {
   streampath?: string;
   /** The cgi path of a camera */
   cgipath?: string;
+  /** The name of the first zone of an alarm system */
+  zone1?: string;
+  /** The name of the second zone of an alarm system */
+  zone2?: string;
 };
 
 /**
@@ -329,8 +333,10 @@ export abstract class Client {
    * The systems the myGEKKO device supports, empty until the client is initialized.
    */
   public get supportedSystems(): SystemType[] {
-    return Object.values(SystemType).filter((systemType) =>
-      available(this.systemConfig, systemType)
+    // every device has the globals with the network and the alarm, they are no systems to list
+    const globals = [SystemType.globals, SystemType.network, SystemType.alarm];
+    return Object.values(SystemType).filter(
+      (systemType) => !globals.includes(systemType) && available(this.systemConfig, systemType)
     );
   }
 
@@ -411,8 +417,7 @@ export abstract class Client {
     if (this.systemConfig) {
       throw Error(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
     }
-    this._systemConfig = await this.internalRequest<SystemConfig>('/var?');
-    this._trendConfig = await this.internalRequest<TrendConfig>('/trend?');
+    await this.loadConfig();
   }
 
   /**
@@ -423,8 +428,20 @@ export abstract class Client {
     if (!this.systemConfig) {
       throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
-    this._systemConfig = await this.internalRequest('/var?');
-    this._trendConfig = await this.internalRequest('/trend?');
+    await this.loadConfig();
+  }
+
+  /**
+   * Loads the system and trend configurations.
+   * @throws {@link ClientError}
+   */
+  private async loadConfig(): Promise<void> {
+    const systemConfig = await this.internalRequest<SystemConfig>('/var?');
+    if (typeof systemConfig !== 'object' || systemConfig === null || !('globals' in systemConfig)) {
+      throw new ClientError(CLIENT_ERROR_MESSAGES.INVALID_CONFIG);
+    }
+    this._systemConfig = systemConfig;
+    this._trendConfig = await this.internalRequest<TrendConfig>('/trend?');
   }
 
   /**

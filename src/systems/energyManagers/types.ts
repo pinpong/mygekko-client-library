@@ -86,8 +86,8 @@ export enum BatteryState {
  * @group Systems
  */
 export enum EMSState {
-  'disabled' = 0,
-  'enabled' = 1,
+  'off' = 0,
+  'on' = 1,
 }
 
 /**

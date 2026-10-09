@@ -20,7 +20,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-// every position of the status holds 100 plus its index, so the snapshot shows which field reads it
+// every position of the status holds its own small fraction, so the snapshot shows which field reads it
 test.each([
   ['accesses', 'accessdoors'],
   ['actions', 'actions'],
@@ -48,10 +48,12 @@ test.each([
     .map((field) => field.trim().split(' ')[0])
     .filter((field) => field.length);
   const client = await new MockGekko({
-    config: { [system]: { item0: { name: 'item' } } },
+    config: { globals: {}, [system]: { item0: { name: 'item' } } },
     trend: {},
     status: {
-      [system]: { item0: { sumstate: { value: fields.map((_, i) => `${100 + i};`).join('') } } },
+      [system]: {
+        item0: { sumstate: { value: fields.map((_, i) => `${(i + 1) / 100};`).join('') } },
+      },
     },
   }).createClient();
 
@@ -60,7 +62,9 @@ test.each([
 
   expect(
     fields.map((field, i) => {
-      const read = values.filter(([, value]) => Number(value) === 100 + i).map(([path]) => path);
+      const read = values
+        .filter(([, value]) => Number(value) === (i + 1) / 100)
+        .map(([path]) => path);
       return `${i} ${field} <- ${read.join(', ') || '-'}`;
     })
   ).toMatchSnapshot();

@@ -30,6 +30,8 @@ export enum CLIENT_ERROR_MESSAGES {
   SYSTEM_NOT_INITIALIZED = 'client/client-not-initialized',
   ALREADY_INITIALIZED = 'client/client-already-initialized',
   MISSING_ACCESS = 'client/missing-access',
+  /** The response to the config request is no myGEKKO device config */
+  INVALID_CONFIG = 'client/invalid-config',
   SYSTEM_NOT_SUPPORTED = 'client/system-not-supported',
   TREND_NOT_SUPPORTED = 'client/trend-not-supported',
   CANNOT_PARSE_STATUS = 'client/cannot-parse-status',
