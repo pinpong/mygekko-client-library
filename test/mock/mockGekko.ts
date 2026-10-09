@@ -87,16 +87,20 @@ function isDocumented(format: unknown, value: string): boolean {
   if (typeof format !== 'string') {
     return false;
   }
-  return format
-    .split(' (')[0]
-    .split('|')
-    .some((token) => {
-      const prefix = token.match(/^([A-Za-z]+?)(?:[-+]?\d|x$)/)?.[1];
-      return (
-        token === value ||
-        (prefix !== undefined && new RegExp(`^${prefix}[-+]?\\d+(\\.\\d+)?$`).test(value))
-      );
-    });
+  const tokens = format.split(' (')[0].split('|');
+  const prefixes = tokens.map((token) => token.match(/^([A-Za-z]+?)(?:[-+]?\d|x$)/)?.[1]);
+
+  return tokens.some((token, index) => {
+    const prefix = prefixes[index];
+    // a prefix listed several times enumerates its values, a single one stands for any number
+    const enumerated = prefixes.filter((other) => other === prefix).length > 1;
+    return (
+      token === value ||
+      (prefix !== undefined &&
+        !enumerated &&
+        new RegExp(`^${prefix}[-+]?\\d+(\\.\\d+)?$`).test(value))
+    );
+  });
 }
 
 /**

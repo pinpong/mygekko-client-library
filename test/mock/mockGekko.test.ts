@@ -40,6 +40,8 @@ test('records commands', async () => {
   await client.vents.setDehumidificationState('item0', 1);
   await client.wallBoxes.setChargePower('item0', 11);
   await client.changeRequest(SystemType.lights, 'item0', 'X1');
+  await client.pools.setFilterCleaning('item0', 3);
+  await client.pools.setFilterCleaning('item0', 0);
 
   expect(mock.commands).toEqual([
     { system: 'blinds', itemId: 'item0', value: 'P50', documented: true },
@@ -48,6 +50,8 @@ test('records commands', async () => {
     { system: 'vents', itemId: 'item0', value: 'D1', documented: true },
     { system: 'emobils', itemId: 'item0', value: 'CS11', documented: true },
     { system: 'lights', itemId: 'item0', value: 'X1', documented: false },
+    { system: 'pools', itemId: 'item0', value: 'C3', documented: true },
+    { system: 'pools', itemId: 'item0', value: 'C0', documented: false },
   ]);
   expect(mock.handle('/api/v1/var/energymanager/item0/scmd/set?value=1&')).toEqual({
     status: 404,

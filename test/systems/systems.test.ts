@@ -408,7 +408,7 @@ test('text values missing in the status are null', async () => {
   ]);
   const [multiRoom] = await client.multiRooms.getItems();
   expect(multiRoom.currentAudioTitle).toBe(null);
-  expect(multiRoom.playList?.every(({ name }) => name === null)).toBe(true);
+  expect(multiRoom.playList).toEqual([]);
   expect(await client.energyCosts.getItems()).toMatchObject([
     { energyUnit: null, powerUnit: null, startDateTotalEnergyInPeriod: null },
   ]);
@@ -452,13 +452,16 @@ test('sms and email and wall box charge commands', async () => {
   await client.wallBoxes.setChargeState('item0', WallBoxChargeState.on);
   await client.wallBoxes.setChargeState('item0', WallBoxChargeState.paused);
 
-  expect(mock.commands.map(({ system, value }) => [system, value])).toEqual([
-    ['smsemail', '0'],
-    ['smsemail', '1'],
-    ['emobils', '0'],
-    ['emobils', '1'],
-    ['emobils', '2'],
-  ]);
+  // off and paused follow the app, the command format of the device lists -1 for off
+  expect(mock.commands.map(({ system, value, documented }) => [system, value, documented])).toEqual(
+    [
+      ['smsemail', '0', false],
+      ['smsemail', '1', true],
+      ['emobils', '0', false],
+      ['emobils', '1', true],
+      ['emobils', '2', false],
+    ]
+  );
 });
 
 test('grid power, maximum vent level and wind are null without a value', async () => {
