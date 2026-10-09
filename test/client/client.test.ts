@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { CLIENT_ERROR_MESSAGES, LocalClient, RemoteClient } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
@@ -35,4 +35,25 @@ test('local client', async () => {
 
   mock.failWith = 403;
   await expect(client.blinds.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.BAD_LOGIN);
+});
+
+test('stays uninitialized if the trend config cannot be loaded', async () => {
+  const mock = new MockGekko();
+  mock.install();
+  const answer = jest.mocked(axios.get).getMockImplementation();
+  let failing = true;
+  jest.mocked(axios.get).mockImplementation(async (url, config) => {
+    if (failing && url.includes('/trend?')) {
+      throw new AxiosError('timeout exceeded', 'ECONNABORTED', undefined, {});
+    }
+    return answer?.(url, config);
+  });
+  const client = new LocalClient({ ip: 'mock', username: 'test', password: 'test' });
+
+  await expect(client.initialize()).rejects.toThrow(CLIENT_ERROR_MESSAGES.TIMEOUT);
+  expect(client.supportedSystems).toEqual([]);
+
+  failing = false;
+  await client.initialize();
+  expect(client.supportedSystems).toContain('lights');
 });

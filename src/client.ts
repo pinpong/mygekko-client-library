@@ -440,8 +440,9 @@ export abstract class Client {
     if (typeof systemConfig !== 'object' || systemConfig === null || !('globals' in systemConfig)) {
       throw new ClientError(CLIENT_ERROR_MESSAGES.INVALID_CONFIG);
     }
+    const trendConfig = await this.internalRequest<TrendConfig>('/trend?');
     this._systemConfig = systemConfig;
-    this._trendConfig = await this.internalRequest<TrendConfig>('/trend?');
+    this._trendConfig = trendConfig;
   }
 
   /**
