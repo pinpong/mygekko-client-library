@@ -1,4 +1,5 @@
 import axios, { isAxiosError } from 'axios';
+import type { AxiosInstance } from 'axios';
 
 import { CLIENT_ERROR_MESSAGES, ClientError } from './errors';
 import {
@@ -51,6 +52,8 @@ type Route = {
   authQuery: string;
   /** The request timeout in milliseconds. */
   timeout: number;
+  /** The axios instance used for http requests. */
+  axios: AxiosInstance;
   /** The time until the route is skipped after a connection error. */
   skipUntil: number;
 };
@@ -74,6 +77,8 @@ export type RequestConfig = {
   timeout?: number;
   /** The attempts of a status request before a connection error is thrown, 3 by default */
   attempts?: number;
+  /** An optional axios instance used for http requests, e.g. to add caching or logging */
+  axiosInstance?: AxiosInstance;
 };
 
 /**
@@ -157,6 +162,7 @@ function remoteRoute(config: Omit<RemoteClientConfig, 'attempts'>): Route {
       gekkoid: config.gekkoId,
     }),
     timeout: config.timeout ?? 5000,
+    axios: config.axiosInstance ?? axios,
     skipUntil: 0,
   };
 }
@@ -171,6 +177,7 @@ function localRoute(config: Omit<LocalClientConfig, 'attempts'>): Route {
     baseUrl: `http://${config.ip}/api/v1`,
     authQuery: authQuery({ username: config.username, password: config.password }),
     timeout: config.timeout ?? 2000,
+    axios: config.axiosInstance ?? axios,
     skipUntil: 0,
   };
 }
@@ -562,7 +569,7 @@ export abstract class Client {
 
     for (let attempt = 1; ; attempt++) {
       try {
-        return await axios.get<T>(`${route.baseUrl}${endpoint}${route.authQuery}`, {
+        return await route.axios.get<T>(`${route.baseUrl}${endpoint}${route.authQuery}`, {
           timeout: route.timeout,
         });
       } catch (error) {
