@@ -11,6 +11,13 @@ export type BaseSystemType = {
   sumState: SumState | null;
 };
 
+/** The group of items of a system */
+/** @group Systems */
+export type SystemGroup = BaseSystemType & {
+  /** The group state, its meaning depends on the system */
+  state: number | null;
+};
+
 /**
  * The system sum states.
  * @group Systems

@@ -1,5 +1,7 @@
 import {
   ActionState,
+  BlindState,
+  LightState,
   LocalClient,
   PoolWorkingMode,
   RoomTemperatureWorkingModeStandard,
@@ -280,4 +282,28 @@ test('global systems with missing values', async () => {
     temperature: 14.1,
     rain: null,
   });
+});
+
+test('groups', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  expect(await client.lights.getGroups()).toEqual([
+    { itemId: 'group0', name: 'Alle', page: null, sumState: null, state: 1 },
+    { itemId: 'group1', name: 'EG', page: null, sumState: null, state: 1 },
+    { itemId: 'group2', name: 'OG', page: null, sumState: null, state: 0 },
+    { itemId: 'group3', name: 'Aussenbereich', page: null, sumState: null, state: 1 },
+  ]);
+  expect(await client.energyCosts.getGroups()).toEqual([
+    { itemId: 'group0', name: 'Grp 1', page: null, sumState: null, state: null },
+  ]);
+  expect(await client.loads.getGroups()).toEqual([]);
+
+  await client.lights.setState('group0', LightState.off);
+  await client.blinds.setState('group0', BlindState.holdUp);
+
+  expect(mock.commands).toEqual([
+    { system: 'lights', itemId: 'group0', value: '0', documented: true },
+    { system: 'blinds', itemId: 'group0', value: '2', documented: true },
+  ]);
 });

@@ -13,8 +13,9 @@ import {
   throwErrorIfSystemIsNotEnabled,
   throwErrorIfTrendIsNotEnabled,
 } from '../../utils/errors/errorUtils';
-import { systemFilteredByItems } from '../../utils/extensions/stringUtils';
-import { SystemType, Trend, TrendItem } from './types';
+import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { systemFilteredByGroup, systemFilteredByItems } from '../../utils/extensions/stringUtils';
+import { SystemGroup, SystemType, Trend, TrendItem } from './types';
 
 class Base {
   /** The client instance */
@@ -203,6 +204,22 @@ export class BaseSystem<T> extends Base {
     return systemFilteredByItems(this.client.systemConfig[this.systemType]).map((key) => {
       return this.parseItem(this.client.systemConfig[this.systemType], status[key], key);
     });
+  }
+
+  /**
+   * Returns all groups, a group takes the commands of the system by its id like an item.
+   * @throws {@link ClientError}
+   */
+  public async getGroups(): Promise<SystemGroup[]> {
+    const status = await this.getCompleteStatus(this.systemType);
+    const config = this.client.systemConfig[this.systemType];
+    return systemFilteredByGroup(config).map((key) => ({
+      sumState: null,
+      itemId: key,
+      name: config[key].name,
+      page: config[key].page ?? null,
+      state: tryParseFloat(status[key]?.sumstate?.value.split(';')[0]),
+    }));
   }
 
   /**

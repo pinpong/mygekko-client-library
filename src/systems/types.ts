@@ -1,6 +1,6 @@
 export { Access, AccessState, AccessStartConditionState, AccessType } from './accesses/types';
 export { Action, ActionState, ActionStartConditionState } from './actions/types';
-export { SystemType, Trend, BaseSystemType, SumState, TrendItem } from './base/types';
+export { SystemType, Trend, BaseSystemType, SumState, SystemGroup, TrendItem } from './base/types';
 export {
   AirConditioner,
   AirConditionerWorkingMode,
