@@ -1,3 +1,9 @@
+## [0.4.0](https://github.com/pinpong/mygekko-client-library/compare/v0.3.0...v0.4.0) (2026-10-09)
+
+### ✨ Features
+
+* allow injecting a custom axios instance ([b8d9600](https://github.com/pinpong/mygekko-client-library/commit/b8d960015de8d02591b9faf3ed4212c33a346a29))
+
 ## [0.3.0](https://github.com/pinpong/mygekko-client-library/compare/v0.2.0...v0.3.0) (2026-10-09)
 
 ### ✨ Features
