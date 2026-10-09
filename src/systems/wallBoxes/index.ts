@@ -53,7 +53,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
         chargingPowerSetPoint: tryParseFloat(values[5]),
         electricCurrentSetPoint: tryParseFloat(values[6]),
         chargeUserName: values[7],
-        chargeDurationTime: tryParseFloat(values[8]),
+        chargeDurationTime: values[8],
         currentChargingEnergy: tryParseFloat(values[9]),
         chargeStartTime: values[11],
         chargeUserIndex: tryParseFloat(values[12]),

@@ -23,6 +23,25 @@ export class HeatingCircuits extends BaseSystem<HeatingCircuit> {
     ): HeatingCircuit {
       const values = valuesToStringList(status);
 
+      // devices reporting seven values omit the return flow temperature, the dew point and the state
+      if (values.length <= 7) {
+        return {
+          sumState: tryParseFloat(values[6]),
+          itemId: itemId,
+          name: config[itemId].name,
+          page: config[itemId].page ?? null,
+          deviceModel: tryParseFloat(values[0]),
+          flowTemperature: tryParseFloat(values[1]),
+          returnFlowTemperature: null,
+          dewPoint: null,
+          pumpWorkingLevel: tryParseFloat(values[2]),
+          coolingModeState: tryParseFloat(values[3]),
+          flowTemperatureSetPoint: tryParseFloat(values[4]),
+          valveOpeningLevel: tryParseFloat(values[5]),
+          currentState: null,
+        };
+      }
+
       return {
         sumState: tryParseFloat(values[8]),
         itemId: itemId,

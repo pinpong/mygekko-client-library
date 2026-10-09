@@ -103,6 +103,7 @@ test('wall boxes', async () => {
       pluggedState: 1,
       chargeState: 1,
       currentChargingPower: 11,
+      chargeDurationTime: '0s',
       sumState: 0,
       wallBoxUser: [
         { id: 1, totalEnergy: 1221.34 },
@@ -167,6 +168,45 @@ test('status value positions', async () => {
       totalEnergyInPeriod: 18422.6,
       startDateTotalEnergyInPeriod: '01.01.2022 12:00:00',
       counterDirection: null,
+    },
+  ]);
+});
+
+test('heating circuits', async () => {
+  const client = await createClient(
+    { heatingcircuits: { item0: { name: 'Fussboden' }, item1: { name: 'Radiatoren' } } },
+    {
+      heatingcircuits: {
+        item0: { sumstate: { value: '1;45.00;100.00;1;50;100.00;0;' } },
+        item1: { sumstate: { value: '1;45.00;38.50;12.00;100.00;1;50;100.00;0;1;' } },
+      },
+    }
+  );
+
+  expect(await client.heatingCircuits.getItems()).toMatchObject([
+    {
+      deviceModel: 1,
+      flowTemperature: 45,
+      returnFlowTemperature: null,
+      dewPoint: null,
+      pumpWorkingLevel: 100,
+      coolingModeState: 1,
+      flowTemperatureSetPoint: 50,
+      valveOpeningLevel: 100,
+      sumState: 0,
+      currentState: null,
+    },
+    {
+      deviceModel: 1,
+      flowTemperature: 45,
+      returnFlowTemperature: 38.5,
+      dewPoint: 12,
+      pumpWorkingLevel: 100,
+      coolingModeState: 1,
+      flowTemperatureSetPoint: 50,
+      valveOpeningLevel: 100,
+      sumState: 0,
+      currentState: 1,
     },
   ]);
 });
