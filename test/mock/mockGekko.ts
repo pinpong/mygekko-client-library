@@ -36,11 +36,31 @@ export type MockGekkoResponse = {
   data: unknown;
 };
 
+/** The system config of a device by system and item. */
+export type MockGekkoConfig = {
+  [system: string]: { [itemId: string]: { [name: string]: { format?: string } } };
+};
+
 /**
- * Loads the demo data.
+ * Loads a fixture.
+ * @param name - The file name of the fixture.
+ */
+function fixture(name: string): unknown {
+  return JSON.parse(readFileSync(join(__dirname, '../fixtures', name), 'utf8'));
+}
+
+/**
+ * Loads the demo data, the config documents the formats of the device dump.
  */
 export function demoData(): MockGekkoData {
-  return JSON.parse(readFileSync(join(__dirname, '../fixtures/demo.json'), 'utf8'));
+  return fixture('demo.json') as MockGekkoData;
+}
+
+/**
+ * Loads the system config dumped from a real device.
+ */
+export function discoverData(): MockGekkoConfig {
+  return fixture('discover.json') as MockGekkoConfig;
 }
 
 /**
@@ -59,7 +79,7 @@ function find(node: unknown, path: string[]): unknown {
 }
 
 /**
- * Checks if the value matches a command format like `-1|1|T|P55.4 (Stop|Start|Toggle|Position)`.
+ * Checks if the value matches a command format like `-1|1|T|P55.4|Mx (Stop|Start|Toggle|Position|Mode)`.
  * @param format - The command format of the item.
  * @param value - The sent value.
  */
@@ -71,7 +91,7 @@ function isDocumented(format: unknown, value: string): boolean {
     .split(' (')[0]
     .split('|')
     .some((token) => {
-      const prefix = token.match(/^([A-Za-z]+)[-+]?\d/)?.[1];
+      const prefix = token.match(/^([A-Za-z]+?)(?:[-+]?\d|x$)/)?.[1];
       return (
         token === value ||
         (prefix !== undefined && new RegExp(`^${prefix}[-+]?\\d+(\\.\\d+)?$`).test(value))
@@ -133,7 +153,10 @@ export class MockGekko {
           system: item.slice(0, -1).join('/'),
           itemId: item[item.length - 1],
           value: decodeURIComponent(value),
-          documented: isDocumented(find(command, ['value']), decodeURIComponent(value)),
+          documented: isDocumented(
+            find(command, ['format']) ?? find(command, ['value']),
+            decodeURIComponent(value)
+          ),
         });
         return { status: 200, data: 'OK' };
       }

@@ -1,4 +1,4 @@
-import { CLIENT_ERROR_MESSAGES, LocalClient } from '../../src';
+import { CLIENT_ERROR_MESSAGES, LocalClient, SystemType } from '../../src';
 import { MockGekko } from './mockGekko';
 
 afterEach(() => {
@@ -35,13 +35,19 @@ test('records commands', async () => {
   await client.blinds.setPosition('item0', 50);
   await client.multiRooms.setPreviousSong('item1');
   await client.lights.setTunableWhiteLevel('item0', 30);
+  await client.vents.setDehumidificationState('item0', 1);
+  await client.wallBoxes.setChargePower('item0', 11);
+  await client.changeRequest(SystemType.lights, 'item0', 'X1');
 
   expect(mock.commands).toEqual([
     { system: 'blinds', itemId: 'item0', value: 'P50', documented: true },
     { system: 'multirooms', itemId: 'item1', value: 'N-1', documented: true },
-    { system: 'lights', itemId: 'item0', value: 'TW30', documented: false },
+    { system: 'lights', itemId: 'item0', value: 'TW30', documented: true },
+    { system: 'vents', itemId: 'item0', value: 'D1', documented: true },
+    { system: 'emobils', itemId: 'item0', value: 'CS11', documented: false },
+    { system: 'lights', itemId: 'item0', value: 'X1', documented: false },
   ]);
-  expect(mock.handle('/api/v1/var/energycosts/item0/scmd/set?value=1&')).toEqual({
+  expect(mock.handle('/api/v1/var/energymanager/item0/scmd/set?value=1&')).toEqual({
     status: 404,
     data: '',
   });
