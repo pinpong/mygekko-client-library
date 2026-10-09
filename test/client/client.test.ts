@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { CLIENT_ERROR_MESSAGES, LocalClient, RemoteClient } from '../../src';
+import { CLIENT_ERROR_MESSAGES, ClientError, LocalClient, RemoteClient } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
 
 afterEach(() => {
@@ -56,4 +56,38 @@ test('stays uninitialized if the trend config cannot be loaded', async () => {
   failing = false;
   await client.initialize();
   expect(client.supportedSystems).toContain('lights');
+});
+
+test('rescan loads the config again and keeps the old one on a failure', async () => {
+  const client = new LocalClient({ ip: 'mock', username: 'test', password: 'test' });
+  await expect(client.rescan()).rejects.toThrow(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+
+  new MockGekko({ config: { globals: {}, lights: {} }, trend: {}, status: {} }).install();
+  await client.initialize();
+  expect(client.supportedSystems).toEqual(['lights']);
+
+  jest.restoreAllMocks();
+  const mock = new MockGekko({ config: { globals: {}, blinds: {} }, trend: {}, status: {} });
+  mock.install();
+  mock.failWith = 503;
+  await expect(client.rescan()).rejects.toThrow(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
+  expect(client.supportedSystems).toEqual(['lights']);
+
+  mock.failWith = null;
+  await client.rescan();
+  expect(client.supportedSystems).toEqual(['blinds']);
+});
+
+test('a connection problem keeps the original error as cause', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  mock.refused = ['mock'];
+  const error = await client.lights.getItems().catch((reason: unknown) => reason);
+
+  expect(error).toBeInstanceOf(ClientError);
+  expect(error).toMatchObject({
+    message: CLIENT_ERROR_MESSAGES.NO_CONNECTION,
+    cause: { code: 'ECONNREFUSED' },
+  });
 });
