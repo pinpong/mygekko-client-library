@@ -24,18 +24,18 @@ export class Saunas extends BaseSystem<Sauna> {
       const values = valuesToStringList(status);
 
       return {
-        sumState: tryParseFloat(values[3]),
+        sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
         page: config[itemId].page ?? null,
         workingMode: tryParseFloat(values[0]),
         currentState: tryParseFloat(values[1]),
-        errorState: tryParseFloat(values[4]),
-        roomTemperature: tryParseFloat(values[5]),
-        roomTemperatureSetPoint: tryParseFloat(values[6]),
-        burnerTemperature: tryParseFloat(values[7]),
-        roomRelativeHumidityLevel: tryParseFloat(values[8]),
-        roomRelativeHumiditySetPointLevel: tryParseFloat(values[9]),
+        errorState: tryParseFloat(values[3]),
+        roomTemperature: tryParseFloat(values[4]),
+        roomTemperatureSetPoint: tryParseFloat(values[5]),
+        burnerTemperature: tryParseFloat(values[6]),
+        roomRelativeHumidityLevel: tryParseFloat(values[7]),
+        roomRelativeHumiditySetPointLevel: tryParseFloat(values[8]),
       };
     }
 

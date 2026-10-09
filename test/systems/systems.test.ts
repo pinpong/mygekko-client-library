@@ -112,3 +112,61 @@ test('wall boxes', async () => {
     },
   ]);
 });
+
+test('status value positions', async () => {
+  const client = await createClient(
+    {
+      loads: { item0: { name: 'Steckdose' } },
+      roomtemps: { item0: { name: 'Wohnzimmer', page: 'EG' } },
+      saunas: { item0: { name: 'Sauna', page: 'Wellness' } },
+      energycosts: { item0: { name: 'Haus', page: 'Energie' } },
+    },
+    {
+      loads: { item0: { sumstate: { value: '2;1' } } },
+      roomtemps: { item0: { sumstate: { value: '22.10;22.00;;8;;3.00;0;1;35;974;23.2;0;' } } },
+      saunas: { item0: { sumstate: { value: '1;1;0;0;75.8;80.00;115.75;79.50;80.0' } } },
+      energycosts: {
+        item0: {
+          sumstate: {
+            value:
+              '1.02;11.84;821.35;25427.30;10.00;kWh;kW;4570.00;7192.00;83.00;0.00;0.00;0.00;0.00;932.00;0;3641.82;18422.60;01.01.2022 12:00:00;',
+          },
+        },
+      },
+    }
+  );
+
+  expect(await client.loads.getItems()).toMatchObject([{ currentState: 2, sumState: 1 }]);
+  expect(await client.roomTemperatures.getItems()).toMatchObject([
+    {
+      coolingModeState: 0,
+      sumState: 1,
+      relativeHumidity: 35,
+      airQualityLevel: 974,
+      floorTemperature: 23.2,
+    },
+  ]);
+  expect(await client.saunas.getItems()).toMatchObject([
+    {
+      workingMode: 1,
+      currentState: 1,
+      sumState: 0,
+      errorState: 0,
+      roomTemperature: 75.8,
+      roomTemperatureSetPoint: 80,
+      burnerTemperature: 115.75,
+      roomRelativeHumidityLevel: 79.5,
+      roomRelativeHumiditySetPointLevel: 80,
+    },
+  ]);
+  expect(await client.energyCosts.getItems()).toMatchObject([
+    {
+      totalEnergyYesterday18h24h: 932,
+      sumState: 0,
+      totalEnergyThisYear: 3641.82,
+      totalEnergyInPeriod: 18422.6,
+      startDateTotalEnergyInPeriod: '01.01.2022 12:00:00',
+      counterDirection: null,
+    },
+  ]);
+});

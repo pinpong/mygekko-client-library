@@ -28,7 +28,7 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
       const values = valuesToStringList(status);
 
       return {
-        sumState: tryParseFloat(values[6]),
+        sumState: tryParseFloat(values[7]),
         itemId: itemId,
         name: config[itemId].name,
         page: config[itemId].page ?? null,
@@ -38,9 +38,9 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
         workingMode: tryParseFloat(values[3]),
         reserved: values[4],
         temperatureAdjustment: tryParseFloat(values[5]),
-        coolingModeState: tryParseFloat(values[7]),
+        coolingModeState: tryParseFloat(values[6]),
         relativeHumidity: tryParseFloat(values[8]),
-        airQualityLevel: tryParseFloat(values[8]),
+        airQualityLevel: tryParseFloat(values[9]),
         floorTemperature: tryParseFloat(values[10]),
         deviceModel: tryParseFloat(values[11]),
       };

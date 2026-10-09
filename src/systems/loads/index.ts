@@ -24,11 +24,11 @@ export class Loads extends BaseSystem<Load> {
       const values = valuesToStringList(status);
 
       return {
-        sumState: tryParseFloat(values[0]),
+        sumState: tryParseFloat(values[1]),
         itemId: itemId,
         name: config[itemId].name,
         page: config[itemId].page ?? null,
-        currentState: tryParseFloat(values[1]),
+        currentState: tryParseFloat(values[0]),
       };
     }
 
