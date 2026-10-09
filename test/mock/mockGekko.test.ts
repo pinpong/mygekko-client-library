@@ -46,7 +46,7 @@ test('records commands', async () => {
     { system: 'multirooms', itemId: 'item1', value: 'N-1', documented: true },
     { system: 'lights', itemId: 'item0', value: 'TW30', documented: true },
     { system: 'vents', itemId: 'item0', value: 'D1', documented: true },
-    { system: 'emobils', itemId: 'item0', value: 'CS11', documented: false },
+    { system: 'emobils', itemId: 'item0', value: 'CS11', documented: true },
     { system: 'lights', itemId: 'item0', value: 'X1', documented: false },
   ]);
   expect(mock.handle('/api/v1/var/energymanager/item0/scmd/set?value=1&')).toEqual({

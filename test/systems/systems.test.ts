@@ -437,3 +437,24 @@ test('text values missing in the status are null', async () => {
     [null, null],
   ]);
 });
+
+test('wall box and air conditioner commands', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await client.wallBoxes.startPartialCharge('item0', 10);
+  await client.wallBoxes.loginUser('item0', 4);
+  await client.wallBoxes.logoutUser('item0');
+  await client.wallBoxes.resetUserHistory('item0', 20);
+  await client.airConditioners.setTemperature('item0', 21.25);
+
+  expect(mock.commands.map(({ system, value, documented }) => [system, value, documented])).toEqual(
+    [
+      ['emobils', 'P10', true],
+      ['emobils', 'LI4', true],
+      ['emobils', 'LO', true],
+      ['emobils', 'R20', true],
+      ['air_handling_unit', 'T21.3', true],
+    ]
+  );
+});

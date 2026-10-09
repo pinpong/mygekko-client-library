@@ -118,4 +118,13 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
   public async setHumidity(itemId: string, humidity: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `H${roundCommandValue(humidity)}`);
   }
+
+  /**
+   * Sets the temperature.
+   * @param itemId - The item id.
+   * @param temperature - The new absolute temperature as C°, rounded to one decimal.
+   */
+  public async setTemperature(itemId: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperature)}`);
+  }
 }

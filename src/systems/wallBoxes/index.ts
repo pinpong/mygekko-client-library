@@ -96,9 +96,35 @@ export class WallBoxes extends BaseSystem<WallBox> {
   /**
    * Resets the history of a user.
    * @param itemId - The item id.
-   * @param user - The user as 1-6.
+   * @param user - The user as 1-20.
    */
   public async resetUserHistory(itemId: string, user: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `R${user}`);
+  }
+
+  /**
+   * Starts a partial charge.
+   * @param itemId - The item id.
+   * @param energy - The energy to charge as kilowatt-hour, rounded to one decimal.
+   */
+  public async startPartialCharge(itemId: string, energy: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(energy)}`);
+  }
+
+  /**
+   * Logs a user in.
+   * @param itemId - The item id.
+   * @param user - The user as 1-20.
+   */
+  public async loginUser(itemId: string, user: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `LI${user}`);
+  }
+
+  /**
+   * Logs the current user out.
+   * @param itemId - The item id.
+   */
+  public async logoutUser(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `LO`);
   }
 }
