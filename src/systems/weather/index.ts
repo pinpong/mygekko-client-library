@@ -26,14 +26,14 @@ export class Weather extends BaseSubSystem<WeatherItem> {
         itemId: null,
         name: null,
         page: null,
-        twilight: tryParseFloat(status['twilight']['value']),
-        humidity: tryParseFloat(status['humidity']['value']),
-        brightness: tryParseFloat(status['brightness']['value']),
-        brightnessWest: tryParseFloat(status['brightnessw']['value']),
-        brightnessEast: tryParseFloat(status['brightnesso']['value']),
-        wind: tryParseFloat(status['wind']['value']),
-        temperature: tryParseFloat(status['temperature']['value']),
-        rain: tryParseFloat(status['rain']['value']),
+        twilight: tryParseFloat(status['twilight']?.['value']),
+        humidity: tryParseFloat(status['humidity']?.['value']),
+        brightness: tryParseFloat(status['brightness']?.['value']),
+        brightnessWest: tryParseFloat(status['brightnessw']?.['value']),
+        brightnessEast: tryParseFloat(status['brightnesso']?.['value']),
+        wind: tryParseFloat(status['wind']?.['value']),
+        temperature: tryParseFloat(status['temperature']?.['value']),
+        rain: tryParseFloat(status['rain']?.['value']),
       };
     }
 

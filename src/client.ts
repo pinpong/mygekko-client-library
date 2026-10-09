@@ -159,7 +159,7 @@ export type SystemStatusResponse = { [itemId: string]: ItemStatusResponse };
  * The status response of a system without items.
  * @group Client
  */
-export type SubSystemStatusResponse = { [name: string]: { value: string } };
+export type SubSystemStatusResponse = { [name: string]: { value: string } | undefined };
 
 /**
  * The system item status response.

@@ -19,7 +19,7 @@ export class GlobalAlarm extends BaseSubSystem<GlobalAlarmItem> {
         itemId: null,
         name: null,
         page: null,
-        state: tryParseFloat(status['sumstate']['value']),
+        state: tryParseFloat(status['sumstate']?.['value']),
       };
     }
 

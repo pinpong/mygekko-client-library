@@ -219,3 +219,34 @@ test('commands', async () => {
     { system: 'roomtemps', itemId: 'item0', value: 'M1', documented: true },
   ]);
 });
+
+test('global systems with missing values', async () => {
+  const client = await createClient(
+    { globals: { network: {}, alarm: {}, meteo: {} } },
+    {
+      globals: {
+        network: { gekkoname: { value: 'Demo' } },
+        alarm: {},
+        meteo: { brightness: { value: '0.200000' }, temperature: { value: '14.100000' } },
+      },
+    }
+  );
+
+  expect(await client.gekkoInfo.getItem()).toMatchObject({
+    gekkoName: 'Demo',
+    language: null,
+    version: null,
+    hardware: null,
+  });
+  expect(await client.globalAlarm.getItem()).toMatchObject({ state: null });
+  expect(await client.weather.getItem()).toMatchObject({
+    twilight: null,
+    humidity: null,
+    brightness: 0.2,
+    brightnessWest: null,
+    brightnessEast: null,
+    wind: null,
+    temperature: 14.1,
+    rain: null,
+  });
+});
