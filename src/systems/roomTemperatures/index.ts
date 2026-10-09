@@ -36,7 +36,7 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
         temperatureSetPoint: tryParseFloat(values[1]),
         valveOpeningLevel: tryParseFloat(values[2]),
         workingMode: tryParseFloat(values[3]),
-        reserved: values[4],
+        reserved: values[4] ?? null,
         temperatureAdjustment: tryParseFloat(values[5]),
         coolingModeState: tryParseFloat(values[6]),
         relativeHumidity: tryParseFloat(values[8]),

@@ -33,8 +33,8 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
         totalEnergyMonth: tryParseFloat(values[2]),
         totalEnergy: tryParseFloat(values[3]),
         nominalPower: tryParseFloat(values[4]),
-        energyUnit: values[5],
-        powerUnit: values[6],
+        energyUnit: values[5] ?? null,
+        powerUnit: values[6] ?? null,
         totalEnergyToday0h6h: tryParseFloat(values[7]),
         totalEnergyToday6h12h: tryParseFloat(values[8]),
         totalEnergyToday12h18h: tryParseFloat(values[9]),
@@ -45,7 +45,7 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
         totalEnergyYesterday18h24h: tryParseFloat(values[14]),
         totalEnergyThisYear: tryParseFloat(values[16]),
         totalEnergyInPeriod: tryParseFloat(values[17]),
-        startDateTotalEnergyInPeriod: values[18],
+        startDateTotalEnergyInPeriod: values[18] ?? null,
         counterDirection: tryParseFloat(values[19]),
       };
     }

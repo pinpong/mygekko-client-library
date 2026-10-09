@@ -403,3 +403,37 @@ test('trend requests check the trend config', async () => {
     client.getTrendByItemId(SystemType.lights, 'item0', 'trend0', '2026-01-01', '2026-01-02', 10)
   ).rejects.toThrow(CLIENT_ERROR_MESSAGES.TREND_NOT_SUPPORTED);
 });
+
+test('text values missing in the status are null', async () => {
+  const client = await createClient(
+    {
+      emobils: { item0: { name: 'Wallbox' } },
+      multirooms: { item0: { name: 'Radio' } },
+      energycosts: { item0: { name: 'Haus' } },
+      trends: { item0: { name: 'Temperaturen' } },
+    },
+    {
+      emobils: { item0: { sumstate: { value: '1;1;0;' } } },
+      multirooms: { item0: { sumstate: { value: '1;50;' } } },
+      energycosts: { item0: { sumstate: { value: '1.02;' } } },
+      trends: { item0: { sumstate: { value: '1;0;' } } },
+    }
+  );
+
+  expect(await client.wallBoxes.getItems()).toMatchObject([
+    { chargeUserName: null, chargeDurationTime: null, currentChargingEnergy: null },
+  ]);
+  const [multiRoom] = await client.multiRooms.getItems();
+  expect(multiRoom.currentAudioTitle).toBe(null);
+  expect(multiRoom.playList?.every(({ name }) => name === null)).toBe(true);
+  expect(await client.energyCosts.getItems()).toMatchObject([
+    { energyUnit: null, powerUnit: null, startDateTotalEnergyInPeriod: null },
+  ]);
+  const [analysis] = await client.analyses.getItems();
+  expect(analysis.analysisVariables?.map(({ name, unit }) => [name, unit])).toEqual([
+    [null, null],
+    [null, null],
+    [null, null],
+    [null, null],
+  ]);
+});

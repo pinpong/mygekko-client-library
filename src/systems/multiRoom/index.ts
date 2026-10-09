@@ -19,7 +19,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
       for (let i = 5; i < 21; i++) {
         items.push({
           index: i - 5,
-          name: values[i],
+          name: values[i] ?? null,
         });
       }
       return items;
@@ -45,7 +45,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
         currentState: tryParseFloat(values[0]),
         currentVolume: tryParseFloat(values[1]),
         currentPlayingTime: tryParseFloat(values[2]),
-        currentAudioTitle: values[3],
+        currentAudioTitle: values[3] ?? null,
         currentPlaylistIndex: tryParseFloat(values[4]),
         playList: parsePlayList(values),
         currentSongIndex: tryParseFloat(values[21]),
