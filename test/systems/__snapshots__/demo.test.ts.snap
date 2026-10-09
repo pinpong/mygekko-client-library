@@ -2306,6 +2306,16 @@ exports[`weather 1`] = `
   "sumState": null,
   "temperature": 14.1,
   "twilight": 224.399994,
+  "units": {
+    "brightness": "kLx",
+    "brightnessEast": "kLx",
+    "brightnessWest": "kLx",
+    "humidity": "%",
+    "rain": "l/h",
+    "temperature": "°C",
+    "twilight": "lx",
+    "wind": "km/h",
+  },
   "wind": 2.8080000000000003,
 }
 `;

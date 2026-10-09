@@ -10,6 +10,7 @@ import {
   throwErrorIfTrendIsNotEnabled,
 } from '../../utils/errors/errorUtils';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { unitFromFormat } from '../../utils/extensions/stringUtils';
 import { BaseSubSystem } from '../base';
 import { SystemType, Trend, TrendItem } from '../base/types';
 import { WeatherItem } from './types';
@@ -25,6 +26,8 @@ export class Weather extends BaseSubSystem<WeatherItem> {
      */
     function parseItem(status: SubSystemStatusResponse): WeatherItem {
       const wind = tryParseFloat(status['wind']?.['value']);
+      const config = client.systemConfig['globals']?.['meteo'] as unknown as
+        { [value: string]: { format?: string } | undefined } | undefined;
 
       return {
         sumState: null,
@@ -39,6 +42,16 @@ export class Weather extends BaseSubSystem<WeatherItem> {
         wind: wind === null ? null : wind * 3.6,
         temperature: tryParseFloat(status['temperature']?.['value']),
         rain: tryParseFloat(status['rain']?.['value']),
+        units: {
+          twilight: unitFromFormat(config?.['twilight']?.format),
+          humidity: unitFromFormat(config?.['humidity']?.format),
+          brightness: unitFromFormat(config?.['brightness']?.format),
+          brightnessWest: unitFromFormat(config?.['brightnessw']?.format),
+          brightnessEast: unitFromFormat(config?.['brightnesso']?.format),
+          wind: 'km/h',
+          temperature: unitFromFormat(config?.['temperature']?.format),
+          rain: unitFromFormat(config?.['rain']?.format),
+        },
       };
     }
 

@@ -18,4 +18,26 @@ export type WeatherItem = BaseSystemType & {
   temperature: number | null;
   /** The current value of the accumulated rain as 0-100 liter per hour */
   rain: number | null;
+  /** The units of the values as reported by the myGEKKO device */
+  units: WeatherUnits;
+};
+
+/** @group Systems */
+export type WeatherUnits = {
+  /** The twilight unit, e.g. `lx` */
+  twilight: string | null;
+  /** The humidity unit, e.g. `%` */
+  humidity: string | null;
+  /** The brightness unit, e.g. `kLx` */
+  brightness: string | null;
+  /** The brightness unit of the west sensor, e.g. `kLx` */
+  brightnessWest: string | null;
+  /** The brightness unit of the east sensor, e.g. `kLx` */
+  brightnessEast: string | null;
+  /** The wind unit, always `km/h` as the value is converted */
+  wind: string | null;
+  /** The temperature unit, e.g. `°C` */
+  temperature: string | null;
+  /** The rain unit, e.g. `l/h` */
+  rain: string | null;
 };

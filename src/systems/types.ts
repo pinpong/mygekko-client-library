@@ -96,4 +96,4 @@ export {
   WallBoxPluggedState,
   WallBoxChargeRequestState,
 } from './wallBoxes/types';
-export { WeatherItem } from './weather/types';
+export { WeatherItem, WeatherUnits } from './weather/types';
