@@ -2,6 +2,7 @@ import { CLIENT_ERROR_MESSAGES } from '../../src';
 import {
   systemFilteredByGroup,
   systemFilteredByItems,
+  unitFromFormat,
   valuesToStringList,
 } from '../../src/utils/extensions/stringUtils';
 
@@ -53,4 +54,13 @@ test('systemFilteredByGroup', () => {
     )
   ).toEqual(['group0']);
   expect(systemFilteredByGroup('test')).toEqual([]);
+});
+
+test('unitFromFormat', () => {
+  expect(unitFromFormat('float[0.00,100000.00](kLx)')).toEqual('kLx');
+  expect(unitFromFormat('float[-100.00,100.00](°C)')).toEqual('°C');
+  expect(unitFromFormat('float[0.00,100.00](l/h)')).toEqual('l/h');
+  expect(unitFromFormat('float[0.00,100.00]')).toBeNull();
+  expect(unitFromFormat('float[0.00,100.00]()')).toBeNull();
+  expect(unitFromFormat(undefined)).toBeNull();
 });

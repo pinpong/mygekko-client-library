@@ -134,6 +134,16 @@ function isTimeout(code: string | undefined): boolean {
 }
 
 /**
+ * Returns the encoded auth query.
+ * @param params - The auth params by name.
+ */
+function authQuery(params: { [name: string]: string }): string {
+  return Object.entries(params)
+    .map(([name, value]) => `${name}=${encodeURIComponent(value)}`)
+    .join('&');
+}
+
+/**
  * Returns the route of the remote api.
  * @param config - The remote access.
  */
@@ -141,7 +151,11 @@ function remoteRoute(config: Omit<RemoteClientConfig, 'attempts'>): Route {
   return {
     type: 'remote',
     baseUrl: 'https://live.my-gekko.com/api/v1',
-    authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
+    authQuery: authQuery({
+      username: config.username,
+      key: config.apiKey,
+      gekkoid: config.gekkoId,
+    }),
     timeout: config.timeout ?? 5000,
     skipUntil: 0,
   };
@@ -155,7 +169,7 @@ function localRoute(config: Omit<LocalClientConfig, 'attempts'>): Route {
   return {
     type: 'local',
     baseUrl: `http://${config.ip}/api/v1`,
-    authQuery: `username=${config.username}&password=${config.password}`,
+    authQuery: authQuery({ username: config.username, password: config.password }),
     timeout: config.timeout ?? 2000,
     skipUntil: 0,
   };

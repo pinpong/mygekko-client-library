@@ -166,6 +166,7 @@ import {
   WallBoxPluggedState,
   WallBoxUser,
   WeatherItem,
+  WeatherUnits,
 } from './systems/types';
 import {
   decimalToHexColor,
@@ -313,6 +314,7 @@ export {
   WallBoxPluggedState,
   WallBoxChargeRequestState,
   WeatherItem,
+  WeatherUnits,
 };
 
 export {
