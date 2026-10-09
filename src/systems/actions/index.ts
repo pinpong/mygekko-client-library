@@ -54,4 +54,12 @@ export class Actions extends BaseSystem<Action> {
     }
     await this.client.changeRequest(this.systemType, itemId, `${value}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

@@ -73,4 +73,12 @@ export class Lights extends BaseSystem<Light> {
   public async setColor(itemId: string, color: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `C${color}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

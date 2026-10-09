@@ -52,4 +52,12 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
 
     super(client, SystemType.energyCosts, parseItem);
   }
+
+  /**
+   * Resets the period of the total energy.
+   * @param itemId - The item id.
+   */
+  public async resetPeriod(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `RP`);
+  }
 }

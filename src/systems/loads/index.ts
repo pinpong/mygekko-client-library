@@ -43,4 +43,12 @@ export class Loads extends BaseSystem<Load> {
   public async setState(itemId: string, state: LoadState): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `${state}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

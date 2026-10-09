@@ -92,4 +92,13 @@ export class WallBoxes extends BaseSystem<WallBox> {
   public async setChargePower(itemId: string, power: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `CS${power}`);
   }
+
+  /**
+   * Resets the history of a user.
+   * @param itemId - The item id.
+   * @param user - The user as 1-6.
+   */
+  public async resetUserHistory(itemId: string, user: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `R${user}`);
+  }
 }

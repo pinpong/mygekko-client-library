@@ -34,4 +34,13 @@ export class Logics extends BaseSystem<Logic> {
 
     super(client, SystemType.alarmsLogics, parseItem);
   }
+
+  /**
+   * Sets the set point.
+   * @param itemId - The item id.
+   * @param value - The new set point.
+   */
+  public async setSetPoint(itemId: string, value: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `S${value}`);
+  }
 }

@@ -63,4 +63,13 @@ export class Analyses extends BaseSystem<Analysis> {
 
     super(client, SystemType.analyses, parseItem);
   }
+
+  /**
+   * Sets the set point.
+   * @param itemId - The item id.
+   * @param value - The new set point.
+   */
+  public async setSetPoint(itemId: string, value: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `S${value}`);
+  }
 }

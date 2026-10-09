@@ -106,4 +106,12 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   public async setPlayList(itemId: string, playListIndex: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `C${playListIndex}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

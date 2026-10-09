@@ -67,4 +67,12 @@ export class Blinds extends BaseSystem<Blind> {
   public async setAngle(itemId: string, angle: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `S${angle}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

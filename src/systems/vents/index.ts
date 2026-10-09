@@ -138,4 +138,12 @@ export class Vents extends BaseSystem<Vent> {
   ): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `D${state}`);
   }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
 }

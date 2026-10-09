@@ -220,6 +220,37 @@ test('commands', async () => {
   ]);
 });
 
+test('toggle, reset and set point commands', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await client.lights.toggle('item0');
+  await client.blinds.toggle('item0');
+  await client.loads.toggle('item0');
+  await client.actions.toggle('item0');
+  await client.multiRooms.toggle('item1');
+  await client.vents.toggle('item0');
+  await client.energyCosts.resetPeriod('item0');
+  await client.logics.setSetPoint('item0', 44.7);
+  await client.analyses.setSetPoint('item0', 21);
+  await client.wallBoxes.resetUserHistory('item0', 4);
+
+  expect(mock.commands.map(({ system, value, documented }) => [system, value, documented])).toEqual(
+    [
+      ['lights', 'T', true],
+      ['blinds', 'T', true],
+      ['loads', 'T', true],
+      ['actions', 'T', true],
+      ['multirooms', 'T', true],
+      ['vents', 'T', true],
+      ['energycosts', 'RP', true],
+      ['alarms_logics', 'S44.7', true],
+      ['trends', 'S21', true],
+      ['emobils', 'R4', true],
+    ]
+  );
+});
+
 test('global systems with missing values', async () => {
   const client = await createClient(
     { globals: { network: {}, alarm: {}, meteo: {} } },
