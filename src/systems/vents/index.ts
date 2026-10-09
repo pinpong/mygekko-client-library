@@ -1,5 +1,6 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
+import { tryParseFloat, tryParseInt } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -8,6 +9,7 @@ import {
   VentBypassState,
   VentCoolingModeState,
   VentDehumidificationState,
+  VentDeviceModel,
   VentLevel,
   VentWorkingModeIndividual,
   VentWorkingModePluggit,
@@ -28,19 +30,24 @@ export class Vents extends BaseSystem<Vent> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Vent {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Vent {
       const values = valuesToStringList(status);
+      const maximumWorkingLevel = tryParseInt(values[4]);
 
       return {
         sumState: tryParseFloat(values[14]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         ventLevel: tryParseFloat(values[0]),
         deviceModel: tryParseFloat(values[1]),
         workingMode: tryParseFloat(values[2]),
         bypassState: tryParseFloat(values[3]),
-        maximumWorkingLevel: tryParseFloat(values[4]),
+        maximumWorkingLevel: maximumWorkingLevel === null ? null : maximumWorkingLevel + 1,
         relativeHumidity: tryParseFloat(values[5]),
         airQuality: tryParseFloat(values[6]),
         co2: tryParseFloat(values[7]),
@@ -84,7 +91,7 @@ export class Vents extends BaseSystem<Vent> {
    * @param ventLevel - The new vent level.
    */
   public async setLevel(itemId: string, ventLevel: VentLevel): Promise<void> {
-    let level = -1;
+    let level: number;
     switch (ventLevel) {
       case VentLevel.off:
         level = -1;
@@ -101,6 +108,8 @@ export class Vents extends BaseSystem<Vent> {
       case VentLevel.level4:
         level = 4;
         break;
+      default:
+        throw new ClientError(CLIENT_ERROR_MESSAGES.BAD_REQUEST);
     }
     await this.client.changeRequest(this.systemType, itemId, `${level}`);
   }
@@ -133,5 +142,90 @@ export class Vents extends BaseSystem<Vent> {
     state: VentDehumidificationState
   ): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `D${state}`);
+  }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
+  }
+
+  /**
+   * Returns the working modes of a device model by name, the meaning of a mode depends on the model.
+   * @param deviceModel - The device model.
+   */
+  public getWorkingModes(deviceModel: VentDeviceModel | null): { [name: string]: number } {
+    switch (deviceModel) {
+      case VentDeviceModel.pluggit:
+        return {
+          auto: VentWorkingModePluggit.auto,
+          manual: VentWorkingModePluggit.manual,
+          pluggitAuto: VentWorkingModePluggit.pluggitAuto,
+          pluggitWeek: VentWorkingModePluggit.pluggitWeek,
+        };
+      case VentDeviceModel.zimmermannV2:
+        return {
+          off: VentWorkingModeProxxonV2.off,
+          ecoSummer: VentWorkingModeProxxonV2.ecoSummer,
+          ecoWinter: VentWorkingModeProxxonV2.ecoWinter,
+          comfort: VentWorkingModeProxxonV2.comfort,
+          ovenOperation: VentWorkingModeProxxonV2.ovenOperation,
+        };
+      default:
+        return { off: VentWorkingModeIndividual.off, on: VentWorkingModeIndividual.on };
+    }
+  }
+
+  /**
+   * Checks if the level of a vent can be set in its current working mode.
+   * @param item - The item.
+   */
+  public isLevelSupported(item: Pick<Vent, 'deviceModel' | 'workingMode'>): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return (
+        item.workingMode === VentWorkingModeProxxonV2.ecoSummer ||
+        item.workingMode === VentWorkingModeProxxonV2.ecoWinter
+      );
+    }
+    return item.deviceModel !== null;
+  }
+
+  /**
+   * Checks if a vent can be switched off by its level.
+   * @param item - The item.
+   */
+  public isLevelOffSupported(
+    item: Pick<Vent, 'deviceModel' | 'workingMode' | 'ventLevel'>
+  ): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return item.workingMode === VentWorkingModeProxxonV2.off || item.ventLevel === VentLevel.off;
+    }
+    return item.deviceModel !== null;
+  }
+
+  /**
+   * Checks if the bypass state of a vent can be set.
+   * @param item - The item.
+   */
+  public isBypassSupported(item: Pick<Vent, 'deviceModel'>): boolean {
+    return (
+      item.deviceModel === VentDeviceModel.standard || item.deviceModel === VentDeviceModel.pluggit
+    );
+  }
+
+  /**
+   * Checks if the cooling mode of a vent can be set in its current working mode.
+   * @param item - The item.
+   */
+  public isCoolingSupported(item: Pick<Vent, 'deviceModel' | 'workingMode'>): boolean {
+    if (item.deviceModel === VentDeviceModel.zimmermannV2) {
+      return (
+        item.workingMode === VentWorkingModeProxxonV2.comfort ||
+        item.workingMode === VentWorkingModeProxxonV2.ecoSummer
+      );
+    }
+    return this.isBypassSupported(item);
   }
 }

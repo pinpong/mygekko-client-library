@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -17,7 +17,7 @@ export class ControlCircuits extends BaseSystem<ControlCircuit> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): ControlCircuit {
@@ -27,7 +27,7 @@ export class ControlCircuits extends BaseSystem<ControlCircuit> {
         sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         sensor: tryParseFloat(values[0]),
         sensorType: tryParseFloat(values[1]),
         pump1WorkingPowerLevel: tryParseFloat(values[3]),

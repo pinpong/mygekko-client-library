@@ -4,15 +4,15 @@ import { CLIENT_ERROR_MESSAGES, ClientError } from './errors';
 import {
   Accesses,
   Actions,
-  AirConditioners,
-  AlarmSystems,
+  AirConditioner,
+  AlarmSystem,
   Analyses,
   Blinds,
   Cameras,
   Clocks,
   ControlCircuits,
   EnergyCosts,
-  EnergyManagers,
+  EnergyManager,
   GekkoInfo,
   GlobalAlarm,
   HeatingCircuits,
@@ -26,28 +26,61 @@ import {
   Pools,
   RoomTemperatures,
   Saunas,
-  SmsEmails,
+  SmsEmail,
   Stoves,
   Vents,
   WallBoxes,
   Weather,
 } from './systems';
 import { SystemType } from './systems/base/types';
-import { throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
+import { available, throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
 
-/** The client configuration */
-type ClientConfig = {
+/**
+ * The way a request reaches the myGEKKO device.
+ *  @group Client
+ */
+export type ConnectionType = 'local' | 'remote';
+
+/** A route to the myGEKKO device */
+type Route = {
+  /** The connection type. */
+  type: ConnectionType;
   /** The base url. */
   baseUrl: string;
   /** The auth query. */
   authQuery: string;
+  /** The request timeout in milliseconds. */
+  timeout: number;
+  /** The time until the route is skipped after a connection error. */
+  skipUntil: number;
+};
+
+/** The client configuration */
+type ClientConfig = {
+  /** The routes in the order they are tried. */
+  routes: Route[];
+  /** The attempts of a status request before a connection error is thrown. */
+  attempts: number;
+  /** The time in milliseconds a route is skipped after a connection error if another route exists. */
+  retryInterval: number;
+};
+
+/**
+ * The request options of a client.
+ *  @group Client
+ */
+export type RequestConfig = {
+  /** The request timeout in milliseconds, 2000 for the local and 5000 for the remote client by default */
+  timeout?: number;
+  /** The attempts of a status request before a connection error is thrown, 3 by default */
+  attempts?: number;
 };
 
 /**
  * The remote client configuration.
  *  @group Client
  */
-export type RemoteClientConfig = {
+export type RemoteClientConfig = RequestConfig & {
   /** The myGEKKO account username */
   username: string;
   /** The myGEKKO device id */
@@ -60,7 +93,7 @@ export type RemoteClientConfig = {
  * The local client configuration.
  *  @group Client
  */
-export type LocalClientConfig = {
+export type LocalClientConfig = RequestConfig & {
   /** The myGEKKO device ip */
   ip: string;
   /** The local username  */
@@ -70,16 +103,154 @@ export type LocalClientConfig = {
 };
 
 /**
- * The system Configuration of myGEKKO device.
+ * The configuration of a client that uses the local api and falls back to the remote api.
  *  @group Client
  */
-export type SystemConfig = string | { [key in SystemType]: SystemConfig };
+export type CombinedClientConfig = {
+  /** The local access, used first */
+  local?: Omit<LocalClientConfig, 'attempts'>;
+  /** The remote access, used while the device is not reachable locally */
+  remote?: Omit<RemoteClientConfig, 'attempts'>;
+  /** The attempts of a status request before a connection error is thrown, 3 by default */
+  attempts?: number;
+  /** The time in milliseconds until an access that was not reachable is tried again, 60000 by default */
+  retryInterval?: number;
+};
+
+/**
+ * Checks if the endpoint sends a command.
+ * @param endpoint - The myGEKKO device API endpoint.
+ */
+function isCommand(endpoint: string): boolean {
+  return endpoint.includes('/scmd/');
+}
+
+/**
+ * Checks if the request got no response within the timeout.
+ * @param code - The error code of the failed request.
+ */
+function isTimeout(code: string | undefined): boolean {
+  return code === 'ECONNABORTED' || code === 'ETIMEDOUT';
+}
+
+/**
+ * Returns the route of the remote api.
+ * @param config - The remote access.
+ */
+function remoteRoute(config: Omit<RemoteClientConfig, 'attempts'>): Route {
+  return {
+    type: 'remote',
+    baseUrl: 'https://live.my-gekko.com/api/v1',
+    authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
+    timeout: config.timeout ?? 5000,
+    skipUntil: 0,
+  };
+}
+
+/**
+ * Returns the route of the local api.
+ * @param config - The local access.
+ */
+function localRoute(config: Omit<LocalClientConfig, 'attempts'>): Route {
+  return {
+    type: 'local',
+    baseUrl: `http://${config.ip}/api/v1`,
+    authQuery: `username=${config.username}&password=${config.password}`,
+    timeout: config.timeout ?? 2000,
+    skipUntil: 0,
+  };
+}
+
+/**
+ * The configuration of a single item.
+ * @group Client
+ */
+export type ItemConfig = {
+  /** The item name */
+  name: string;
+  /** The item page */
+  page?: string;
+  /** The image path of a camera */
+  imagepath?: string;
+  /** The stream path of a camera */
+  streampath?: string;
+  /** The cgi path of a camera */
+  cgipath?: string;
+  /** The name of the first zone of an alarm system */
+  zone1?: string;
+  /** The name of the second zone of an alarm system */
+  zone2?: string;
+};
+
+/**
+ * The item configurations of a system by item id.
+ * @group Client
+ */
+export type SystemItemsConfig = { [itemId: string]: ItemConfig };
+
+/**
+ * The system Configuration of myGEKKO device by system.
+ *  @group Client
+ */
+export type SystemConfig = { [system: string]: SystemItemsConfig };
+
+/**
+ * The description of a single trend.
+ * @group Client
+ */
+export type TrendDescription = {
+  /** The trend description */
+  description: string;
+  /** The trend unit */
+  unit: string;
+};
+
+/**
+ * The trend descriptions by trend id.
+ * @group Client
+ */
+export type TrendDescriptions = { [trendId: string]: TrendDescription };
+
+/**
+ * The trend configuration of a single item.
+ * @group Client
+ */
+export type ItemTrendConfig = {
+  /** The item name */
+  name: string;
+  /** The trends of the item */
+  trends: TrendDescriptions;
+};
+
+/**
+ * The item trend configurations of a system by item id.
+ * @group Client
+ */
+export type SystemItemsTrendConfig = { [itemId: string]: ItemTrendConfig };
+
+/**
+ * The trend configuration of myGEKKO device by system.
+ * @group Client
+ */
+export type TrendConfig = { [system: string]: SystemItemsTrendConfig } & {
+  /** The trends of the global systems */
+  globals: SystemItemsTrendConfig & {
+    /** The weather trends */
+    meteo: TrendDescriptions;
+  };
+};
 
 /**
  * The system status response.
  *  @group Client
  */
 export type SystemStatusResponse = { [itemId: string]: ItemStatusResponse };
+
+/**
+ * The status response of a system without items.
+ * @group Client
+ */
+export type SubSystemStatusResponse = { [name: string]: { value: string } | undefined };
 
 /**
  * The system item status response.
@@ -92,6 +263,8 @@ export type ItemStatusResponse = {
   sumstate: {
     value: string;
   };
+  /** Further values by name, e.g. the user totals of a wall box */
+  [name: string]: { value: string } | undefined;
 };
 
 /**
@@ -121,38 +294,60 @@ export type TrendItemResponse = {
 
 /** The abstract client class. */
 export abstract class Client {
-  /** The base urls */
-  private readonly baseUrl: string;
-  /** The auth query params */
-  private readonly authQueryString: string;
+  /** The routes in the order they are tried */
+  private readonly routes: Route[];
+  /** The attempts of a status request */
+  private readonly attempts: number;
+  /** The time in milliseconds a route is skipped after a connection error */
+  private readonly retryInterval: number;
+  /** The connection type of the last successful request */
+  private _connectionType: ConnectionType | null = null;
 
   /** The myGEKKO device system configuration */
-  private _systemConfig: SystemConfig = '';
+  private _systemConfig: SystemConfig | '' = '';
   /** The myGEKKO device trend configuration */
-  private _trendConfig: SystemConfig = '';
+  private _trendConfig: TrendConfig | '' = '';
 
   /**
-   * The myGEKKO device system configuration.
+   * The myGEKKO device system configuration, an empty string until the client is initialized.
    */
   public get systemConfig(): SystemConfig {
-    return this._systemConfig;
+    return this._systemConfig as SystemConfig;
   }
 
   /**
-   * The myGEKKO device trend configuration.
+   * The myGEKKO device trend configuration, an empty string until the client is initialized.
    */
-  public get trendConfig(): SystemConfig {
-    return this._trendConfig;
+  public get trendConfig(): TrendConfig {
+    return this._trendConfig as TrendConfig;
+  }
+
+  /**
+   * The connection type of the last successful request, null before the first one.
+   */
+  public get connectionType(): ConnectionType | null {
+    return this._connectionType;
+  }
+
+  /**
+   * The systems the myGEKKO device supports, empty until the client is initialized.
+   */
+  public get supportedSystems(): SystemType[] {
+    // every device has the globals with the network and the alarm, they are no systems to list
+    const globals = [SystemType.globals, SystemType.network, SystemType.alarm];
+    return Object.values(SystemType).filter(
+      (systemType) => !globals.includes(systemType) && available(this.systemConfig, systemType)
+    );
   }
 
   /** The {@link Accesses} class instance */
   public readonly accesses: Accesses = new Accesses(this);
   /** The {@link Actions} class instance */
   public readonly actions: Actions = new Actions(this);
-  /** The {@link AirConditioners} class instance */
-  public readonly airConditioners: AirConditioners = new AirConditioners(this);
-  /** The {@link AlarmSystems} class instance */
-  public readonly alarmSystems: AlarmSystems = new AlarmSystems(this);
+  /** The {@link AirConditioner} class instance */
+  public readonly airConditioner: AirConditioner = new AirConditioner(this);
+  /** The {@link AlarmSystem} class instance */
+  public readonly alarmSystem: AlarmSystem = new AlarmSystem(this);
   /** The {@link Blinds} class instance */
   public readonly blinds: Blinds = new Blinds(this);
   /** The {@link Cameras} class instance */
@@ -163,8 +358,8 @@ export abstract class Client {
   public readonly controlCircuits: ControlCircuits = new ControlCircuits(this);
   /** The {@link EnergyCosts} class instance */
   public readonly energyCosts: EnergyCosts = new EnergyCosts(this);
-  /** The {@link EnergyManagers} class instance */
-  public readonly energyManagers: EnergyManagers = new EnergyManagers(this);
+  /** The {@link EnergyManager} class instance */
+  public readonly energyManager: EnergyManager = new EnergyManager(this);
   /** The {@link Stoves} class instance */
   public readonly stoves: Stoves = new Stoves(this);
   /** The {@link GekkoInfo} class instance */
@@ -193,8 +388,8 @@ export abstract class Client {
   public readonly roomTemperatures: RoomTemperatures = new RoomTemperatures(this);
   /** The {@link Saunas} class instance */
   public readonly saunas: Saunas = new Saunas(this);
-  /** The {@link SmsEmails} class instance */
-  public readonly smsEmails: SmsEmails = new SmsEmails(this);
+  /** The {@link SmsEmail} class instance */
+  public readonly smsEmail: SmsEmail = new SmsEmail(this);
   /** The {@link Analyses} class instance */
   public readonly analyses: Analyses = new Analyses(this);
   /** The {@link Vents} class instance */
@@ -209,8 +404,9 @@ export abstract class Client {
    * @param config - MyGEKKO device configuration.
    */
   protected constructor(config: ClientConfig) {
-    this.baseUrl = config.baseUrl;
-    this.authQueryString = config.authQuery;
+    this.routes = config.routes;
+    this.attempts = config.attempts;
+    this.retryInterval = config.retryInterval;
   }
 
   /**
@@ -219,10 +415,9 @@ export abstract class Client {
    */
   public async initialize(): Promise<void> {
     if (this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
     }
-    this._systemConfig = await this.internalRequest<SystemConfig>('/var?');
-    this._trendConfig = await this.internalRequest<SystemConfig>('/trend?');
+    await this.loadConfig();
   }
 
   /**
@@ -231,10 +426,23 @@ export abstract class Client {
    */
   public async rescan(): Promise<void> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
-    this._systemConfig = await this.internalRequest('/var?');
-    this._trendConfig = await this.internalRequest('/trend?');
+    await this.loadConfig();
+  }
+
+  /**
+   * Loads the system and trend configurations.
+   * @throws {@link ClientError}
+   */
+  private async loadConfig(): Promise<void> {
+    const systemConfig = await this.internalRequest<SystemConfig>('/var?');
+    if (typeof systemConfig !== 'object' || systemConfig === null || !('globals' in systemConfig)) {
+      throw new ClientError(CLIENT_ERROR_MESSAGES.INVALID_CONFIG);
+    }
+    const trendConfig = await this.internalRequest<TrendConfig>('/trend?');
+    this._systemConfig = systemConfig;
+    this._trendConfig = trendConfig;
   }
 
   /**
@@ -244,7 +452,7 @@ export abstract class Client {
    */
   public async request<T>(endpoint: string): Promise<T> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
     return await this.internalRequest<T>(endpoint);
   }
@@ -256,7 +464,7 @@ export abstract class Client {
    */
   private async internalRequest<T>(endpoint: string): Promise<T> {
     try {
-      const response = await axios.get(`${this.baseUrl}${endpoint}${this.authQueryString}`);
+      const response = await this.get<T>(endpoint);
       return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
@@ -276,23 +484,77 @@ export abstract class Client {
           case 444:
             throw new ClientError(CLIENT_ERROR_MESSAGES.NOT_EXECUTED);
           case 470:
+          case 471:
             throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_REGISTERED_OR_EXPIRED);
           case 500:
             throw new ClientError(CLIENT_ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
           case 503:
             throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
           default:
-            throw new Error(
-              `${CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE}: ${error.response.status}`,
-              { cause: error }
-            );
+            throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE, { cause: error });
         }
-      } else if (isAxiosError(error) && error.request) {
-        throw new Error(error.message, { cause: error });
-      } else if (error instanceof Error) {
-        throw new Error(error.message, { cause: error });
+      } else if (isAxiosError(error)) {
+        throw new ClientError(
+          isTimeout(error.code)
+            ? CLIENT_ERROR_MESSAGES.TIMEOUT
+            : CLIENT_ERROR_MESSAGES.NO_CONNECTION,
+          { cause: error }
+        );
       } else {
-        throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR);
+        throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR, { cause: error });
+      }
+    }
+  }
+
+  /**
+   * Sends the request, a route that is not reachable is skipped for a while if another one exists.
+   * @param endpoint - The myGEKKO device API endpoint.
+   */
+  private async get<T>(endpoint: string): Promise<{ data: T }> {
+    const now = Date.now();
+    const reachable = this.routes.filter((route) => route.skipUntil <= now);
+    const routes = reachable.length ? reachable : this.routes;
+    let failure: unknown;
+
+    for (const route of routes) {
+      try {
+        const response = await this.send<T>(route, endpoint, route === routes[routes.length - 1]);
+        this._connectionType = route.type;
+        return response;
+      } catch (error) {
+        if (!isAxiosError(error) || error.response) {
+          throw error;
+        }
+        route.skipUntil = Date.now() + this.retryInterval;
+        // a command that timed out may have been executed, it is not sent on another route
+        if (isCommand(endpoint) && isTimeout(error.code)) {
+          throw error;
+        }
+        failure = error;
+      }
+    }
+    throw failure;
+  }
+
+  /**
+   * Sends the request on a route, a status request is repeated on connection errors.
+   * @param route - The route to use.
+   * @param endpoint - The myGEKKO device API endpoint.
+   * @param repeat - Whether a status request is repeated, not needed if another route follows.
+   */
+  private async send<T>(route: Route, endpoint: string, repeat: boolean): Promise<{ data: T }> {
+    // a command is never repeated on a route, it may have been executed although the response got lost
+    const attempts = repeat && !isCommand(endpoint) ? this.attempts : 1;
+
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await axios.get<T>(`${route.baseUrl}${endpoint}${route.authQuery}`, {
+          timeout: route.timeout,
+        });
+      } catch (error) {
+        if (attempt >= attempts || !isAxiosError(error) || error.response) {
+          throw error;
+        }
       }
     }
   }
@@ -302,8 +564,8 @@ export abstract class Client {
    * @param systemType - The myGEKKO device API endpoint.
    * @throws {@link ClientError}
    */
-  public async systemStatusRequest(systemType: SystemType): Promise<SystemStatusResponse> {
-    return await this.request<SystemStatusResponse>(`/var/${systemType}/status?`);
+  public async systemStatusRequest<T = SystemStatusResponse>(systemType: SystemType): Promise<T> {
+    return await this.request<T>(`/var/${systemType}/status?`);
   }
 
   /**
@@ -352,7 +614,7 @@ export abstract class Client {
     endDate: string,
     count: number
   ): Promise<TrendItemResponse> {
-    throwErrorIfTrendIsNotEnabled(this.systemConfig, systemType);
+    throwErrorIfTrendIsNotEnabled(this.trendConfig, systemType);
     return await this.request<TrendItemResponse>(
       `/trend/${systemType}/${itemId}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
     );
@@ -369,10 +631,7 @@ export class RemoteClient extends Client {
    * @param config - The local client configuration.
    */
   public constructor(config: RemoteClientConfig) {
-    super({
-      baseUrl: 'https://live.my-gekko.com/api/v1',
-      authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
-    });
+    super({ routes: [remoteRoute(config)], attempts: config.attempts ?? 3, retryInterval: 0 });
   }
 }
 
@@ -386,9 +645,31 @@ export class LocalClient extends Client {
    * @param config - The remote client configuration.
    */
   public constructor(config: LocalClientConfig) {
+    super({ routes: [localRoute(config)], attempts: config.attempts ?? 3, retryInterval: 0 });
+  }
+}
+
+/**
+ * The client class using the local api first and the remote api as fallback.
+ *  @group Client
+ */
+export class CombinedClient extends Client {
+  /**
+   * The combined client constructor.
+   * @param config - The combined client configuration with at least one access.
+   * @throws {@link ClientError}
+   */
+  public constructor(config: CombinedClientConfig) {
+    if (!config.local && !config.remote) {
+      throw new ClientError(CLIENT_ERROR_MESSAGES.MISSING_ACCESS);
+    }
     super({
-      baseUrl: `http://${config.ip}/api/v1`,
-      authQuery: `username=${config.username}&password=${config.password}`,
+      routes: [
+        ...(config.local ? [localRoute(config.local)] : []),
+        ...(config.remote ? [remoteRoute(config.remote)] : []),
+      ],
+      attempts: config.attempts ?? 3,
+      retryInterval: config.retryInterval ?? 60000,
     });
   }
 }

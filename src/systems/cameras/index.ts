@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -16,14 +16,18 @@ export class Cameras extends BaseSystem<Camera> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Camera {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Camera {
       const values = valuesToStringList(status);
 
       return {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         newRecordCount: tryParseFloat(values[0]),
         imageUrl: config[itemId]['imagepath'] ?? null,
         streamUrl: config[itemId]['streampath'] ?? null,

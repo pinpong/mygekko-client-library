@@ -13,9 +13,8 @@ export type Action = BaseSystemType & {
  * @group Systems
  */
 export enum ActionState {
-  'locked' = 0,
-  'open' = 1,
-  'keepOpen' = 2,
+  'off' = 0,
+  'on' = 1,
 }
 
 /**

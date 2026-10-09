@@ -7,7 +7,7 @@ export type GekkoInfoItem = BaseSystemType & {
   /** Language of myGEKKO device. */
   language: GekkoLanguage | null;
   /** Software version of myGEKKO device. */
-  version: number | null;
+  version: string | null;
   /** Hardware version of myGEKKO device. */
   hardware: string | null;
 };

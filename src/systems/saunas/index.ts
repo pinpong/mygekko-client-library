@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -16,22 +16,26 @@ export class Saunas extends BaseSystem<Sauna> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Sauna {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Sauna {
       const values = valuesToStringList(status);
 
       return {
-        sumState: tryParseFloat(values[3]),
+        sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
-        workingMode: tryParseFloat(values[0]),
-        currentState: tryParseFloat(values[1]),
-        errorState: tryParseFloat(values[4]),
-        roomTemperature: tryParseFloat(values[5]),
-        roomTemperatureSetPoint: tryParseFloat(values[6]),
-        burnerTemperature: tryParseFloat(values[7]),
-        roomRelativeHumidityLevel: tryParseFloat(values[8]),
-        roomRelativeHumiditySetPointLevel: tryParseFloat(values[9]),
+        page: config[itemId].page ?? null,
+        workingMode: tryParseFloat(values[1]),
+        currentState: tryParseFloat(values[0]),
+        errorState: tryParseFloat(values[3]),
+        roomTemperature: tryParseFloat(values[4]),
+        roomTemperatureSetPoint: tryParseFloat(values[5]),
+        burnerTemperature: tryParseFloat(values[6]),
+        roomRelativeHumidityLevel: tryParseFloat(values[7]),
+        roomRelativeHumiditySetPointLevel: tryParseFloat(values[8]),
       };
     }
 

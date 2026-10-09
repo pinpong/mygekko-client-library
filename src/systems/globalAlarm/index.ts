@@ -1,4 +1,4 @@
-import { LocalClient, RemoteClient, SystemStatusResponse } from '../../client';
+import { LocalClient, RemoteClient, SubSystemStatusResponse } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { BaseSubSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -13,16 +13,16 @@ export class GlobalAlarm extends BaseSubSystem<GlobalAlarmItem> {
      * Parses the item.
      * @param status - The response from the status request.
      */
-    function parseItem(status: SystemStatusResponse): GlobalAlarmItem {
+    function parseItem(status: SubSystemStatusResponse): GlobalAlarmItem {
       return {
         sumState: null,
         itemId: null,
         name: null,
         page: null,
-        state: tryParseFloat(status['sumstate']['value']),
+        state: tryParseFloat(status['sumstate']?.['value']),
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.alarm, parseItem);
   }
 }

@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -16,14 +16,18 @@ export class Blinds extends BaseSystem<Blind> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Blind {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Blind {
       const values = valuesToStringList(status);
 
       return {
         sumState: tryParseFloat(values[3]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         position: tryParseFloat(values[1]),
         rotationLevel: tryParseFloat(values[2]),
@@ -47,20 +51,28 @@ export class Blinds extends BaseSystem<Blind> {
   /**
    * Sets the position.
    * @param itemId - The item id.
-   * @param position - The new position.
+   * @param position - The new position as 0-100 %, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setPosition(itemId: string, position: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `P${position}`);
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(position)}`);
   }
 
   /**
    * Sets the angle.
    * @param itemId - The item id.
-   * @param angle - The new angle.
+   * @param angle - The new angle as 0-100 % whatever the rotation range is, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setAngle(itemId: string, angle: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `S${angle}`);
+    await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(angle)}`);
+  }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
   }
 }

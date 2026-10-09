@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -16,18 +16,31 @@ export class Logics extends BaseSystem<Logic> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Logic {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Logic {
       const values = valuesToStringList(status);
 
       return {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
-        value: tryParseFloat(values[0]),
+        page: config[itemId].page ?? null,
+        value: values[0] ?? null,
       };
     }
 
     super(client, SystemType.alarmsLogics, parseItem);
+  }
+
+  /**
+   * Sets the set point.
+   * @param itemId - The item id.
+   * @param value - The new set point, rounded to one decimal.
+   */
+  public async setSetPoint(itemId: string, value: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(value)}`);
   }
 }

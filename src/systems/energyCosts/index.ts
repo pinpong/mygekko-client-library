@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -17,7 +17,7 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): EnergyCost {
@@ -27,14 +27,14 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
         sumState: tryParseFloat(values[15]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentPower: tryParseFloat(values[0]),
         totalEnergyToday: tryParseFloat(values[1]),
         totalEnergyMonth: tryParseFloat(values[2]),
         totalEnergy: tryParseFloat(values[3]),
         nominalPower: tryParseFloat(values[4]),
-        energyUnit: values[5],
-        powerUnit: values[6],
+        energyUnit: values[5] ?? null,
+        powerUnit: values[6] ?? null,
         totalEnergyToday0h6h: tryParseFloat(values[7]),
         totalEnergyToday6h12h: tryParseFloat(values[8]),
         totalEnergyToday12h18h: tryParseFloat(values[9]),
@@ -43,13 +43,21 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
         totalEnergyYesterday6h12h: tryParseFloat(values[12]),
         totalEnergyYesterday12h18h: tryParseFloat(values[13]),
         totalEnergyYesterday18h24h: tryParseFloat(values[14]),
-        totalEnergyThisYear: tryParseFloat(values[15]),
-        totalEnergyInPeriod: tryParseFloat(values[16]),
-        startDateTotalEnergyInPeriod: values[17],
-        counterDirection: tryParseFloat(values[18]),
+        totalEnergyThisYear: tryParseFloat(values[16]),
+        totalEnergyInPeriod: tryParseFloat(values[17]),
+        startDateTotalEnergyInPeriod: values[18] ?? null,
+        counterDirection: tryParseFloat(values[19]),
       };
     }
 
     super(client, SystemType.energyCosts, parseItem);
+  }
+
+  /**
+   * Resets the period of the total energy.
+   * @param itemId - The item id.
+   */
+  public async resetPeriod(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `RP`);
   }
 }

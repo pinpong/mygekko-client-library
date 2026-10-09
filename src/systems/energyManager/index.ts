@@ -1,14 +1,14 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { EnergyManager } from './types';
+import { EnergyManagerItem } from './types';
 
 /**
  * @group Systems
  */
-export class EnergyManagers extends BaseSystem<EnergyManager> {
+export class EnergyManager extends BaseSystem<EnergyManagerItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -17,21 +17,23 @@ export class EnergyManagers extends BaseSystem<EnergyManager> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): EnergyManager {
+    ): EnergyManagerItem {
       const values = valuesToStringList(status);
+      const netMeterCurrentPower = tryParseFloat(values[4]);
 
       return {
         sumState: tryParseFloat(values[0]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         netMeterState: tryParseFloat(values[1]),
         solarPanelState: tryParseFloat(values[2]),
         batteryState: tryParseFloat(values[3]),
-        netMeterCurrentPower: tryParseFloat(values[4]),
+        netMeterCurrentPower:
+          netMeterCurrentPower === null ? null : Math.max(0, netMeterCurrentPower),
         currentPowerExportedToNet: tryParseFloat(values[5]),
         currentPowerFromSolarPanels: tryParseFloat(values[6]),
         currentPowerFromBattery: tryParseFloat(values[7]),
@@ -56,6 +58,6 @@ export class EnergyManagers extends BaseSystem<EnergyManager> {
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.energyManager, parseItem);
   }
 }

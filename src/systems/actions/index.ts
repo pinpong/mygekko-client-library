@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -16,14 +16,18 @@ export class Actions extends BaseSystem<Action> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Action {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Action {
       const values = valuesToStringList(status);
 
       return {
         sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         startCondition: tryParseFloat(values[1]),
       };
@@ -39,6 +43,23 @@ export class Actions extends BaseSystem<Action> {
    * @throws {@link ClientError}
    */
   public async setState(itemId: string, state: ActionState): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `${state}`);
+    let value = -1;
+    switch (state) {
+      case ActionState.off:
+        value = -1;
+        break;
+      case ActionState.on:
+        value = 1;
+        break;
+    }
+    await this.client.changeRequest(this.systemType, itemId, `${value}`);
+  }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
   }
 }

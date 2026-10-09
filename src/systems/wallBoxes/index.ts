@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -13,16 +13,15 @@ export class WallBoxes extends BaseSystem<WallBox> {
     /**
      * Parse the wall box user item.
      * @param status - The status response
-     * @param itemId - The item id
      */
-    function parseWallBoxUser(status: ItemStatusResponse, itemId: string): WallBoxUser[] {
+    function parseWallBoxUser(status: ItemStatusResponse): WallBoxUser[] {
       const items: WallBoxUser[] = [];
       for (let i = 1; i < 7; i++) {
-        const value = status[itemId][`user${i}_sumstate`]['value'];
+        const value = status[`user${i}_sumstate`]?.value;
         if (value != null) {
           items.push({
             id: i,
-            totalEnergy: value,
+            totalEnergy: tryParseFloat(value),
           });
         }
       }
@@ -34,14 +33,18 @@ export class WallBoxes extends BaseSystem<WallBox> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): WallBox {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): WallBox {
       const values = valuesToStringList(status);
 
       return {
         sumState: tryParseFloat(values[10]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         pluggedState: tryParseFloat(values[0]),
         chargeState: tryParseFloat(values[1]),
         chargeRequestState: tryParseFloat(values[2]),
@@ -49,12 +52,12 @@ export class WallBoxes extends BaseSystem<WallBox> {
         maximumChargingPower: tryParseFloat(values[4]),
         chargingPowerSetPoint: tryParseFloat(values[5]),
         electricCurrentSetPoint: tryParseFloat(values[6]),
-        chargeUserName: values[7],
-        chargeDurationTime: tryParseFloat(values[8]),
-        currentChargingEnergy: tryParseFloat(values[9]),
-        chargeStartTime: values[11],
-        chargeUserIndex: tryParseFloat(values[12]),
-        wallBoxUser: parseWallBoxUser(status, itemId),
+        chargeUserName: values[7] ?? null,
+        chargeDurationTime: values[8] ?? null,
+        currentChargingEnergy: values[9] ?? null,
+        chargeStartTime: values[11] ?? null,
+        chargeUserIndex: values[12] ?? null,
+        wallBoxUser: parseWallBoxUser(status),
       };
     }
 
@@ -67,15 +70,17 @@ export class WallBoxes extends BaseSystem<WallBox> {
    * @param state - The new charge state.
    */
   public async setChargeState(itemId: string, state: WallBoxChargeState): Promise<void> {
-    let value = -1;
+    let value = 0;
 
     switch (state) {
       case WallBoxChargeState.off:
-      case WallBoxChargeState.paused:
-        value = -1;
+        value = 0;
         break;
       case WallBoxChargeState.on:
         value = 1;
+        break;
+      case WallBoxChargeState.paused:
+        value = 2;
         break;
     }
     await this.client.changeRequest(this.systemType, itemId, `${value}`);
@@ -84,9 +89,44 @@ export class WallBoxes extends BaseSystem<WallBox> {
   /**
    * Sets the power.
    * @param itemId - The item id.
-   * @param power - The new power.
+   * @param power - The new absolute charging power as kilowatt, rounded to one decimal.
    */
   public async setChargePower(itemId: string, power: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `CS${power}`);
+    await this.client.changeRequest(this.systemType, itemId, `CS${roundCommandValue(power)}`);
+  }
+
+  /**
+   * Resets the history of a user.
+   * @param itemId - The item id.
+   * @param user - The user as 1-20.
+   */
+  public async resetUserHistory(itemId: string, user: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `R${user}`);
+  }
+
+  /**
+   * Starts a partial charge.
+   * @param itemId - The item id.
+   * @param energy - The energy to charge as kilowatt-hour, rounded to one decimal.
+   */
+  public async startPartialCharge(itemId: string, energy: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(energy)}`);
+  }
+
+  /**
+   * Logs a user in.
+   * @param itemId - The item id.
+   * @param user - The user as 1-20.
+   */
+  public async loginUser(itemId: string, user: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `LI${user}`);
+  }
+
+  /**
+   * Logs the current user out.
+   * @param itemId - The item id.
+   */
+  public async logoutUser(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `LO`);
   }
 }

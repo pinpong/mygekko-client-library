@@ -1,6 +1,24 @@
-import { SystemConfig } from '../../client';
 import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
 import { SystemType } from '../../systems/base/types';
+
+/** A config of myGEKKO device, a string as long as it is not loaded. */
+type Config = { [key: string]: unknown } | string;
+
+/**
+ * Returns the node below the path or undefined if not found.
+ * @param config - The config of myGEKKO device.
+ * @param path - The keys to follow.
+ */
+function find(config: Config, path: string[]): unknown {
+  let node: unknown = config;
+  for (const key of path) {
+    if (typeof node !== 'object' || node === null || !Object.hasOwn(node, key)) {
+      return undefined;
+    }
+    node = (node as { [key: string]: unknown })[key];
+  }
+  return node;
+}
 
 /**
  * Throws error if system is not enabled.
@@ -8,16 +26,13 @@ import { SystemType } from '../../systems/base/types';
  * @param systemType - The system type.
  * @throws {@link ClientError}
  */
-export function throwErrorIfSystemIsNotEnabled(
-  systemConfig: SystemConfig,
-  systemType: SystemType
-): void {
+export function throwErrorIfSystemIsNotEnabled(systemConfig: Config, systemType: SystemType): void {
   if (systemConfig.valueOf() == 0) {
-    throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+    throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
   }
 
   if (!available(systemConfig, systemType)) {
-    throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
+    throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
   }
 }
 
@@ -27,10 +42,7 @@ export function throwErrorIfSystemIsNotEnabled(
  * @param systemType - The system type.
  * @throws {@link ClientError}
  */
-export function throwErrorIfTrendIsNotEnabled(
-  trendConfig: SystemConfig,
-  systemType: SystemType
-): void {
+export function throwErrorIfTrendIsNotEnabled(trendConfig: Config, systemType: SystemType): void {
   if (trendConfig.valueOf() == 0) {
     throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
   }
@@ -47,21 +59,12 @@ export function throwErrorIfTrendIsNotEnabled(
  * @throws {@link ClientError}
  */
 export function throwErrorIfItemIdIsNoFound(
-  config: SystemConfig,
+  config: Config,
   systemType: SystemType,
   itemId: string
 ): void {
-  const values = systemType.split('/');
-  let s = config;
-
-  for (const i of values) {
-    if (values.lastIndexOf(i) === values.length - 1) {
-      if (!s[i][itemId]) {
-        throw new ClientError(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
-      }
-      break;
-    }
-    s = config[i];
+  if (!find(config, [...systemType.split('/'), itemId])) {
+    throw new ClientError(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
   }
 }
 
@@ -70,14 +73,6 @@ export function throwErrorIfItemIdIsNoFound(
  * @param config - The config of myGEKKO device.
  * @param systemType - The system type.
  */
-function available(config: SystemConfig, systemType: SystemType): boolean {
-  const values = systemType.split('/');
-  let s = config;
-  for (const i of values) {
-    if (!s[i]) {
-      return false;
-    }
-    s = config[i];
-  }
-  return true;
+export function available(config: Config, systemType: SystemType): boolean {
+  return Boolean(find(config, systemType.split('/')));
 }

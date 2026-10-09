@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -17,7 +17,7 @@ export class HotWaterSystems extends BaseSystem<HotWaterSystem> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): HotWaterSystem {
@@ -27,7 +27,7 @@ export class HotWaterSystems extends BaseSystem<HotWaterSystem> {
         sumState: tryParseFloat(values[7]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         deviceModel: tryParseFloat(values[0]),
         coolingModeState: tryParseFloat(values[1]),
         waterTemperatureSetPoint: tryParseFloat(values[2]),
@@ -53,9 +53,9 @@ export class HotWaterSystems extends BaseSystem<HotWaterSystem> {
   /**
    * Sets the temperature.
    * @param itemId - The item id.
-   * @param temperatur - The new temperature.
+   * @param temperature - The new absolute temperature as C°, rounded to one decimal.
    */
-  public async setTemperature(itemId: string, temperatur: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `T${temperatur}`);
+  public async setTemperature(itemId: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperature)}`);
   }
 }

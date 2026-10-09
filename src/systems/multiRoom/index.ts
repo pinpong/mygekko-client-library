@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -17,10 +17,12 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
     function parsePlayList(values: string[]): MultiRoomPlayList[] {
       const items: MultiRoomPlayList[] = [];
       for (let i = 5; i < 21; i++) {
-        items.push({
-          index: i - 5,
-          name: values[i],
-        });
+        if (values[i]) {
+          items.push({
+            index: i - 5,
+            name: values[i],
+          });
+        }
       }
       return items;
     }
@@ -31,7 +33,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): MultiRoom {
@@ -41,14 +43,14 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         currentVolume: tryParseFloat(values[1]),
         currentPlayingTime: tryParseFloat(values[2]),
-        currentAudioTitle: values[3],
+        currentAudioTitle: values[3] ?? null,
         currentPlaylistIndex: tryParseFloat(values[4]),
         playList: parsePlayList(values),
-        currentSongIndex: tryParseFloat(values[21]),
+        currentSongIndex: tryParseFloat(values[22]),
       };
     }
 
@@ -76,10 +78,10 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   /**
    * Sets the volume.
    * @param itemId - The item id.
-   * @param volume - The new volume.
+   * @param volume - The new volume as 0-100 %, rounded to one decimal.
    */
   public async setVolume(itemId: string, volume: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `V${volume}`);
+    await this.client.changeRequest(this.systemType, itemId, `V${roundCommandValue(volume)}`);
   }
 
   /**
@@ -101,9 +103,17 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   /**
    * Sets the play list.
    * @param itemId - The item id.
-   * @param playListIndex - The new play list index.
+   * @param playListIndex - The new play list index as 0-15.
    */
   public async setPlayList(itemId: string, playListIndex: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `C${playListIndex}`);
+  }
+
+  /**
+   * Toggles the state.
+   * @param itemId - The item id.
+   */
+  public async toggle(itemId: string): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T`);
   }
 }

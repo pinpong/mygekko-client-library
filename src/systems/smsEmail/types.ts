@@ -1,7 +1,7 @@
 import { BaseSystemType } from '../base/types';
 
 /** @group Systems */
-export type SmsEmail = BaseSystemType & {
+export type SmsEmailItem = BaseSystemType & {
   /** The current state */
   currentState: SmsEmailState | null;
 };

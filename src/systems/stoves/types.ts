@@ -17,7 +17,7 @@ export type Stove = BaseSystemType & {
  * @group Systems
  */
 export enum StovesState {
-  'stoveIdle' = 0,
+  'stoveIdle' = 1,
   'closeDoor' = 5,
   'enkindleRecognized' = 7,
   'activeTempReached' = 9,

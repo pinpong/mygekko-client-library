@@ -11,7 +11,7 @@ export type RoomTemperature = BaseSystemType & {
   /** The current working mode */
   workingMode: RoomTemperatureWorkingModeStandard | RoomTemperatureWorkingModeKnx | null;
   /** Reserved */
-  reserved: string | null;
+  reserved: number | null;
   /** The current temperature adjust as -100-100 C° */
   temperatureAdjustment: number | null;
   /** The current cooling mode state */
@@ -31,7 +31,8 @@ export type RoomTemperature = BaseSystemType & {
  * @group Systems
  */
 export enum RoomTemperatureWorkingModeStandard {
-  'off' = 0,
+  'off' = 1,
+  'on' = 2,
   'comfort' = 8,
   'reduced' = 16,
   'manual' = 64,
@@ -65,5 +66,5 @@ export enum RoomTemperatureCoolingState {
  */
 export enum RoomTemperatureDeviceModel {
   'standard' = 0,
-  'knx' = 1,
+  'knx' = 3,
 }

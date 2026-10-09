@@ -11,6 +11,13 @@ export type BaseSystemType = {
   sumState: SumState | null;
 };
 
+/** The group of items of a system */
+/** @group Systems */
+export type SystemGroup = BaseSystemType & {
+  /** The group state, its meaning depends on the system */
+  state: number | null;
+};
+
 /**
  * The system sum states.
  * @group Systems
@@ -31,7 +38,7 @@ export enum SystemType {
   'globals' = 'globals',
   'weather' = 'globals/meteo',
   'network' = 'globals/network',
-  'alarm' = 'alarm',
+  'alarm' = 'globals/alarm',
   'lights' = 'lights',
   'blinds' = 'blinds',
   'vents' = 'vents',
@@ -42,7 +49,7 @@ export enum SystemType {
   'energyCosts' = 'energycosts',
   'alarmsLogics' = 'alarms_logics',
   'accesses' = 'accessdoors',
-  'energyManagers' = 'energymanager',
+  'energyManager' = 'energymanager',
   'alarmSystem' = 'alarmsystem',
   'multiRooms' = 'multirooms',
   'cameras' = 'cams',

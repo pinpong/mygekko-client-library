@@ -1,0 +1,258 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`accesses reads the values in the order of the device format 1`] = `
+[
+  "0 accessControllerActionState <- currentState",
+  "1 elementInfo <- sumState",
+  "2 accessState <- accessState",
+  "3 gateRuntimeLevel <- gateRuntimePercentage",
+  "4 accessType <- accessType",
+]
+`;
+
+exports[`actions reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+  "1 startConditionState <- startCondition",
+  "2 elementInfo <- sumState",
+]
+`;
+
+exports[`alarmSystem reads the values in the order of the device format 1`] = `
+[
+  "0 alarmState <- alarmSystemState",
+  "1 zone1DeviceStatus <- alarmDevices.0.deviceStatus",
+  "2 zone1SharpState <- alarmDevices.0.sharpState",
+  "3 zone1AlarmState <- alarmDevices.0.systemState",
+  "4 zone2DeviceStatus <- alarmDevices.1.deviceStatus",
+  "5 zone2SharpState <- alarmDevices.1.sharpState",
+  "6 zone2AlarmState <- alarmDevices.1.systemState",
+  "7 deviceModel <- deviceModel",
+]
+`;
+
+exports[`analyses reads the values in the order of the device format 1`] = `
+[
+  "0 variable1State <- analysisVariables.0.currentState",
+  "1 variable1Type <- analysisVariables.0.type",
+  "2 variable1Name <- analysisVariables.0.name",
+  "3 variable1Value <- analysisVariables.0.value",
+  "4 variable1Unit <- analysisVariables.0.unit",
+  "5 variable2State <- analysisVariables.1.currentState",
+  "6 variable2Type <- analysisVariables.1.type",
+  "7 variable2Name <- analysisVariables.1.name",
+  "8 variable2Value <- analysisVariables.1.value",
+  "9 variable2Unit <- analysisVariables.1.unit",
+  "10 variable3State <- analysisVariables.2.currentState",
+  "11 variable3Type <- analysisVariables.2.type",
+  "12 variable3Name <- analysisVariables.2.name",
+  "13 variable3Value <- analysisVariables.2.value",
+  "14 variable3Unit <- analysisVariables.2.unit",
+  "15 variable4State <- analysisVariables.3.currentState",
+  "16 variable4Type <- analysisVariables.3.type",
+  "17 variable4Name <- analysisVariables.3.name",
+  "18 variable4Value <- analysisVariables.3.value",
+  "19 variable4Unit <- analysisVariables.3.unit",
+  "20 elementInfo <- sumState",
+]
+`;
+
+exports[`blinds reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+  "1 positionLevel <- position",
+  "2 rotationLevel <- rotationLevel",
+  "3 elementInfo <- sumState",
+  "4 rotationRange <- rotationRange",
+]
+`;
+
+exports[`cameras reads the values in the order of the device format 1`] = `
+[
+  "0 newRecordsAvailableState <- newRecordCount",
+]
+`;
+
+exports[`clocks reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+  "1 startConditionState <- startCondition",
+  "2 elementInfo <- sumState",
+]
+`;
+
+exports[`energyCosts reads the values in the order of the device format 1`] = `
+[
+  "0 currentPowerValue <- currentPower",
+  "1 totalEnergyTodayValue <- totalEnergyToday",
+  "2 totalEnergyMonthValue <- totalEnergyMonth",
+  "3 totalEnergyValue <- totalEnergy",
+  "4 nominalPowerValue <- nominalPower",
+  "5 energyUnit <- energyUnit",
+  "6 powerUnit <- powerUnit",
+  "7 totalEnergyToday0h6hValue <- totalEnergyToday0h6h",
+  "8 totalEnergyToday6h12hValue <- totalEnergyToday6h12h",
+  "9 totalEnergyToday12h18hValue <- totalEnergyToday12h18h",
+  "10 totalEnergyToday18h24hValue <- totalEnergyToday18h24h",
+  "11 totalEnergyYesterday0h6hValue <- totalEnergyYesterday0h6h",
+  "12 totalEnergyYesterday6h12hValue <- totalEnergyYesterday6h12h",
+  "13 totalEnergyYesterday12h18hValue <- totalEnergyYesterday12h18h",
+  "14 totalEnergyYesterday18h24hValue <- totalEnergyYesterday18h24h",
+  "15 elementInfo <- sumState",
+  "16 totalEnergyThisYearValue <- totalEnergyThisYear",
+  "17 totalEnergyInPeriodValue <- totalEnergyInPeriod",
+  "18 startDateTotalEnergyInPeriod <- startDateTotalEnergyInPeriod",
+  "19 counterDirection <- counterDirection",
+]
+`;
+
+exports[`energyManager reads the values in the order of the device format 1`] = `
+[
+  "0 elementInfo <- sumState",
+  "1 gridMeterState <- netMeterState",
+  "2 solarPanelState <- solarPanelState",
+  "3 batteryState <- batteryState",
+  "4 gridMeterCurrentPowerValue <- netMeterCurrentPower",
+  "5 currentPowerExportedToGridValue <- currentPowerExportedToNet",
+  "6 currentPowerFromSolarPanelsValue <- currentPowerFromSolarPanels",
+  "7 currentPowerFromBatteryValue <- currentPowerFromBattery",
+  "8 currentPowerChargingBatteryValue <- currentPowerChargingBattery",
+  "9 currentHomePowerConsumptionValue <- currentHomePowerConsumption",
+  "10 currentAlternativePowerConsupmtionValue <- currentAlternativePowerConsumption",
+  "11 totalDailyImportedEnergyFromGridValue <- totalDailyImportedEnergyFromNet",
+  "12 totalDailyExportedEnergyToGridValue <- totalDailyExportedEnergyToNet",
+  "13 totalDailyEnergyFromSolarPanelsValue <- totalDailyEnergyFromSolarPanels",
+  "14 totalDailyEnergyFromBatteryValue <- totalDailyEnergyFromBattery",
+  "15 totalDailyEneryyChargingBatteryValue <- totalDailyEnergyChargingBattery",
+  "16 totalDailyHomeEnergyConsumptionValue <- totalDailyHomeEnergyConsumption",
+  "17 loadSheddingState <- loadSheddingState",
+  "18 EMSState <- emsState",
+  "19 batteryModel <- batteryModel",
+  "20 batterySoCLevel <- batterySoCLevel",
+  "21 EMSEnabled <- emsEnabledState",
+  "22 maximumPowerConsumptionFromGridValue <- maximumPowerConsumptionFromNet",
+  "23 maximumPowerExportToGridValue <- maximumPowerExportToNet",
+  "24 maximumPowerSolarPanelsValue <- maximumPowerSolarPanels",
+  "25 maximumPowerBatteryValue <- maximumPowerBattery",
+]
+`;
+
+exports[`hotWaterSystems reads the values in the order of the device format 1`] = `
+[
+  "0 deviceModel <- deviceModel",
+  "1 coolingModeState <- coolingModeState",
+  "2 waterTemperatureSetPointValue <- waterTemperatureSetPoint",
+  "3 waterTemperatureTopValue <- waterTemperatureTop",
+  "4 waterTemperatureBottomValue <- waterTemperatureBottom",
+  "5 collectorTemperatureValue <- collectorTemperature",
+  "6 currentState <- currentState",
+  "7 elementInfo <- sumState",
+]
+`;
+
+exports[`lights reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+  "1 dimLevel <- dimLevel",
+  "2 rgbColor <- rgbColor",
+  "3 tunableWhiteLevel <- tunableWhiteLevel",
+  "4 elementInfo <- sumState",
+]
+`;
+
+exports[`loads reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+  "1 elementInfo <- sumState",
+]
+`;
+
+exports[`logics reads the values in the order of the device format 1`] = `
+[
+  "0 currentValue <- value",
+]
+`;
+
+exports[`multiRooms reads the values in the order of the device format 1`] = `
+[
+  "0 playerCurrentState <- currentState",
+  "1 currentVolumeLevel <- currentVolume",
+  "2 currentPlayingTime <- currentPlayingTime",
+  "3 currentAudioTitle <- currentAudioTitle",
+  "4 currentPlaylistIndex <- currentPlaylistIndex",
+  "5 playlist0Name <- playList.0.name",
+  "6 playlist1Name <- playList.1.name",
+  "7 playlist2Name <- playList.2.name",
+  "8 playlist3Name <- playList.3.name",
+  "9 playlist4Name <- playList.4.name",
+  "10 playlist5Name <- playList.5.name",
+  "11 playlist6Name <- playList.6.name",
+  "12 playlist7Name <- playList.7.name",
+  "13 playlist8Name <- playList.8.name",
+  "14 playlist9Name <- playList.9.name",
+  "15 playlist10Name <- playList.10.name",
+  "16 playlist11Name <- playList.11.name",
+  "17 playlist12Name <- playList.12.name",
+  "18 playlist13Name <- playList.13.name",
+  "19 playlist14Name <- playList.14.name",
+  "20 playlist15Name <- playList.15.name",
+  "21 currentSongIndex <- -",
+]
+`;
+
+exports[`pools reads the values in the order of the device format 1`] = `
+[
+  "0 workingMode <- workingMode",
+  "1 filteringState <- filteringState",
+  "2 backwashState <- backwashState",
+  "3 elementInfo <- sumState",
+  "4 waterTemperatureValue <- waterTemperature",
+]
+`;
+
+exports[`roomTemperatures reads the values in the order of the device format 1`] = `
+[
+  "0 temperatureValue <- temperature",
+  "1 temperatureSetPointValue <- temperatureSetPoint",
+  "2 valveOpeningLevel <- valveOpeningLevel",
+  "3 workingMode <- workingMode",
+  "4 reserved <- -",
+  "5 temperatureAdjustmentValue <- temperatureAdjustment",
+  "6 coolingModeState <- coolingModeState",
+  "7 elementInfo <- sumState",
+  "8 relativeHumidityLevel <- relativeHumidity",
+  "9 airQualityLevel <- airQualityLevel",
+  "10 floorTemperatureValue <- floorTemperature",
+  "11 deviceModel <- deviceModel",
+]
+`;
+
+exports[`smsEmail reads the values in the order of the device format 1`] = `
+[
+  "0 currentState <- currentState",
+]
+`;
+
+exports[`vents reads the values in the order of the device format 1`] = `
+[
+  "0 workingLevel <- ventLevel",
+  "1 deviceModel <- deviceModel",
+  "2 workingMode <- workingMode",
+  "3 bypassState <- bypassState",
+  "4 maximumWorkingLevel <- -",
+  "5 relativeHumidityLevel <- relativeHumidity",
+  "6 airQualityLevel <- airQuality",
+  "7 co2Value <- co2",
+  "8 supplyAirTemperatureValue <- supplyAirTemperature",
+  "9 exhaustAirTemperatureValue <- exhaustAirTemperature",
+  "10 outsideAirTemperatureValue <- outsideAirTemperature",
+  "11 outgoingAirTemperatureValue <- outgoingAirTemperature",
+  "12 supplyAirWorkingLevel <- supplyAirWorkingLevel",
+  "13 exhaustAirWorkingLevel <- exhaustAirWorkingLevel",
+  "14 elementInfo <- sumState",
+  "15 subWorkingMode <- subWorkingMode",
+  "16 coolingModeState <- coolingModeState",
+  "17 dehumidModeState <- dehumidificationState",
+  "18 bypassMode <- bypassMode",
+]
+`;

@@ -1,7 +1,7 @@
 import { BaseSystemType } from '../base/types';
 
 /** @group Systems */
-export type AirConditioner = BaseSystemType & {
+export type AirConditionerItem = BaseSystemType & {
   /** The supply air temperature -100-100 as C° */
   supplyAirTemperature: number | null;
   /** The supply air set point temperature -100-100 as C° */

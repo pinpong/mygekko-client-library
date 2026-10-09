@@ -1,14 +1,14 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { SmsEmail, SmsEmailState } from './types';
+import { SmsEmailItem, SmsEmailState } from './types';
 
 /**
  * @group Systems
  */
-export class SmsEmails extends BaseSystem<SmsEmail> {
+export class SmsEmail extends BaseSystem<SmsEmailItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -16,14 +16,18 @@ export class SmsEmails extends BaseSystem<SmsEmail> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): SmsEmail {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): SmsEmailItem {
       const values = valuesToStringList(status);
 
       return {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
       };
     }
@@ -37,10 +41,10 @@ export class SmsEmails extends BaseSystem<SmsEmail> {
    * @param state - The new state.
    */
   public async setState(itemId: string, state: SmsEmailState): Promise<void> {
-    let value = -1;
+    let value = 0;
     switch (state) {
       case SmsEmailState.off:
-        value = -1;
+        value = 0;
         break;
       case SmsEmailState.on:
         value = 1;

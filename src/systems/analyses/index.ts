@@ -1,5 +1,5 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -16,47 +16,60 @@ export class Analyses extends BaseSystem<Analysis> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Analysis {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Analysis {
       const values = valuesToStringList(status);
 
       return {
         sumState: tryParseFloat(values[20]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         analysisVariables: [
           {
             currentState: tryParseFloat(values[0]),
             type: tryParseFloat(values[1]),
-            name: values[2],
+            name: values[2] ?? null,
             value: tryParseFloat(values[3]),
-            unit: values[4],
+            unit: values[4] ?? null,
           },
           {
             currentState: tryParseFloat(values[5]),
             type: tryParseFloat(values[6]),
-            name: values[7],
+            name: values[7] ?? null,
             value: tryParseFloat(values[8]),
-            unit: values[9],
+            unit: values[9] ?? null,
           },
           {
             currentState: tryParseFloat(values[10]),
             type: tryParseFloat(values[11]),
-            name: values[12],
+            name: values[12] ?? null,
             value: tryParseFloat(values[13]),
-            unit: values[14],
+            unit: values[14] ?? null,
           },
           {
             currentState: tryParseFloat(values[15]),
             type: tryParseFloat(values[16]),
-            name: values[17],
+            name: values[17] ?? null,
             value: tryParseFloat(values[18]),
-            unit: values[19],
+            unit: values[19] ?? null,
           },
         ],
       };
     }
 
     super(client, SystemType.analyses, parseItem);
+  }
+
+  /**
+   * Sets the set point.
+   * @param itemId - The item id.
+   * @param value - The new set point, rounded to one decimal.
+   */
+  public async setSetPoint(itemId: string, value: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(value)}`);
   }
 }

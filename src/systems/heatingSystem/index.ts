@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -17,7 +17,7 @@ export class HeatingSystems extends BaseSystem<HeatingSystem> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): HeatingSystem {
@@ -27,7 +27,7 @@ export class HeatingSystems extends BaseSystem<HeatingSystem> {
         sumState: tryParseFloat(values[5]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         deviceModel: tryParseFloat(values[0]),
         coolingModeState: tryParseFloat(values[1]),
         flowTemperature: tryParseFloat(values[2]),

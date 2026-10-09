@@ -1,5 +1,14 @@
-import { LocalClient, RemoteClient, SystemStatusResponse, TrendItemResponse } from '../../client';
-import { throwErrorIfSystemIsNotEnabled } from '../../utils/errors/errorUtils';
+import {
+  LocalClient,
+  RemoteClient,
+  SubSystemStatusResponse,
+  TrendDescriptions,
+  TrendItemResponse,
+} from '../../client';
+import {
+  throwErrorIfSystemIsNotEnabled,
+  throwErrorIfTrendIsNotEnabled,
+} from '../../utils/errors/errorUtils';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { BaseSubSystem } from '../base';
 import { SystemType, Trend, TrendItem } from '../base/types';
@@ -14,24 +23,26 @@ export class Weather extends BaseSubSystem<WeatherItem> {
      * Parses the item.
      * @param status - The response from the status request.
      */
-    function parseItem(status: SystemStatusResponse): WeatherItem {
+    function parseItem(status: SubSystemStatusResponse): WeatherItem {
+      const wind = tryParseFloat(status['wind']?.['value']);
+
       return {
         sumState: null,
         itemId: null,
         name: null,
         page: null,
-        twilight: tryParseFloat(status['twilight']['value']),
-        humidity: tryParseFloat(status['humidity']['value']),
-        brightness: tryParseFloat(status['brightness']['value']),
-        brightnessWest: tryParseFloat(status['brightnessw']['value']),
-        brightnessEast: tryParseFloat(status['brightnesso']['value']),
-        wind: tryParseFloat(status['wind']['value']),
-        temperature: tryParseFloat(status['temperature']['value']),
-        rain: tryParseFloat(status['rain']['value']),
+        twilight: tryParseFloat(status['twilight']?.['value']),
+        humidity: tryParseFloat(status['humidity']?.['value']),
+        brightness: tryParseFloat(status['brightness']?.['value']),
+        brightnessWest: tryParseFloat(status['brightnessw']?.['value']),
+        brightnessEast: tryParseFloat(status['brightnesso']?.['value']),
+        wind: wind === null ? null : wind * 3.6,
+        temperature: tryParseFloat(status['temperature']?.['value']),
+        rain: tryParseFloat(status['rain']?.['value']),
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.weather, parseItem);
   }
 
   /**
@@ -44,7 +55,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
    */
   private async parseWeatherItemTrend(
     systemType: SystemType,
-    item: string,
+    item: TrendDescriptions,
     startDate: string,
     endDate: string,
     count: number
@@ -80,7 +91,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
   public async getItem(): Promise<WeatherItem> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
-    const status = await this.client.systemStatusRequest(this.systemType);
+    const status = await this.client.request<SubSystemStatusResponse>('/var/meteo/status?');
     return this.parseItem(status);
   }
 
@@ -93,6 +104,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
+    throwErrorIfTrendIsNotEnabled(this.client.trendConfig, this.systemType);
 
     return await this.parseWeatherItemTrend(
       'meteo' as SystemType,

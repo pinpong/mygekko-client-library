@@ -3,7 +3,7 @@
  *  @group Client
  */
 export enum CLIENT_ERROR_MESSAGES {
-  /** Status code 403 */
+  /** Status code 403, the device may refuse further logins for some minutes */
   BAD_LOGIN = 'auth/bad-login',
   /** Status code 405 */
   PERMISSION_DENIED = 'auth/permission-denied',
@@ -14,17 +14,24 @@ export enum CLIENT_ERROR_MESSAGES {
   /** Status code 400 */
   BAD_REQUEST = 'request/bad-request',
   /** Status code 429 */
-  TO_MANY_REQUEST = 'request/tom-many-request',
+  TO_MANY_REQUEST = 'request/too-many-request',
   /** Status code 444 */
   NOT_EXECUTED = 'request/not-executed',
-  /** Status code 470 */
+  /** Status code 470 and 471 */
   SERVICE_NOT_REGISTERED_OR_EXPIRED = 'request/service-not-registered-or-expired',
   /** Status code 500 */
   INTERNAL_SERVER_ERROR = 'request/internal-server-error',
   /** Status code 503 */
   SERVICE_NOT_AVAILABLE = 'request/service-not-available',
+  /** No response within the timeout */
+  TIMEOUT = 'request/timeout',
+  /** No connection to the myGEKKO device or service */
+  NO_CONNECTION = 'request/no-connection',
   SYSTEM_NOT_INITIALIZED = 'client/client-not-initialized',
   ALREADY_INITIALIZED = 'client/client-already-initialized',
+  MISSING_ACCESS = 'client/missing-access',
+  /** The response to the config request is no myGEKKO device config */
+  INVALID_CONFIG = 'client/invalid-config',
   SYSTEM_NOT_SUPPORTED = 'client/system-not-supported',
   TREND_NOT_SUPPORTED = 'client/trend-not-supported',
   CANNOT_PARSE_STATUS = 'client/cannot-parse-status',
@@ -40,8 +47,9 @@ export class ClientError extends Error {
   /**
    * The client error constructor.
    * @param message - The error message.
+   * @param options - The error options, e.g. the cause.
    */
-  public constructor(message: CLIENT_ERROR_MESSAGES) {
-    super(message);
+  public constructor(message: CLIENT_ERROR_MESSAGES, options?: ErrorOptions) {
+    super(message, options);
   }
 }

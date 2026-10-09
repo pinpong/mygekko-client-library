@@ -1,9 +1,9 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { AlarmSystem } from './types';
+import { AlarmSystemItem } from './types';
 
 /**
  * Parses the item.
@@ -14,7 +14,7 @@ import { AlarmSystem } from './types';
 /**
  * @group Systems
  */
-export class AlarmSystems extends BaseSystem<AlarmSystem> {
+export class AlarmSystem extends BaseSystem<AlarmSystemItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -23,28 +23,28 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): AlarmSystem {
+    ): AlarmSystemItem {
       const values = valuesToStringList(status);
 
       return {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         alarmSystemState: tryParseFloat(values[0]),
         alarmDevices: [
           {
-            zone: '1',
-            type: values[1],
+            zone: config[itemId].zone1 ?? '1',
+            deviceStatus: tryParseFloat(values[1]),
             sharpState: tryParseFloat(values[2]),
             systemState: tryParseFloat(values[3]),
           },
           {
-            zone: '2',
-            type: values[4],
+            zone: config[itemId].zone2 ?? '2',
+            deviceStatus: tryParseFloat(values[4]),
             sharpState: tryParseFloat(values[5]),
             systemState: tryParseFloat(values[6]),
           },
@@ -59,7 +59,7 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
   /**
    * Sets the state.
    * @param itemId - The item id.
-   * @param zone - The zone.
+   * @param zone - The zone to sharp as 1-2, the device documents no command to unsharp.
    * @throws {@link ClientError}
    */
   public async setSharped(itemId: string, zone: number): Promise<void> {

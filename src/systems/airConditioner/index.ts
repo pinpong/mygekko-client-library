@@ -1,14 +1,14 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { AirConditioner, AirConditionerState, AirConditionerWorkingMode } from './types';
+import { AirConditionerItem, AirConditionerState, AirConditionerWorkingMode } from './types';
 
 /**
  * @group Systems
  */
-export class AirConditioners extends BaseSystem<AirConditioner> {
+export class AirConditioner extends BaseSystem<AirConditionerItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -17,17 +17,17 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): AirConditioner {
+    ): AirConditionerItem {
       const values = valuesToStringList(status);
 
       return {
         sumState: tryParseFloat(values[25]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         supplyAirTemperature: tryParseFloat(values[0]),
         supplyAirTemperatureSetPoint: tryParseFloat(values[1]),
         exhaustAirTemperature: tryParseFloat(values[2]),
@@ -82,40 +82,49 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
   /**
    * Sets the power.
    * @param itemId - The item id.
-   * @param power - The new power.
+   * @param power - The new power, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setPower(itemId: string, power: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `P${power}`);
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(power)}`);
   }
 
   /**
    * Sets the min flap.
    * @param itemId - The item id.
-   * @param flaps - The new min flaps.
+   * @param flaps - The new min flaps, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setMinFlap(itemId: string, flaps: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `F${flaps}`);
+    await this.client.changeRequest(this.systemType, itemId, `F${roundCommandValue(flaps)}`);
   }
 
   /**
    * Sets the air quality.
    * @param itemId - The item id.
-   * @param airQuality - The new air quality.
+   * @param airQuality - The new air quality, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setAirQuality(itemId: string, airQuality: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `Q${airQuality}`);
+    await this.client.changeRequest(this.systemType, itemId, `Q${roundCommandValue(airQuality)}`);
   }
 
   /**
    * Sets the humidity.
    * @param itemId - The item id.
-   * @param humidity - The new humidity.
+   * @param humidity - The new humidity, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setHumidity(itemId: string, humidity: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `H${humidity}`);
+    await this.client.changeRequest(this.systemType, itemId, `H${roundCommandValue(humidity)}`);
+  }
+
+  /**
+   * Sets the temperature.
+   * @param itemId - The item id.
+   * @param temperature - The new absolute temperature as C°, rounded to one decimal.
+   */
+  public async setTemperature(itemId: string, temperature: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperature)}`);
   }
 }
