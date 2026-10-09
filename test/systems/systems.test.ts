@@ -380,7 +380,7 @@ test('command values are rounded to one decimal', async () => {
   const client = await mock.createClient();
 
   await client.roomTemperatures.setTemperatureAdjust('item0', 21.6 + 0.1);
-  await client.roomTemperatures.setTemperaturSetPoint('item0', 22.449);
+  await client.roomTemperatures.setTemperatureSetPoint('item0', 22.449);
   await client.blinds.setPosition('item0', 33.333);
   await client.lights.setDimLevel('item0', 50);
   await client.wallBoxes.setChargePower('item0', 11 + 0.2);

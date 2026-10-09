@@ -55,7 +55,7 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
    * @param itemId - The item id.
    * @param temperature - The new absolute set point as C°, rounded to one decimal.
    */
-  public async setTemperaturSetPoint(itemId: string, temperature: number): Promise<void> {
+  public async setTemperatureSetPoint(itemId: string, temperature: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(temperature)}`);
   }
 

@@ -61,7 +61,7 @@ export class Pools extends BaseSystem<Pool> {
    * @param itemId - The item id.
    * @param temperature - The new absolute temperature as C°, rounded to one decimal.
    */
-  public async setTemperatur(itemId: string, temperature: number): Promise<void> {
+  public async setTemperature(itemId: string, temperature: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperature)}`);
   }
 }
