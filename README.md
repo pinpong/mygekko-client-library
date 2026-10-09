@@ -94,6 +94,25 @@ An access that was not reachable is skipped for `retryInterval` milliseconds (60
 
 With both accesses the attempts apply to the access tried last, the one before is tried once. A command is never repeated, it may have been executed although the response got lost. For the same reason a command that timed out is not sent over the other access, the request rejects with `request/timeout`.
 
+### Custom axios instance
+
+The local and the remote access take an optional `axiosInstance`, e.g. to add caching or logging:
+
+```js
+import axios from 'axios';
+import { setupCache } from 'axios-cache-interceptor';
+import { LocalClient } from 'mygekko-client-library';
+
+const client = new LocalClient({
+  ip: '<your-mygekko-ip-address>',
+  username: '<your-mygekko-username>',
+  password: '<your-mygekko-password>',
+  axiosInstance: setupCache(axios.create()),
+});
+```
+
+The `timeout` and `attempts` of the client still apply. Commands are GET requests as well, so a cache has to leave urls containing `/scmd/` alone.
+
 ### Systems, items and groups
 
 ```js
