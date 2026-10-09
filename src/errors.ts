@@ -29,6 +29,7 @@ export enum CLIENT_ERROR_MESSAGES {
   NO_CONNECTION = 'request/no-connection',
   SYSTEM_NOT_INITIALIZED = 'client/client-not-initialized',
   ALREADY_INITIALIZED = 'client/client-already-initialized',
+  MISSING_ACCESS = 'client/missing-access',
   SYSTEM_NOT_SUPPORTED = 'client/system-not-supported',
   TREND_NOT_SUPPORTED = 'client/trend-not-supported',
   CANNOT_PARSE_STATUS = 'client/cannot-parse-status',

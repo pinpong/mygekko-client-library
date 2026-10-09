@@ -109,6 +109,10 @@ export class MockGekko {
   public failWith: number | null = null;
   /** The number of upcoming requests that run into a timeout, only with the installed mock */
   public timeouts = 0;
+  /** The host names whose requests run into a timeout, only with the installed mock */
+  public unreachable: string[] = [];
+  /** The host names that refuse the connection, only with the installed mock */
+  public refused: string[] = [];
   private readonly data: MockGekkoData;
 
   /**
@@ -171,6 +175,12 @@ export class MockGekko {
    */
   public install(): void {
     jest.spyOn(axios, 'get').mockImplementation(async (url: string) => {
+      if (this.unreachable.includes(new URL(url).hostname)) {
+        throw new AxiosError('timeout exceeded', 'ECONNABORTED', undefined, {});
+      }
+      if (this.refused.includes(new URL(url).hostname)) {
+        throw new AxiosError('connect ECONNREFUSED', 'ECONNREFUSED', undefined, {});
+      }
       if (this.timeouts > 0) {
         this.timeouts--;
         throw new AxiosError('timeout exceeded', 'ECONNABORTED', undefined, {});

@@ -35,16 +35,34 @@ import {
 import { SystemType } from './systems/base/types';
 import { available, throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
 
-/** The client configuration */
-type ClientConfig = {
+/**
+ * The way a request reaches the myGEKKO device.
+ *  @group Client
+ */
+export type ConnectionType = 'local' | 'remote';
+
+/** A route to the myGEKKO device */
+type Route = {
+  /** The connection type. */
+  type: ConnectionType;
   /** The base url. */
   baseUrl: string;
   /** The auth query. */
   authQuery: string;
   /** The request timeout in milliseconds. */
   timeout: number;
+  /** The time until the route is skipped after a connection error. */
+  skipUntil: number;
+};
+
+/** The client configuration */
+type ClientConfig = {
+  /** The routes in the order they are tried. */
+  routes: Route[];
   /** The attempts of a status request before a connection error is thrown. */
   attempts: number;
+  /** The time in milliseconds a route is skipped after a connection error if another route exists. */
+  retryInterval: number;
 };
 
 /**
@@ -83,6 +101,65 @@ export type LocalClientConfig = RequestConfig & {
   /** The local password */
   password: string;
 };
+
+/**
+ * The configuration of a client that uses the local api and falls back to the remote api.
+ *  @group Client
+ */
+export type CombinedClientConfig = {
+  /** The local access, used first */
+  local?: Omit<LocalClientConfig, 'attempts'>;
+  /** The remote access, used while the device is not reachable locally */
+  remote?: Omit<RemoteClientConfig, 'attempts'>;
+  /** The attempts of a status request before a connection error is thrown, 3 by default */
+  attempts?: number;
+  /** The time in milliseconds until an access that was not reachable is tried again, 60000 by default */
+  retryInterval?: number;
+};
+
+/**
+ * Checks if the endpoint sends a command.
+ * @param endpoint - The myGEKKO device API endpoint.
+ */
+function isCommand(endpoint: string): boolean {
+  return endpoint.includes('/scmd/');
+}
+
+/**
+ * Checks if the request got no response within the timeout.
+ * @param code - The error code of the failed request.
+ */
+function isTimeout(code: string | undefined): boolean {
+  return code === 'ECONNABORTED' || code === 'ETIMEDOUT';
+}
+
+/**
+ * Returns the route of the remote api.
+ * @param config - The remote access.
+ */
+function remoteRoute(config: Omit<RemoteClientConfig, 'attempts'>): Route {
+  return {
+    type: 'remote',
+    baseUrl: 'https://live.my-gekko.com/api/v1',
+    authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
+    timeout: config.timeout ?? 5000,
+    skipUntil: 0,
+  };
+}
+
+/**
+ * Returns the route of the local api.
+ * @param config - The local access.
+ */
+function localRoute(config: Omit<LocalClientConfig, 'attempts'>): Route {
+  return {
+    type: 'local',
+    baseUrl: `http://${config.ip}/api/v1`,
+    authQuery: `username=${config.username}&password=${config.password}`,
+    timeout: config.timeout ?? 2000,
+    skipUntil: 0,
+  };
+}
 
 /**
  * The configuration of a single item.
@@ -213,14 +290,14 @@ export type TrendItemResponse = {
 
 /** The abstract client class. */
 export abstract class Client {
-  /** The base urls */
-  private readonly baseUrl: string;
-  /** The auth query params */
-  private readonly authQueryString: string;
-  /** The request timeout in milliseconds */
-  private readonly timeout: number;
+  /** The routes in the order they are tried */
+  private readonly routes: Route[];
   /** The attempts of a status request */
   private readonly attempts: number;
+  /** The time in milliseconds a route is skipped after a connection error */
+  private readonly retryInterval: number;
+  /** The connection type of the last successful request */
+  private _connectionType: ConnectionType | null = null;
 
   /** The myGEKKO device system configuration */
   private _systemConfig: SystemConfig | '' = '';
@@ -239,6 +316,13 @@ export abstract class Client {
    */
   public get trendConfig(): TrendConfig {
     return this._trendConfig as TrendConfig;
+  }
+
+  /**
+   * The connection type of the last successful request, null before the first one.
+   */
+  public get connectionType(): ConnectionType | null {
+    return this._connectionType;
   }
 
   /**
@@ -314,10 +398,9 @@ export abstract class Client {
    * @param config - MyGEKKO device configuration.
    */
   protected constructor(config: ClientConfig) {
-    this.baseUrl = config.baseUrl;
-    this.authQueryString = config.authQuery;
-    this.timeout = config.timeout;
+    this.routes = config.routes;
     this.attempts = config.attempts;
+    this.retryInterval = config.retryInterval;
   }
 
   /**
@@ -397,7 +480,7 @@ export abstract class Client {
         }
       } else if (isAxiosError(error)) {
         throw new ClientError(
-          error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT'
+          isTimeout(error.code)
             ? CLIENT_ERROR_MESSAGES.TIMEOUT
             : CLIENT_ERROR_MESSAGES.NO_CONNECTION,
           { cause: error }
@@ -411,17 +494,49 @@ export abstract class Client {
   }
 
   /**
-   * Sends the request, a status request is repeated on connection errors.
+   * Sends the request, a route that is not reachable is skipped for a while if another one exists.
    * @param endpoint - The myGEKKO device API endpoint.
    */
   private async get<T>(endpoint: string): Promise<{ data: T }> {
-    // a command is never repeated, it may have been executed although the response got lost
-    const attempts = endpoint.includes('/scmd/') ? 1 : this.attempts;
+    const now = Date.now();
+    const reachable = this.routes.filter((route) => route.skipUntil <= now);
+    const routes = reachable.length ? reachable : this.routes;
+    let failure: unknown;
+
+    for (const route of routes) {
+      try {
+        const response = await this.send<T>(route, endpoint, route === routes[routes.length - 1]);
+        this._connectionType = route.type;
+        return response;
+      } catch (error) {
+        if (!isAxiosError(error) || error.response) {
+          throw error;
+        }
+        route.skipUntil = Date.now() + this.retryInterval;
+        // a command that timed out may have been executed, it is not sent on another route
+        if (isCommand(endpoint) && isTimeout(error.code)) {
+          throw error;
+        }
+        failure = error;
+      }
+    }
+    throw failure;
+  }
+
+  /**
+   * Sends the request on a route, a status request is repeated on connection errors.
+   * @param route - The route to use.
+   * @param endpoint - The myGEKKO device API endpoint.
+   * @param repeat - Whether a status request is repeated, not needed if another route follows.
+   */
+  private async send<T>(route: Route, endpoint: string, repeat: boolean): Promise<{ data: T }> {
+    // a command is never repeated on a route, it may have been executed although the response got lost
+    const attempts = repeat && !isCommand(endpoint) ? this.attempts : 1;
 
     for (let attempt = 1; ; attempt++) {
       try {
-        return await axios.get<T>(`${this.baseUrl}${endpoint}${this.authQueryString}`, {
-          timeout: this.timeout,
+        return await axios.get<T>(`${route.baseUrl}${endpoint}${route.authQuery}`, {
+          timeout: route.timeout,
         });
       } catch (error) {
         if (attempt >= attempts || !isAxiosError(error) || error.response) {
@@ -503,12 +618,7 @@ export class RemoteClient extends Client {
    * @param config - The local client configuration.
    */
   public constructor(config: RemoteClientConfig) {
-    super({
-      baseUrl: 'https://live.my-gekko.com/api/v1',
-      authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
-      timeout: config.timeout ?? 5000,
-      attempts: config.attempts ?? 3,
-    });
+    super({ routes: [remoteRoute(config)], attempts: config.attempts ?? 3, retryInterval: 0 });
   }
 }
 
@@ -522,11 +632,31 @@ export class LocalClient extends Client {
    * @param config - The remote client configuration.
    */
   public constructor(config: LocalClientConfig) {
+    super({ routes: [localRoute(config)], attempts: config.attempts ?? 3, retryInterval: 0 });
+  }
+}
+
+/**
+ * The client class using the local api first and the remote api as fallback.
+ *  @group Client
+ */
+export class CombinedClient extends Client {
+  /**
+   * The combined client constructor.
+   * @param config - The combined client configuration with at least one access.
+   * @throws {@link ClientError}
+   */
+  public constructor(config: CombinedClientConfig) {
+    if (!config.local && !config.remote) {
+      throw new ClientError(CLIENT_ERROR_MESSAGES.MISSING_ACCESS);
+    }
     super({
-      baseUrl: `http://${config.ip}/api/v1`,
-      authQuery: `username=${config.username}&password=${config.password}`,
-      timeout: config.timeout ?? 2000,
+      routes: [
+        ...(config.local ? [localRoute(config.local)] : []),
+        ...(config.remote ? [remoteRoute(config.remote)] : []),
+      ],
       attempts: config.attempts ?? 3,
+      retryInterval: config.retryInterval ?? 60000,
     });
   }
 }

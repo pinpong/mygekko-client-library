@@ -1,4 +1,7 @@
 import {
+  CombinedClient,
+  CombinedClientConfig,
+  ConnectionType,
   ItemConfig,
   ItemStatusResponse,
   ItemTrendConfig,
@@ -175,6 +178,9 @@ import {
 export {
   LocalClient,
   RemoteClient,
+  CombinedClient,
+  CombinedClientConfig,
+  ConnectionType,
   LocalClientConfig,
   RemoteClientConfig,
   RequestConfig,
