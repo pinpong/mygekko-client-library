@@ -34,12 +34,6 @@ export default [
       ],
       '@typescript-eslint/explicit-member-accessibility': ['error'],
       '@typescript-eslint/no-unused-vars': ['error', { caughtErrors: 'none' }],
-      'import/order': [
-        'error',
-        {
-          alphabetize: { order: 'asc', caseInsensitive: true },
-        },
-      ],
       'import/no-unresolved': ['error'],
       'no-undef': ['error'],
       'tsdoc/syntax': 'error',
