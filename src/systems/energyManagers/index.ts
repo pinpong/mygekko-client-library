@@ -27,7 +27,7 @@ export class EnergyManagers extends BaseSystem<EnergyManager> {
         sumState: tryParseFloat(values[0]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         netMeterState: tryParseFloat(values[1]),
         solarPanelState: tryParseFloat(values[2]),
         batteryState: tryParseFloat(values[3]),

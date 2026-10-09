@@ -27,7 +27,7 @@ export class Pools extends BaseSystem<Pool> {
         sumState: tryParseFloat(values[3]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         workingMode: tryParseFloat(values[0]),
         filteringState: tryParseFloat(values[1]),
         backwashState: tryParseFloat(values[2]),

@@ -77,7 +77,7 @@ export type ItemConfig = {
   /** The item name */
   name: string;
   /** The item page */
-  page: string;
+  page?: string;
   /** The image path of a camera */
   imagepath?: string;
   /** The stream path of a camera */

@@ -33,7 +33,7 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         alarmSystemState: tryParseFloat(values[0]),
         alarmDevices: [
           {

@@ -27,7 +27,7 @@ export class Lights extends BaseSystem<Light> {
         sumState: tryParseFloat(values[4]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         dimLevel: tryParseFloat(values[1]),
         rgbColor: tryParseFloat(values[2]),

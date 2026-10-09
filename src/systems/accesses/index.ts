@@ -27,7 +27,7 @@ export class Accesses extends BaseSystem<Access> {
         sumState: tryParseFloat(values[1]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         startCondition: tryParseFloat(values[2]),
         gateRuntimePercentage: tryParseFloat(values[3]),

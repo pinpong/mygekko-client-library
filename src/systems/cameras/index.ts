@@ -27,7 +27,7 @@ export class Cameras extends BaseSystem<Camera> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         newRecordCount: tryParseFloat(values[0]),
         imageUrl: config[itemId]['imagepath'] ?? null,
         streamUrl: config[itemId]['streampath'] ?? null,

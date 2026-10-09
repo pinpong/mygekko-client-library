@@ -27,7 +27,7 @@ export class EnergyCosts extends BaseSystem<EnergyCost> {
         sumState: tryParseFloat(values[15]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentPower: tryParseFloat(values[0]),
         totalEnergyToday: tryParseFloat(values[1]),
         totalEnergyMonth: tryParseFloat(values[2]),

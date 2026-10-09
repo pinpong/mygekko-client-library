@@ -31,7 +31,7 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
         sumState: tryParseFloat(values[6]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         temperature: tryParseFloat(values[0]),
         temperatureSetPoint: tryParseFloat(values[1]),
         valveOpeningLevel: tryParseFloat(values[2]),

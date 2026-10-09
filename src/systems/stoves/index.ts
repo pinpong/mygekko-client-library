@@ -27,7 +27,7 @@ export class Stoves extends BaseSystem<Stove> {
         sumState: tryParseFloat(values[4]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         temperature: tryParseFloat(values[0]),
         flapOpeningLevel: tryParseFloat(values[1]),
         currentState: tryParseFloat(values[2]),

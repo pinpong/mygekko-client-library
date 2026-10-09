@@ -27,7 +27,7 @@ export class HeatingSystems extends BaseSystem<HeatingSystem> {
         sumState: tryParseFloat(values[5]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         deviceModel: tryParseFloat(values[0]),
         coolingModeState: tryParseFloat(values[1]),
         flowTemperature: tryParseFloat(values[2]),

@@ -27,7 +27,7 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
         sumState: tryParseFloat(values[25]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         supplyAirTemperature: tryParseFloat(values[0]),
         supplyAirTemperatureSetPoint: tryParseFloat(values[1]),
         exhaustAirTemperature: tryParseFloat(values[2]),

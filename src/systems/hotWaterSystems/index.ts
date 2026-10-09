@@ -27,7 +27,7 @@ export class HotWaterSystems extends BaseSystem<HotWaterSystem> {
         sumState: tryParseFloat(values[7]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         deviceModel: tryParseFloat(values[0]),
         coolingModeState: tryParseFloat(values[1]),
         waterTemperatureSetPoint: tryParseFloat(values[2]),

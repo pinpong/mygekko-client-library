@@ -27,7 +27,7 @@ export class HotWaterCirculations extends BaseSystem<HotWaterCirculation> {
         sumState: tryParseFloat(values[4]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         pumpType: tryParseFloat(values[0]),
         currentState: tryParseFloat(values[1]),
         returnWaterTemperature: tryParseFloat(values[2]),

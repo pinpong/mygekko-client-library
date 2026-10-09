@@ -46,7 +46,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
         sumState: tryParseFloat(values[10]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         pluggedState: tryParseFloat(values[0]),
         chargeState: tryParseFloat(values[1]),
         chargeRequestState: tryParseFloat(values[2]),

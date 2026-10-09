@@ -27,7 +27,7 @@ export class SmsEmails extends BaseSystem<SmsEmail> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
       };
     }

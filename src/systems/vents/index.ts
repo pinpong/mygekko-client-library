@@ -39,7 +39,7 @@ export class Vents extends BaseSystem<Vent> {
         sumState: tryParseFloat(values[14]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         ventLevel: tryParseFloat(values[0]),
         deviceModel: tryParseFloat(values[1]),
         workingMode: tryParseFloat(values[2]),

@@ -41,7 +41,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         currentVolume: tryParseFloat(values[1]),
         currentPlayingTime: tryParseFloat(values[2]),

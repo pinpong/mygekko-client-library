@@ -27,7 +27,7 @@ export class Saunas extends BaseSystem<Sauna> {
         sumState: tryParseFloat(values[3]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         workingMode: tryParseFloat(values[0]),
         currentState: tryParseFloat(values[1]),
         errorState: tryParseFloat(values[4]),

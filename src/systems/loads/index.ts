@@ -27,7 +27,7 @@ export class Loads extends BaseSystem<Load> {
         sumState: tryParseFloat(values[0]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[1]),
       };
     }

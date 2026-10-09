@@ -27,7 +27,7 @@ export class Logics extends BaseSystem<Logic> {
         sumState: null,
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         value: tryParseFloat(values[0]),
       };
     }

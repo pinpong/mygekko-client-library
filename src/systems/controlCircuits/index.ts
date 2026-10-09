@@ -27,7 +27,7 @@ export class ControlCircuits extends BaseSystem<ControlCircuit> {
         sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         sensor: tryParseFloat(values[0]),
         sensorType: tryParseFloat(values[1]),
         pump1WorkingPowerLevel: tryParseFloat(values[3]),

@@ -27,7 +27,7 @@ export class HeatingCircuits extends BaseSystem<HeatingCircuit> {
         sumState: tryParseFloat(values[8]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         deviceModel: tryParseFloat(values[0]),
         flowTemperature: tryParseFloat(values[1]),
         returnFlowTemperature: tryParseFloat(values[2]),

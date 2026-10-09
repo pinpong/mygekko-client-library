@@ -27,7 +27,7 @@ export class Blinds extends BaseSystem<Blind> {
         sumState: tryParseFloat(values[3]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         position: tryParseFloat(values[1]),
         rotationLevel: tryParseFloat(values[2]),

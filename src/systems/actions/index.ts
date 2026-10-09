@@ -27,7 +27,7 @@ export class Actions extends BaseSystem<Action> {
         sumState: tryParseFloat(values[2]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         currentState: tryParseFloat(values[0]),
         startCondition: tryParseFloat(values[1]),
       };

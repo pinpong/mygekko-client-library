@@ -27,7 +27,7 @@ export class Analyses extends BaseSystem<Analysis> {
         sumState: tryParseFloat(values[20]),
         itemId: itemId,
         name: config[itemId].name,
-        page: config[itemId].page,
+        page: config[itemId].page ?? null,
         analysisVariables: [
           {
             currentState: tryParseFloat(values[0]),
