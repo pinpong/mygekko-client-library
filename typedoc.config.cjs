@@ -11,7 +11,6 @@ module.exports = {
   navigation: {
     includeCategories: false,
     includeGroups: true,
-    fullTree: false,
   },
   navigationLinks: {
     GitHub: 'https://github.com/pinpong/mygekko-client-library',

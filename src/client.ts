@@ -283,13 +283,14 @@ export abstract class Client {
             throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
           default:
             throw new Error(
-              `${CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE}: ${error.response.status}`
+              `${CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE}: ${error.response.status}`,
+              { cause: error }
             );
         }
       } else if (isAxiosError(error) && error.request) {
-        throw new Error(error.message);
+        throw new Error(error.message, { cause: error });
       } else if (error instanceof Error) {
-        throw new Error(error.message);
+        throw new Error(error.message, { cause: error });
       } else {
         throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR);
       }

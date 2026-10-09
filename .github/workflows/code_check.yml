@@ -1,25 +1,53 @@
 name: Check code quality
+
 on:
   push:
-    branches: ['dev', 'main']
+    branches: [dev, main]
   pull_request:
-    branches: ['dev', 'main']
+    branches: [dev, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
+  commitlint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint commit messages
+        run: yarn commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
   linting:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: install
-        run: yarn install
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: test
-        run: yarn run test
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: format
-        run: yarn run prettier --check .
+      - name: Typecheck
+        run: yarn typecheck
 
-      - name: linting
-        run: yarn run lint --max-warnings=0
+      - name: Lint
+        run: yarn eslint . --max-warnings=0
+
+      - name: Check formatting
+        run: yarn prettier --check .
+
+      - name: Test
+        run: yarn test

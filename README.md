@@ -2,7 +2,7 @@
 ![npm](https://img.shields.io/npm/v/mygekko-client-library)
 ![npm](https://img.shields.io/npm/dy/mygekko-client-library)
 ![GitHub issues](https://img.shields.io/github/issues/pinpong/mygekko-client-library)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_release.yml?label=lint)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/code_check.yml?label=lint)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_release.yml?label=release%20build)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/pinpong/mygekko-client-library/deploy_docs.yml?label=release%20docs)
 
@@ -75,3 +75,15 @@ try {
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests.
+
+### Development setup
+
+Use the Node.js version from `.nvmrc`.
+
+```sh
+yarn install
+yarn lefthook install # activate git hooks (install scripts of dependencies are disabled)
+```
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org) and are checked by commitlint.
+Releases are created by semantic-release from these messages when changes are merged into `main`.

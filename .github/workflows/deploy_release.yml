@@ -1,24 +1,39 @@
-name: Publish Package to npmjs
+name: Release Package
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
+          fetch-depth: 0
 
-      - name: install
-        run: yarn install
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: build
+      - name: Build package
         run: yarn build
 
-      - name: publish
-        run: npm publish
+      - name: Run semantic-release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn release

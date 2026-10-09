@@ -15,43 +15,55 @@
   "source": "src/index.ts",
   "main": "dist/index.js",
   "scripts": {
-    "postinstall": "husky install && husky set .husky/pre-commit \"yarn test\" && husky add .husky/pre-commit \"yarn lint-staged\"",
-    "prepack": "pinst --disable",
-    "postpack": "pinst --enable",
+    "commitlint": "commitlint",
     "build": "rm -rf ./dist && tsc",
     "docs": "typedoc",
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "format": "yarn prettier . --write",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "release": "semantic-release"
   },
   "devDependencies": {
-    "@jest/globals": "29.7.0",
-    "@trivago/prettier-plugin-sort-imports": "4.2.0",
-    "@types/jest": "29.5.5",
-    "@typescript-eslint/eslint-plugin": "6.7.3",
-    "@typescript-eslint/parser": "6.7.3",
-    "eslint": "8.50.0",
-    "eslint-config-prettier": "9.0.0",
-    "eslint-plugin-import": "2.28.1",
-    "eslint-plugin-jsdoc": "46.8.2",
-    "eslint-plugin-tsdoc": "0.2.17",
-    "husky": "8.0.3",
-    "jest": "29.7.0",
-    "lint-staged": "14.0.1",
-    "pinst": "3.0.0",
-    "prettier": "3.0.3",
-    "ts-jest": "29.1.1",
-    "typedoc": "0.25.1",
-    "typescript": "5.2.2"
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "@eslint/js": "10.0.1",
+    "@jest/globals": "30.5.2",
+    "@semantic-release/changelog": "7.0.0",
+    "@semantic-release/git": "11.0.1",
+    "@semantic-release/npm": "13.2.0",
+    "@trivago/prettier-plugin-sort-imports": "6.0.2",
+    "@types/jest": "30.0.0",
+    "@typescript-eslint/eslint-plugin": "8.71.1",
+    "@typescript-eslint/parser": "8.71.1",
+    "conventional-changelog-conventionalcommits": "9.3.1",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-jsdoc": "65.2.0",
+    "eslint-plugin-tsdoc": "0.5.4",
+    "globals": "17.13.0",
+    "jest": "30.5.2",
+    "lefthook": "2.1.17",
+    "prettier": "3.9.9",
+    "semantic-release": "25.0.9",
+    "ts-jest": "29.4.14",
+    "typedoc": "0.28.20",
+    "typescript": "6.0.3"
   },
   "dependencies": {
-    "axios": "1.5.1"
+    "axios": "1.20.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/pinpong/mygekko-client-library.git"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "packageManager": "yarn@4.18.1"
 }
