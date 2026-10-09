@@ -1,4 +1,3 @@
-/// TODO: mock a gekko instance?
 import { LocalClient, RemoteClient } from '../../src/client';
 
 test('remote client', async () => {

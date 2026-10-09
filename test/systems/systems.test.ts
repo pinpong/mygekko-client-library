@@ -1,30 +1,13 @@
-import axios from 'axios';
-
 import { LocalClient } from '../../src';
+import { MockGekko } from '../mock/mockGekko';
 
 /**
- * Creates an initialized client answering with the given config and statuses.
+ * Creates an initialized client answering with the given config and status.
  * @param config - The system config of the device.
- * @param statuses - The status responses by system type.
+ * @param status - The status values by system.
  */
-async function createClient(
-  config: object,
-  statuses: { [systemType: string]: object }
-): Promise<LocalClient> {
-  jest.spyOn(axios, 'get').mockImplementation(async (url: string) => {
-    const endpoint = new URL(url).pathname.replace('/api/v1', '');
-    if (endpoint === '/var') {
-      return { data: config };
-    }
-    if (endpoint === '/trend') {
-      return { data: {} };
-    }
-    return { data: statuses[endpoint.slice('/var/'.length, -'/status'.length)] };
-  });
-
-  const client = new LocalClient({ ip: 'demo', username: 'test', password: 'test' });
-  await client.initialize();
-  return client;
+function createClient(config: object, status: object): Promise<LocalClient> {
+  return new MockGekko({ config, trend: {}, status }).createClient();
 }
 
 afterEach(() => {
@@ -41,22 +24,24 @@ test('global systems', async () => {
       },
     },
     {
-      'globals/network': {
-        gekkoname: { value: 'Demo' },
-        language: { value: '2' },
-        version: { value: '680000' },
-        hardware: { value: 'Slide 2 (XXAAXXAACCAA)' },
-      },
-      'globals/alarm': { sumstate: { value: '2' } },
-      'globals/meteo': {
-        twilight: { value: '224.399994' },
-        humidity: { value: '82.000000' },
-        brightness: { value: '0.200000' },
-        brightnessw: { value: '0.224000' },
-        brightnesso: { value: '0.210000' },
-        wind: { value: '0.780000' },
-        temperature: { value: '14.100000' },
-        rain: { value: '0.000000' },
+      globals: {
+        network: {
+          gekkoname: { value: 'Demo' },
+          language: { value: '2' },
+          version: { value: '680000' },
+          hardware: { value: 'Slide 2 (XXAAXXAACCAA)' },
+        },
+        alarm: { sumstate: { value: '2' } },
+        meteo: {
+          twilight: { value: '224.399994' },
+          humidity: { value: '82.000000' },
+          brightness: { value: '0.200000' },
+          brightnessw: { value: '0.224000' },
+          brightnesso: { value: '0.210000' },
+          wind: { value: '0.780000' },
+          temperature: { value: '14.100000' },
+          rain: { value: '0.000000' },
+        },
       },
     }
   );
