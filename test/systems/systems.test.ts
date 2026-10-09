@@ -395,3 +395,11 @@ test('command values are rounded to one decimal', async () => {
     'C16711697',
   ]);
 });
+
+test('trend requests check the trend config', async () => {
+  const client = await createClient({ lights: { item0: { name: 'Licht' } } }, {});
+
+  await expect(
+    client.getTrendByItemId(SystemType.lights, 'item0', 'trend0', '2026-01-01', '2026-01-02', 10)
+  ).rejects.toThrow(CLIENT_ERROR_MESSAGES.TREND_NOT_SUPPORTED);
+});

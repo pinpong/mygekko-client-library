@@ -48,6 +48,14 @@ test('throwErrorIfItemIdIsNoAvailable', () => {
   ).toThrow(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
 
   expect(() =>
+    throwErrorIfItemIdIsNoFound(JSON.parse('{"blinds": {"item0":{}}}'), SystemType.lights, 'item0')
+  ).toThrow(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
+
+  expect(() =>
+    throwErrorIfItemIdIsNoFound(JSON.parse('{"meteo": {"item0":{}}}'), SystemType.weather, 'item0')
+  ).toThrow(CLIENT_ERROR_MESSAGES.ITEM_ID_NOT_FOUND);
+
+  expect(() =>
     throwErrorIfItemIdIsNoFound(
       JSON.parse('{"globals": {"meteo": {"item0":{}}}}'),
       SystemType.weather,

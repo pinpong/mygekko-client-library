@@ -618,7 +618,7 @@ export abstract class Client {
     endDate: string,
     count: number
   ): Promise<TrendItemResponse> {
-    throwErrorIfTrendIsNotEnabled(this.systemConfig, systemType);
+    throwErrorIfTrendIsNotEnabled(this.trendConfig, systemType);
     return await this.request<TrendItemResponse>(
       `/trend/${systemType}/${itemId}/${trendId}/status?tstart=${startDate}&tend=${endDate}&datacount=${count}&`
     );
