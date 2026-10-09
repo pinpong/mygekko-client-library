@@ -3,7 +3,7 @@ import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { Pool } from './types';
+import { Pool, PoolWorkingMode } from './types';
 
 /**
  * @group Systems
@@ -38,7 +38,23 @@ export class Pools extends BaseSystem<Pool> {
     super(client, SystemType.pools, parseItem);
   }
 
-  /// TODO: implement all other function
+  /**
+   * Sets the working mode.
+   * @param itemId - The item id.
+   * @param mode - The new working mode.
+   */
+  public async setWorkingMode(itemId: string, mode: PoolWorkingMode): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `M${mode}`);
+  }
+
+  /**
+   * Starts the cleaning of a filter.
+   * @param itemId - The item id.
+   * @param filter - The filter to clean as 1-3.
+   */
+  public async setFilterCleaning(itemId: string, filter: number): Promise<void> {
+    await this.client.changeRequest(this.systemType, itemId, `C${filter}`);
+  }
 
   /**
    * Sets the temperature.
