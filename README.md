@@ -119,7 +119,7 @@ A value the device does not report is `null`, a text the device reports empty st
 
 ### Errors
 
-Requests reject with a `ClientError`, its message is one of `CLIENT_ERROR_MESSAGES`, e.g. `auth/bad-login` (403), `auth/gekko-offline` (410), `request/tom-many-request` (429), `request/timeout` and `request/no-connection`. The original error of a connection problem is kept as `cause`.
+Requests reject with a `ClientError`, its message is one of `CLIENT_ERROR_MESSAGES`, e.g. `auth/bad-login` (403), `auth/gekko-offline` (410), `request/too-many-request` (429), `request/timeout` and `request/no-connection`. The original error of a connection problem is kept as `cause`.
 
 ## Contributing
 

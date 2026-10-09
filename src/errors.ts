@@ -14,7 +14,7 @@ export enum CLIENT_ERROR_MESSAGES {
   /** Status code 400 */
   BAD_REQUEST = 'request/bad-request',
   /** Status code 429 */
-  TO_MANY_REQUEST = 'request/tom-many-request',
+  TO_MANY_REQUEST = 'request/too-many-request',
   /** Status code 444 */
   NOT_EXECUTED = 'request/not-executed',
   /** Status code 470 and 471 */
