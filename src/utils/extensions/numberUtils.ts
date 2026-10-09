@@ -3,10 +3,9 @@
  * @param string - The string to parse.
  */
 export function tryParseInt(string: string | null | undefined): number | null {
-  if (string != null && string.length && !isNaN(Number(string))) {
-    return Number.parseInt(string);
-  }
-  return null;
+  const number = tryParseFloat(string);
+  // adding 0 turns -0 into 0
+  return number === null ? null : Math.trunc(number) + 0;
 }
 
 /**
@@ -14,10 +13,11 @@ export function tryParseInt(string: string | null | undefined): number | null {
  * @param string - To parse.
  */
 export function tryParseFloat(string: string | null | undefined): number | null {
-  if (string != null && string.length && !isNaN(Number(string))) {
-    return Number.parseFloat(string);
+  if (string == null || !string.trim().length) {
+    return null;
   }
-  return null;
+  const number = Number(string);
+  return Number.isFinite(number) ? number : null;
 }
 
 /**

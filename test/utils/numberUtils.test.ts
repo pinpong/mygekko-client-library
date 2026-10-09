@@ -9,6 +9,10 @@ test('tryParseInt', () => {
   expect(tryParseInt('12084')).toBe(12084);
   expect(tryParseInt('12084F')).toBe(null);
   expect(tryParseInt('10.00')).toBe(10);
+  expect(tryParseInt('-0.5')).toBe(0);
+  expect(tryParseInt(' ')).toBe(null);
+  expect(tryParseInt('')).toBe(null);
+  expect(tryParseInt(undefined)).toBe(null);
 });
 
 test('tryParseFloat', () => {
@@ -16,6 +20,10 @@ test('tryParseFloat', () => {
   expect(tryParseFloat('12084')).toBe(12084);
   expect(tryParseFloat('12084F')).toBe(null);
   expect(tryParseFloat('10.001')).toBe(10.001);
+  expect(tryParseFloat('-2.50')).toBe(-2.5);
+  expect(tryParseFloat(' ')).toBe(null);
+  expect(tryParseFloat('Infinity')).toBe(null);
+  expect(tryParseFloat(null)).toBe(null);
 });
 
 test('roundCommandValue', () => {
