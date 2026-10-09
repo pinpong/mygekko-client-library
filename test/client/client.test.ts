@@ -37,6 +37,25 @@ test('local client', async () => {
   await expect(client.blinds.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.BAD_LOGIN);
 });
 
+test('encodes the credentials', async () => {
+  new MockGekko().install();
+
+  await new LocalClient({ ip: 'mock', username: 'user name&#%?', password: 'test' }).initialize();
+  expect(jest.mocked(axios.get).mock.calls[0][0]).toBe(
+    'http://mock/api/v1/var?username=user%20name%26%23%25%3F&password=test'
+  );
+
+  jest.mocked(axios.get).mockClear();
+  await new RemoteClient({
+    username: 'user@example.com',
+    gekkoId: 'K999-AAAA-BBBB',
+    apiKey: 'a&b=c',
+  }).initialize();
+  expect(jest.mocked(axios.get).mock.calls[0][0]).toBe(
+    'https://live.my-gekko.com/api/v1/var?username=user%40example.com&key=a%26b%3Dc&gekkoid=K999-AAAA-BBBB'
+  );
+});
+
 test('stays uninitialized if the trend config cannot be loaded', async () => {
   const mock = new MockGekko();
   mock.install();
