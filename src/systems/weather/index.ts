@@ -5,7 +5,10 @@ import {
   TrendDescriptions,
   TrendItemResponse,
 } from '../../client';
-import { throwErrorIfSystemIsNotEnabled } from '../../utils/errors/errorUtils';
+import {
+  throwErrorIfSystemIsNotEnabled,
+  throwErrorIfTrendIsNotEnabled,
+} from '../../utils/errors/errorUtils';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { BaseSubSystem } from '../base';
 import { SystemType, Trend, TrendItem } from '../base/types';
@@ -101,6 +104,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
    */
   public async getTrends(startDate: string, endDate: string, count: number): Promise<Trend> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
+    throwErrorIfTrendIsNotEnabled(this.client.trendConfig, this.systemType);
 
     return await this.parseWeatherItemTrend(
       'meteo' as SystemType,

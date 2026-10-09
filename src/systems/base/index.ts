@@ -220,7 +220,7 @@ export class BaseSystem<T> extends Base {
       itemId: key,
       name: config[key].name,
       page: config[key].page ?? null,
-      state: tryParseFloat(status[key]?.sumstate?.value.split(';')[0]),
+      state: tryParseFloat(status[key]?.sumstate?.value?.split(';')[0]),
     }));
   }
 

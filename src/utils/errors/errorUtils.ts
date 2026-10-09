@@ -12,7 +12,7 @@ type Config = { [key: string]: unknown } | string;
 function find(config: Config, path: string[]): unknown {
   let node: unknown = config;
   for (const key of path) {
-    if (typeof node !== 'object' || node === null) {
+    if (typeof node !== 'object' || node === null || !Object.hasOwn(node, key)) {
       return undefined;
     }
     node = (node as { [key: string]: unknown })[key];

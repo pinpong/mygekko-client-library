@@ -522,3 +522,15 @@ test('a vent level the device does not know is not sent', async () => {
   );
   expect(mock.commands).toEqual([]);
 });
+
+test('groups without a status value and weather trends without a trend config', async () => {
+  const client = await createClient(
+    { globals: { meteo: {} }, lights: { group0: { name: 'Alle' } } },
+    { lights: { group0: { sumstate: {} } } }
+  );
+
+  expect(await client.lights.getGroups()).toMatchObject([{ itemId: 'group0', state: null }]);
+  await expect(client.weather.getTrends('2024-01-01', '2024-01-02', 10)).rejects.toThrow(
+    CLIENT_ERROR_MESSAGES.TREND_NOT_SUPPORTED
+  );
+});
