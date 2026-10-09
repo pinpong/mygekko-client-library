@@ -1,24 +1,32 @@
 name: Publish Package to npmjs
+
 on:
   release:
     types: [published]
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: install
-        run: yarn install
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: build
+      - name: Build package
         run: yarn build
 
-      - name: publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to npm
+        run: npm stage publish
