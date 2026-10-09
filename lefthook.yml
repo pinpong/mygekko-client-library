@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: false
+  jobs:
+    - name: format
+      glob: '*.{cjs,mjs,js,ts,json,md,yml}'
+      exclude:
+        - '.yarn/**'
+      run: yarn prettier --write {staged_files}
+      stage_fixed: true
+
+    - name: lint
+      glob: '*.ts'
+      run: yarn eslint --fix --max-warnings=0 {staged_files}
+      stage_fixed: true
+
+    - name: typecheck
+      run: yarn typecheck
+
+    - name: test
+      run: yarn test
+
+commit-msg:
+  parallel: false
+  jobs:
+    - name: commitlint
+      run: yarn commitlint --edit {1}

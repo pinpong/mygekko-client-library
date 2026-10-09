@@ -75,3 +75,14 @@ try {
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests.
+
+### Development setup
+
+Use the Node.js version from `.nvmrc`.
+
+```sh
+yarn install
+yarn lefthook install # activate git hooks (install scripts of dependencies are disabled)
+```
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org) and are checked by commitlint.
