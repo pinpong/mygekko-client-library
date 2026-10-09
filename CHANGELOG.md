@@ -1,3 +1,14 @@
+## [0.3.0](https://github.com/pinpong/mygekko-client-library/compare/v0.2.0...v0.3.0) (2026-10-09)
+
+### ✨ Features
+
+* expose the units of weather values ([313fa9e](https://github.com/pinpong/mygekko-client-library/commit/313fa9e7ad8fecea874d414fd25788e88b13e9b4))
+
+### 🐛 Bug Fixes
+
+* encode the credentials in the request url ([aa79cb2](https://github.com/pinpong/mygekko-client-library/commit/aa79cb2316cfeb2620ddbdf1cd91ba8fe4d8072a))
+* validate item ids against the system config ([7371b36](https://github.com/pinpong/mygekko-client-library/commit/7371b36ae2464b589124fce0a86c9b772a2e4a14))
+
 ## [0.2.0](https://github.com/pinpong/mygekko-client-library/compare/v0.1.3...v0.2.0) (2026-10-09)
 
 ### ✨ Features
