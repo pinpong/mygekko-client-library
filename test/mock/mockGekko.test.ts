@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { CLIENT_ERROR_MESSAGES, LocalClient, SystemType } from '../../src';
 import { MockGekko } from './mockGekko';
 
@@ -61,6 +63,28 @@ test('fails with a http status', async () => {
   await expect(client.lights.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.GEKKO_OFFLINE);
   mock.failWith = 429;
   await expect(client.lights.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.TO_MANY_REQUEST);
+  mock.failWith = 471;
+  await expect(client.lights.getItems()).rejects.toThrow(
+    CLIENT_ERROR_MESSAGES.SERVICE_NOT_REGISTERED_OR_EXPIRED
+  );
+});
+
+test('repeats status requests on timeouts', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  expect(axios.get).toHaveBeenLastCalledWith(expect.any(String), { timeout: 2000 });
+
+  mock.timeouts = 2;
+  expect(await client.lights.getItems()).toHaveLength(29);
+
+  mock.timeouts = 3;
+  await expect(client.lights.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.TIMEOUT);
+  expect(mock.timeouts).toBe(0);
+
+  mock.timeouts = 1;
+  await expect(client.lights.setState('item0', 1)).rejects.toThrow(CLIENT_ERROR_MESSAGES.TIMEOUT);
+  expect(mock.commands).toEqual([]);
 });
 
 test('serves the mock as http server', async () => {

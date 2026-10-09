@@ -41,7 +41,12 @@ type ClientConfig = {
   baseUrl: string;
   /** The auth query. */
   authQuery: string;
+  /** The request timeout in milliseconds. */
+  timeout: number;
 };
+
+/** The attempts of a status request before a connection error is thrown. */
+const MAX_ATTEMPTS = 3;
 
 /**
  * The remote client configuration.
@@ -202,6 +207,8 @@ export abstract class Client {
   private readonly baseUrl: string;
   /** The auth query params */
   private readonly authQueryString: string;
+  /** The request timeout in milliseconds */
+  private readonly timeout: number;
 
   /** The myGEKKO device system configuration */
   private _systemConfig: SystemConfig | '' = '';
@@ -288,6 +295,7 @@ export abstract class Client {
   protected constructor(config: ClientConfig) {
     this.baseUrl = config.baseUrl;
     this.authQueryString = config.authQuery;
+    this.timeout = config.timeout;
   }
 
   /**
@@ -333,7 +341,7 @@ export abstract class Client {
    */
   private async internalRequest<T>(endpoint: string): Promise<T> {
     try {
-      const response = await axios.get(`${this.baseUrl}${endpoint}${this.authQueryString}`);
+      const response = await this.get<T>(endpoint);
       return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
@@ -353,6 +361,7 @@ export abstract class Client {
           case 444:
             throw new ClientError(CLIENT_ERROR_MESSAGES.NOT_EXECUTED);
           case 470:
+          case 471:
             throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_REGISTERED_OR_EXPIRED);
           case 500:
             throw new ClientError(CLIENT_ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
@@ -364,12 +373,38 @@ export abstract class Client {
               { cause: error }
             );
         }
-      } else if (isAxiosError(error) && error.request) {
-        throw new Error(error.message, { cause: error });
+      } else if (isAxiosError(error)) {
+        throw new ClientError(
+          error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT'
+            ? CLIENT_ERROR_MESSAGES.TIMEOUT
+            : CLIENT_ERROR_MESSAGES.NO_CONNECTION,
+          { cause: error }
+        );
       } else if (error instanceof Error) {
         throw new Error(error.message, { cause: error });
       } else {
         throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR);
+      }
+    }
+  }
+
+  /**
+   * Sends the request, a status request is repeated on connection errors.
+   * @param endpoint - The myGEKKO device API endpoint.
+   */
+  private async get<T>(endpoint: string): Promise<{ data: T }> {
+    // a command is never repeated, it may have been executed although the response got lost
+    const attempts = endpoint.includes('/scmd/') ? 1 : MAX_ATTEMPTS;
+
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await axios.get<T>(`${this.baseUrl}${endpoint}${this.authQueryString}`, {
+          timeout: this.timeout,
+        });
+      } catch (error) {
+        if (attempt >= attempts || !isAxiosError(error) || error.response) {
+          throw error;
+        }
       }
     }
   }
@@ -449,6 +484,7 @@ export class RemoteClient extends Client {
     super({
       baseUrl: 'https://live.my-gekko.com/api/v1',
       authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
+      timeout: 5000,
     });
   }
 }
@@ -466,6 +502,7 @@ export class LocalClient extends Client {
     super({
       baseUrl: `http://${config.ip}/api/v1`,
       authQuery: `username=${config.username}&password=${config.password}`,
+      timeout: 2000,
     });
   }
 }

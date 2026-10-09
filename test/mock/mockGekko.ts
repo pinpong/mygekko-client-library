@@ -107,6 +107,8 @@ export class MockGekko {
   public readonly commands: MockGekkoCommand[] = [];
   /** The http status every request fails with, null to answer normally */
   public failWith: number | null = null;
+  /** The number of upcoming requests that run into a timeout, only with the installed mock */
+  public timeouts = 0;
   private readonly data: MockGekkoData;
 
   /**
@@ -169,6 +171,10 @@ export class MockGekko {
    */
   public install(): void {
     jest.spyOn(axios, 'get').mockImplementation(async (url: string) => {
+      if (this.timeouts > 0) {
+        this.timeouts--;
+        throw new AxiosError('timeout exceeded', 'ECONNABORTED', undefined, {});
+      }
       const response = this.handle(url);
       if (response.status !== 200) {
         throw Object.assign(new AxiosError(`Request failed with status code ${response.status}`), {
