@@ -1,4 +1,4 @@
-import { LocalClient } from '../../src';
+import { ActionState, LocalClient } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
 
 /**
@@ -193,5 +193,18 @@ test('heating circuits', async () => {
       sumState: 0,
       currentState: 1,
     },
+  ]);
+});
+
+test('commands', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await client.actions.setState('item0', ActionState.off);
+  await client.actions.setState('item0', ActionState.on);
+
+  expect(mock.commands).toEqual([
+    { system: 'actions', itemId: 'item0', value: '-1', documented: true },
+    { system: 'actions', itemId: 'item0', value: '1', documented: true },
   ]);
 });

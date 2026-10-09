@@ -43,6 +43,15 @@ export class Actions extends BaseSystem<Action> {
    * @throws {@link ClientError}
    */
   public async setState(itemId: string, state: ActionState): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `${state}`);
+    let value = -1;
+    switch (state) {
+      case ActionState.off:
+        value = -1;
+        break;
+      case ActionState.on:
+        value = 1;
+        break;
+    }
+    await this.client.changeRequest(this.systemType, itemId, `${value}`);
   }
 }
