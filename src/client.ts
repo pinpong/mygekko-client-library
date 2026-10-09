@@ -4,15 +4,15 @@ import { CLIENT_ERROR_MESSAGES, ClientError } from './errors';
 import {
   Accesses,
   Actions,
-  AirConditioners,
-  AlarmSystems,
+  AirConditioner,
+  AlarmSystem,
   Analyses,
   Blinds,
   Cameras,
   Clocks,
   ControlCircuits,
   EnergyCosts,
-  EnergyManagers,
+  EnergyManager,
   GekkoInfo,
   GlobalAlarm,
   HeatingCircuits,
@@ -26,7 +26,7 @@ import {
   Pools,
   RoomTemperatures,
   Saunas,
-  SmsEmails,
+  SmsEmail,
   Stoves,
   Vents,
   WallBoxes,
@@ -344,10 +344,10 @@ export abstract class Client {
   public readonly accesses: Accesses = new Accesses(this);
   /** The {@link Actions} class instance */
   public readonly actions: Actions = new Actions(this);
-  /** The {@link AirConditioners} class instance */
-  public readonly airConditioners: AirConditioners = new AirConditioners(this);
-  /** The {@link AlarmSystems} class instance */
-  public readonly alarmSystems: AlarmSystems = new AlarmSystems(this);
+  /** The {@link AirConditioner} class instance */
+  public readonly airConditioner: AirConditioner = new AirConditioner(this);
+  /** The {@link AlarmSystem} class instance */
+  public readonly alarmSystem: AlarmSystem = new AlarmSystem(this);
   /** The {@link Blinds} class instance */
   public readonly blinds: Blinds = new Blinds(this);
   /** The {@link Cameras} class instance */
@@ -358,8 +358,8 @@ export abstract class Client {
   public readonly controlCircuits: ControlCircuits = new ControlCircuits(this);
   /** The {@link EnergyCosts} class instance */
   public readonly energyCosts: EnergyCosts = new EnergyCosts(this);
-  /** The {@link EnergyManagers} class instance */
-  public readonly energyManagers: EnergyManagers = new EnergyManagers(this);
+  /** The {@link EnergyManager} class instance */
+  public readonly energyManager: EnergyManager = new EnergyManager(this);
   /** The {@link Stoves} class instance */
   public readonly stoves: Stoves = new Stoves(this);
   /** The {@link GekkoInfo} class instance */
@@ -388,8 +388,8 @@ export abstract class Client {
   public readonly roomTemperatures: RoomTemperatures = new RoomTemperatures(this);
   /** The {@link Saunas} class instance */
   public readonly saunas: Saunas = new Saunas(this);
-  /** The {@link SmsEmails} class instance */
-  public readonly smsEmails: SmsEmails = new SmsEmails(this);
+  /** The {@link SmsEmail} class instance */
+  public readonly smsEmail: SmsEmail = new SmsEmail(this);
   /** The {@link Analyses} class instance */
   public readonly analyses: Analyses = new Analyses(this);
   /** The {@link Vents} class instance */

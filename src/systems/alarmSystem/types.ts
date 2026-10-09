@@ -1,7 +1,7 @@
 import { BaseSystemType } from '../base/types';
 
 /** @group Systems */
-export type AlarmSystem = BaseSystemType & {
+export type AlarmSystemItem = BaseSystemType & {
   /** The alarm state */
   alarmSystemState: AlarmSystemState | null;
   /** The alarm devices */

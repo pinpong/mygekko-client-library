@@ -3,7 +3,7 @@ import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { AlarmSystem } from './types';
+import { AlarmSystemItem } from './types';
 
 /**
  * Parses the item.
@@ -14,7 +14,7 @@ import { AlarmSystem } from './types';
 /**
  * @group Systems
  */
-export class AlarmSystems extends BaseSystem<AlarmSystem> {
+export class AlarmSystem extends BaseSystem<AlarmSystemItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -26,7 +26,7 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
       config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): AlarmSystem {
+    ): AlarmSystemItem {
       const values = valuesToStringList(status);
 
       return {

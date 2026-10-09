@@ -1,7 +1,7 @@
 import { BaseSystemType } from '../base/types';
 
 /** @group Systems */
-export type EnergyManager = BaseSystemType & {
+export type EnergyManagerItem = BaseSystemType & {
   /** The current net meter state */
   netMeterState: NetState | null;
   /** The current solar panel state */

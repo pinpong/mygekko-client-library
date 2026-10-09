@@ -2,28 +2,28 @@ export { Access, AccessState, AccessDoorState, AccessType } from './accesses/typ
 export { Action, ActionState, ActionStartConditionState } from './actions/types';
 export { SystemType, Trend, BaseSystemType, SumState, SystemGroup, TrendItem } from './base/types';
 export {
-  AirConditioner,
+  AirConditionerItem,
   AirConditionerWorkingMode,
   AirConditionerState,
   AirConditionerSupplyState,
   AirConditionerExhaustState,
-} from './airConditioners/types';
+} from './airConditioner/types';
 export {
-  AlarmSystem,
+  AlarmSystemItem,
   AlarmSystemState,
   AlarmDevice,
   AlarmSystemDeviceState,
   AlarmSystemDeviceStatus,
   AlarmSystemDeviceModel,
   AlarmSystemDeviceSharpState,
-} from './alarmSystems/types';
+} from './alarmSystem/types';
 export { Blind, BlindState, BlindRotationRange } from './blinds/types';
 export { Camera } from './cameras/types';
 export { Clock, ClockState, ClockStartConditionState } from './clocks/types';
 export { ControlCircuit, ControlCircuitSensorType } from './controlCircuits/types';
 export { EnergyCost, EnergyCostsCounterDirection } from './energyCosts/types';
 export {
-  EnergyManager,
+  EnergyManagerItem,
   EMSState,
   EMSEnabledState,
   SolarState,
@@ -31,7 +31,7 @@ export {
   BatteryType,
   LoadSheddingState,
   NetState,
-} from './energyManagers/types';
+} from './energyManager/types';
 export { GekkoInfoItem, GekkoLanguage } from './gekkoInfo/types';
 export { GlobalAlarmItem, GlobalAlarmState } from './globalAlarm/types';
 export {
@@ -70,7 +70,7 @@ export {
   RoomTemperatureDeviceModel,
 } from './roomTemperatures/types';
 export { Sauna, SaunaState, SaunaErrorState, SaunaWorkingMode } from './saunas/types';
-export { SmsEmailState, SmsEmail } from './smsEmail/types';
+export { SmsEmailState, SmsEmailItem } from './smsEmail/types';
 export { Stove, StovesState, StoveWorkingState } from './stoves/types';
 export { Analysis, AnalysisType, AnalysisState, AnalysisVariable } from './analyses/types';
 export {

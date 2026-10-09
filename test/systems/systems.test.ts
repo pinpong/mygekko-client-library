@@ -359,7 +359,7 @@ test('access state, alarm zones, dim level and items without status', async () =
   expect(await client.accesses.getItems()).toMatchObject([
     { currentState: 0, sumState: 0, accessState: 1, gateRuntimePercentage: 40, accessType: 0 },
   ]);
-  expect(await client.alarmSystems.getItems()).toMatchObject([
+  expect(await client.alarmSystem.getItems()).toMatchObject([
     {
       alarmDevices: [
         { zone: 'EG', deviceStatus: 1, sharpState: 0, systemState: 0 },
@@ -446,7 +446,7 @@ test('wall box and air conditioner commands', async () => {
   await client.wallBoxes.loginUser('item0', 4);
   await client.wallBoxes.logoutUser('item0');
   await client.wallBoxes.resetUserHistory('item0', 20);
-  await client.airConditioners.setTemperature('item0', 21.25);
+  await client.airConditioner.setTemperature('item0', 21.25);
 
   expect(mock.commands.map(({ system, value, documented }) => [system, value, documented])).toEqual(
     [

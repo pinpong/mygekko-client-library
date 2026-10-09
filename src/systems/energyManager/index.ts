@@ -3,12 +3,12 @@ import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { EnergyManager } from './types';
+import { EnergyManagerItem } from './types';
 
 /**
  * @group Systems
  */
-export class EnergyManagers extends BaseSystem<EnergyManager> {
+export class EnergyManager extends BaseSystem<EnergyManagerItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -20,7 +20,7 @@ export class EnergyManagers extends BaseSystem<EnergyManager> {
       config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): EnergyManager {
+    ): EnergyManagerItem {
       const values = valuesToStringList(status);
 
       return {
@@ -56,6 +56,6 @@ export class EnergyManagers extends BaseSystem<EnergyManager> {
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.energyManager, parseItem);
   }
 }

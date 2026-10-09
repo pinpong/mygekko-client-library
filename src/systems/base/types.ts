@@ -49,7 +49,7 @@ export enum SystemType {
   'energyCosts' = 'energycosts',
   'alarmsLogics' = 'alarms_logics',
   'accesses' = 'accessdoors',
-  'energyManagers' = 'energymanager',
+  'energyManager' = 'energymanager',
   'alarmSystem' = 'alarmsystem',
   'multiRooms' = 'multirooms',
   'cameras' = 'cams',

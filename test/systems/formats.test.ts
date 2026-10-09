@@ -24,13 +24,13 @@ afterEach(() => {
 test.each([
   ['accesses', 'accessdoors'],
   ['actions', 'actions'],
-  ['alarmSystems', 'alarmsystem'],
+  ['alarmSystem', 'alarmsystem'],
   ['analyses', 'trends'],
   ['blinds', 'blinds'],
   ['cameras', 'cams'],
   ['clocks', 'clocks'],
   ['energyCosts', 'energycosts'],
-  ['energyManagers', 'energymanager'],
+  ['energyManager', 'energymanager'],
   ['hotWaterSystems', 'hotwater_systems'],
   ['lights', 'lights'],
   ['loads', 'loads'],
@@ -38,7 +38,7 @@ test.each([
   ['multiRooms', 'multirooms'],
   ['pools', 'pools'],
   ['roomTemperatures', 'roomtemps'],
-  ['smsEmails', 'smsemail'],
+  ['smsEmail', 'smsemail'],
   ['vents', 'vents'],
 ] as const)('%s reads the values in the order of the device format', async (property, system) => {
   const itemId = Object.keys(discover[system]).find((key) => key.startsWith('item')) ?? '';

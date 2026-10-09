@@ -168,7 +168,7 @@ exports[`actions 1`] = `
 ]
 `;
 
-exports[`airConditioners 1`] = `
+exports[`airConditioner 1`] = `
 [
   {
     "airQualityLevel": 0,
@@ -204,7 +204,7 @@ exports[`airConditioners 1`] = `
 ]
 `;
 
-exports[`alarmSystems 1`] = `
+exports[`alarmSystem 1`] = `
 [
   {
     "alarmDevices": [
@@ -957,7 +957,7 @@ exports[`energyCosts 1`] = `
 ]
 `;
 
-exports[`energyManagers 1`] = `
+exports[`energyManager 1`] = `
 [
   {
     "batteryModel": 1,
@@ -2094,7 +2094,7 @@ exports[`saunas 1`] = `
 ]
 `;
 
-exports[`smsEmails 1`] = `
+exports[`smsEmail 1`] = `
 [
   {
     "currentState": 1,

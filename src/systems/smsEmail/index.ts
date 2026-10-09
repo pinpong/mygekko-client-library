@@ -3,12 +3,12 @@ import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { SmsEmail, SmsEmailState } from './types';
+import { SmsEmailItem, SmsEmailState } from './types';
 
 /**
  * @group Systems
  */
-export class SmsEmails extends BaseSystem<SmsEmail> {
+export class SmsEmail extends BaseSystem<SmsEmailItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -20,7 +20,7 @@ export class SmsEmails extends BaseSystem<SmsEmail> {
       config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): SmsEmail {
+    ): SmsEmailItem {
       const values = valuesToStringList(status);
 
       return {

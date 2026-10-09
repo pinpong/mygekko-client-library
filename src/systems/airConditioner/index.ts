@@ -3,12 +3,12 @@ import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberU
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
-import { AirConditioner, AirConditionerState, AirConditionerWorkingMode } from './types';
+import { AirConditionerItem, AirConditionerState, AirConditionerWorkingMode } from './types';
 
 /**
  * @group Systems
  */
-export class AirConditioners extends BaseSystem<AirConditioner> {
+export class AirConditioner extends BaseSystem<AirConditionerItem> {
   public constructor(client: LocalClient | RemoteClient) {
     /**
      * Parses the item.
@@ -20,7 +20,7 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
       config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
-    ): AirConditioner {
+    ): AirConditionerItem {
       const values = valuesToStringList(status);
 
       return {

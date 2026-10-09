@@ -18,7 +18,7 @@ exports[`actions reads the values in the order of the device format 1`] = `
 ]
 `;
 
-exports[`alarmSystems reads the values in the order of the device format 1`] = `
+exports[`alarmSystem reads the values in the order of the device format 1`] = `
 [
   "0 alarmState <- alarmSystemState",
   "1 zone1DeviceStatus <- alarmDevices.0.deviceStatus",
@@ -106,7 +106,7 @@ exports[`energyCosts reads the values in the order of the device format 1`] = `
 ]
 `;
 
-exports[`energyManagers reads the values in the order of the device format 1`] = `
+exports[`energyManager reads the values in the order of the device format 1`] = `
 [
   "0 elementInfo <- sumState",
   "1 gridMeterState <- netMeterState",
@@ -227,7 +227,7 @@ exports[`roomTemperatures reads the values in the order of the device format 1`]
 ]
 `;
 
-exports[`smsEmails reads the values in the order of the device format 1`] = `
+exports[`smsEmail reads the values in the order of the device format 1`] = `
 [
   "0 currentState <- currentState",
 ]
