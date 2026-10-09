@@ -1,8 +1,9 @@
-name: Publish Package to npmjs
+name: Release Package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 concurrency:
   group: release-${{ github.ref_name }}
@@ -12,15 +13,19 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      contents: read
       id-token: write
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -28,5 +33,7 @@ jobs:
       - name: Build package
         run: yarn build
 
-      - name: Publish to npm
-        run: npm stage publish
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn release

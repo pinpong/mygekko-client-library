@@ -86,3 +86,4 @@ yarn lefthook install # activate git hooks (install scripts of dependencies are 
 ```
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org) and are checked by commitlint.
+Releases are created by semantic-release from these messages when changes are merged into `main`.
