@@ -87,6 +87,24 @@ test('repeats status requests on timeouts', async () => {
   expect(mock.commands).toEqual([]);
 });
 
+test('uses the configured timeout and attempts', async () => {
+  const mock = new MockGekko();
+  mock.install();
+  const client = new LocalClient({
+    ip: 'mock',
+    username: 'test',
+    password: 'test',
+    timeout: 500,
+    attempts: 1,
+  });
+  await client.initialize();
+
+  expect(axios.get).toHaveBeenLastCalledWith(expect.any(String), { timeout: 500 });
+
+  mock.timeouts = 1;
+  await expect(client.lights.getItems()).rejects.toThrow(CLIENT_ERROR_MESSAGES.TIMEOUT);
+});
+
 test('serves the mock as http server', async () => {
   const mock = new MockGekko();
   const server = await mock.listen();

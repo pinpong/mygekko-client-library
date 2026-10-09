@@ -5,6 +5,7 @@ import {
   LocalClient,
   PoolWorkingMode,
   RoomTemperatureWorkingModeStandard,
+  SystemType,
 } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
 
@@ -305,5 +306,19 @@ test('groups', async () => {
   expect(mock.commands).toEqual([
     { system: 'lights', itemId: 'group0', value: '0', documented: true },
     { system: 'blinds', itemId: 'group0', value: '2', documented: true },
+  ]);
+});
+
+test('supported systems', async () => {
+  const client = await createClient(
+    { globals: { meteo: {} }, lights: { item0: { name: 'Licht' } }, emobils: {} },
+    {}
+  );
+
+  expect(client.supportedSystems).toEqual([
+    SystemType.globals,
+    SystemType.weather,
+    SystemType.lights,
+    SystemType.wallBoxes,
   ]);
 });

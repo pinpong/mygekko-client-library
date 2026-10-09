@@ -75,7 +75,7 @@ export function throwErrorIfItemIdIsNoFound(
  * @param config - The config of myGEKKO device.
  * @param systemType - The system type.
  */
-function available(config: ConfigTree, systemType: SystemType): boolean {
+export function available(config: ConfigTree, systemType: SystemType): boolean {
   const values = systemType.split('/');
   let s: ConfigNode = config;
   for (const i of values) {

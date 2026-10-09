@@ -33,7 +33,7 @@ import {
   Weather,
 } from './systems';
 import { SystemType } from './systems/base/types';
-import { throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
+import { available, throwErrorIfTrendIsNotEnabled } from './utils/errors/errorUtils';
 
 /** The client configuration */
 type ClientConfig = {
@@ -43,16 +43,26 @@ type ClientConfig = {
   authQuery: string;
   /** The request timeout in milliseconds. */
   timeout: number;
+  /** The attempts of a status request before a connection error is thrown. */
+  attempts: number;
 };
 
-/** The attempts of a status request before a connection error is thrown. */
-const MAX_ATTEMPTS = 3;
+/**
+ * The request options of a client.
+ *  @group Client
+ */
+export type RequestConfig = {
+  /** The request timeout in milliseconds, 2000 for the local and 5000 for the remote client by default */
+  timeout?: number;
+  /** The attempts of a status request before a connection error is thrown, 3 by default */
+  attempts?: number;
+};
 
 /**
  * The remote client configuration.
  *  @group Client
  */
-export type RemoteClientConfig = {
+export type RemoteClientConfig = RequestConfig & {
   /** The myGEKKO account username */
   username: string;
   /** The myGEKKO device id */
@@ -65,7 +75,7 @@ export type RemoteClientConfig = {
  * The local client configuration.
  *  @group Client
  */
-export type LocalClientConfig = {
+export type LocalClientConfig = RequestConfig & {
   /** The myGEKKO device ip */
   ip: string;
   /** The local username  */
@@ -209,6 +219,8 @@ export abstract class Client {
   private readonly authQueryString: string;
   /** The request timeout in milliseconds */
   private readonly timeout: number;
+  /** The attempts of a status request */
+  private readonly attempts: number;
 
   /** The myGEKKO device system configuration */
   private _systemConfig: SystemConfig | '' = '';
@@ -227,6 +239,15 @@ export abstract class Client {
    */
   public get trendConfig(): TrendConfig {
     return this._trendConfig as TrendConfig;
+  }
+
+  /**
+   * The systems the myGEKKO device supports, empty until the client is initialized.
+   */
+  public get supportedSystems(): SystemType[] {
+    return Object.values(SystemType).filter((systemType) =>
+      available(this.systemConfig, systemType)
+    );
   }
 
   /** The {@link Accesses} class instance */
@@ -296,6 +317,7 @@ export abstract class Client {
     this.baseUrl = config.baseUrl;
     this.authQueryString = config.authQuery;
     this.timeout = config.timeout;
+    this.attempts = config.attempts;
   }
 
   /**
@@ -394,7 +416,7 @@ export abstract class Client {
    */
   private async get<T>(endpoint: string): Promise<{ data: T }> {
     // a command is never repeated, it may have been executed although the response got lost
-    const attempts = endpoint.includes('/scmd/') ? 1 : MAX_ATTEMPTS;
+    const attempts = endpoint.includes('/scmd/') ? 1 : this.attempts;
 
     for (let attempt = 1; ; attempt++) {
       try {
@@ -484,7 +506,8 @@ export class RemoteClient extends Client {
     super({
       baseUrl: 'https://live.my-gekko.com/api/v1',
       authQuery: `username=${config.username}&key=${config.apiKey}&gekkoid=${config.gekkoId}`,
-      timeout: 5000,
+      timeout: config.timeout ?? 5000,
+      attempts: config.attempts ?? 3,
     });
   }
 }
@@ -502,7 +525,8 @@ export class LocalClient extends Client {
     super({
       baseUrl: `http://${config.ip}/api/v1`,
       authQuery: `username=${config.username}&password=${config.password}`,
-      timeout: 2000,
+      timeout: config.timeout ?? 2000,
+      attempts: config.attempts ?? 3,
     });
   }
 }
