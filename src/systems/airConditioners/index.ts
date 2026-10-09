@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -82,40 +82,40 @@ export class AirConditioners extends BaseSystem<AirConditioner> {
   /**
    * Sets the power.
    * @param itemId - The item id.
-   * @param power - The new power.
+   * @param power - The new power, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setPower(itemId: string, power: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `P${power}`);
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(power)}`);
   }
 
   /**
    * Sets the min flap.
    * @param itemId - The item id.
-   * @param flaps - The new min flaps.
+   * @param flaps - The new min flaps, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setMinFlap(itemId: string, flaps: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `F${flaps}`);
+    await this.client.changeRequest(this.systemType, itemId, `F${roundCommandValue(flaps)}`);
   }
 
   /**
    * Sets the air quality.
    * @param itemId - The item id.
-   * @param airQuality - The new air quality.
+   * @param airQuality - The new air quality, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setAirQuality(itemId: string, airQuality: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `Q${airQuality}`);
+    await this.client.changeRequest(this.systemType, itemId, `Q${roundCommandValue(airQuality)}`);
   }
 
   /**
    * Sets the humidity.
    * @param itemId - The item id.
-   * @param humidity - The new humidity.
+   * @param humidity - The new humidity, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setHumidity(itemId: string, humidity: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `H${humidity}`);
+    await this.client.changeRequest(this.systemType, itemId, `H${roundCommandValue(humidity)}`);
   }
 }

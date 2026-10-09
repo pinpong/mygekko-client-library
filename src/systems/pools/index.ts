@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -59,9 +59,9 @@ export class Pools extends BaseSystem<Pool> {
   /**
    * Sets the temperature.
    * @param itemId - The item id.
-   * @param temperature - The new temperature.
+   * @param temperature - The new temperature, rounded to one decimal.
    */
   public async setTemperatur(itemId: string, temperature: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `T${temperature}`);
+    await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperature)}`);
   }
 }

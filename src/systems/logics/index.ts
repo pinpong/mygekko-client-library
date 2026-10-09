@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -38,9 +38,9 @@ export class Logics extends BaseSystem<Logic> {
   /**
    * Sets the set point.
    * @param itemId - The item id.
-   * @param value - The new set point.
+   * @param value - The new set point, rounded to one decimal.
    */
   public async setSetPoint(itemId: string, value: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `S${value}`);
+    await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(value)}`);
   }
 }

@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -87,10 +87,10 @@ export class WallBoxes extends BaseSystem<WallBox> {
   /**
    * Sets the power.
    * @param itemId - The item id.
-   * @param power - The new power.
+   * @param power - The new power, rounded to one decimal.
    */
   public async setChargePower(itemId: string, power: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `CS${power}`);
+    await this.client.changeRequest(this.systemType, itemId, `CS${roundCommandValue(power)}`);
   }
 
   /**

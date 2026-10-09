@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -76,10 +76,10 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   /**
    * Sets the volume.
    * @param itemId - The item id.
-   * @param volume - The new volume.
+   * @param volume - The new volume, rounded to one decimal.
    */
   public async setVolume(itemId: string, volume: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `V${volume}`);
+    await this.client.changeRequest(this.systemType, itemId, `V${roundCommandValue(volume)}`);
   }
 
   /**

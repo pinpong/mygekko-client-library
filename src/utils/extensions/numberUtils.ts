@@ -19,3 +19,11 @@ export function tryParseFloat(string: string | null | undefined): number | null 
   }
   return null;
 }
+
+/**
+ * Rounds a command value to one decimal, the resolution of the myGEKKO device.
+ * @param value - The value to round.
+ */
+export function roundCommandValue(value: number): number {
+  return Math.round(value * 10) / 10;
+}

@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -51,21 +51,21 @@ export class Blinds extends BaseSystem<Blind> {
   /**
    * Sets the position.
    * @param itemId - The item id.
-   * @param position - The new position.
+   * @param position - The new position, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setPosition(itemId: string, position: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `P${position}`);
+    await this.client.changeRequest(this.systemType, itemId, `P${roundCommandValue(position)}`);
   }
 
   /**
    * Sets the angle.
    * @param itemId - The item id.
-   * @param angle - The new angle.
+   * @param angle - The new angle, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setAngle(itemId: string, angle: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `S${angle}`);
+    await this.client.changeRequest(this.systemType, itemId, `S${roundCommandValue(angle)}`);
   }
 
   /**

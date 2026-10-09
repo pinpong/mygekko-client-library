@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -52,19 +52,23 @@ export class Lights extends BaseSystem<Light> {
   /**
    * Sets the dim level.
    * @param itemId - The item id.
-   * @param dimLevel - The new dim level.
+   * @param dimLevel - The new dim level, rounded to one decimal.
    */
   public async setDimLevel(itemId: string, dimLevel: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `D${dimLevel}`);
+    await this.client.changeRequest(this.systemType, itemId, `D${roundCommandValue(dimLevel)}`);
   }
 
   /**
    * Sets the tunable white level.
    * @param itemId - The item id.
-   * @param tunableWhiteLevel - The new tunable white level.
+   * @param tunableWhiteLevel - The new tunable white level, rounded to one decimal.
    */
   public async setTunableWhiteLevel(itemId: string, tunableWhiteLevel: number): Promise<void> {
-    await this.client.changeRequest(this.systemType, itemId, `TW${tunableWhiteLevel}`);
+    await this.client.changeRequest(
+      this.systemType,
+      itemId,
+      `TW${roundCommandValue(tunableWhiteLevel)}`
+    );
   }
 
   /**
