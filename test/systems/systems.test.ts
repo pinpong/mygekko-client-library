@@ -8,6 +8,7 @@ import {
   RoomTemperatureWorkingModeStandard,
   SmsEmailState,
   SystemType,
+  VentLevel,
   WallBoxChargeState,
 } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
@@ -510,4 +511,14 @@ test('play lists keep the number of the device', async () => {
       ],
     },
   ]);
+});
+
+test('a vent level the device does not know is not sent', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await expect(client.vents.setLevel('item0', 5 as VentLevel)).rejects.toThrow(
+    CLIENT_ERROR_MESSAGES.BAD_REQUEST
+  );
+  expect(mock.commands).toEqual([]);
 });

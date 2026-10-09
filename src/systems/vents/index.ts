@@ -1,4 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
+import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
 import { tryParseFloat, tryParseInt } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -90,7 +91,7 @@ export class Vents extends BaseSystem<Vent> {
    * @param ventLevel - The new vent level.
    */
   public async setLevel(itemId: string, ventLevel: VentLevel): Promise<void> {
-    let level = -1;
+    let level: number;
     switch (ventLevel) {
       case VentLevel.off:
         level = -1;
@@ -107,6 +108,8 @@ export class Vents extends BaseSystem<Vent> {
       case VentLevel.level4:
         level = 4;
         break;
+      default:
+        throw new ClientError(CLIENT_ERROR_MESSAGES.BAD_REQUEST);
     }
     await this.client.changeRequest(this.systemType, itemId, `${level}`);
   }
