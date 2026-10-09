@@ -53,7 +53,7 @@ export class HotWaterSystems extends BaseSystem<HotWaterSystem> {
   /**
    * Sets the temperature.
    * @param itemId - The item id.
-   * @param temperatur - The new temperature, rounded to one decimal.
+   * @param temperatur - The new absolute temperature as C°, rounded to one decimal.
    */
   public async setTemperature(itemId: string, temperatur: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `T${roundCommandValue(temperatur)}`);

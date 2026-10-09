@@ -52,7 +52,7 @@ export class Lights extends BaseSystem<Light> {
   /**
    * Sets the dim level.
    * @param itemId - The item id.
-   * @param dimLevel - The new dim level, rounded to one decimal.
+   * @param dimLevel - The new dim level as 0-100 %, rounded to one decimal.
    */
   public async setDimLevel(itemId: string, dimLevel: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `D${roundCommandValue(dimLevel)}`);
@@ -61,7 +61,7 @@ export class Lights extends BaseSystem<Light> {
   /**
    * Sets the tunable white level.
    * @param itemId - The item id.
-   * @param tunableWhiteLevel - The new tunable white level, rounded to one decimal.
+   * @param tunableWhiteLevel - The new tunable white level as 0-100 % from warm to cold, rounded to one decimal.
    */
   public async setTunableWhiteLevel(itemId: string, tunableWhiteLevel: number): Promise<void> {
     await this.client.changeRequest(
@@ -74,7 +74,7 @@ export class Lights extends BaseSystem<Light> {
   /**
    * Sets the color.
    * @param itemId - The item id.
-   * @param color - The new color.
+   * @param color - The new color as 24 bit rgb decimal, see rgbToDecimal.
    */
   public async setColor(itemId: string, color: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `C${color}`);

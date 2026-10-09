@@ -87,7 +87,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
   /**
    * Sets the power.
    * @param itemId - The item id.
-   * @param power - The new power, rounded to one decimal.
+   * @param power - The new absolute charging power as kilowatt, rounded to one decimal.
    */
   public async setChargePower(itemId: string, power: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `CS${roundCommandValue(power)}`);

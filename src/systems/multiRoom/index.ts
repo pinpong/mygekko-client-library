@@ -76,7 +76,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   /**
    * Sets the volume.
    * @param itemId - The item id.
-   * @param volume - The new volume, rounded to one decimal.
+   * @param volume - The new volume as 0-100 %, rounded to one decimal.
    */
   public async setVolume(itemId: string, volume: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `V${roundCommandValue(volume)}`);
@@ -101,7 +101,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
   /**
    * Sets the play list.
    * @param itemId - The item id.
-   * @param playListIndex - The new play list index.
+   * @param playListIndex - The new play list index as 0-15.
    */
   public async setPlayList(itemId: string, playListIndex: number): Promise<void> {
     await this.client.changeRequest(this.systemType, itemId, `C${playListIndex}`);

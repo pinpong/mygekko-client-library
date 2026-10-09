@@ -51,7 +51,7 @@ export class Blinds extends BaseSystem<Blind> {
   /**
    * Sets the position.
    * @param itemId - The item id.
-   * @param position - The new position, rounded to one decimal.
+   * @param position - The new position as 0-100 %, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setPosition(itemId: string, position: number): Promise<void> {
@@ -61,7 +61,7 @@ export class Blinds extends BaseSystem<Blind> {
   /**
    * Sets the angle.
    * @param itemId - The item id.
-   * @param angle - The new angle, rounded to one decimal.
+   * @param angle - The new angle as 0-100 % whatever the rotation range is, rounded to one decimal.
    * @throws {@link ClientError}
    */
   public async setAngle(itemId: string, angle: number): Promise<void> {

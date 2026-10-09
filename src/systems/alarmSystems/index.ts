@@ -59,7 +59,7 @@ export class AlarmSystems extends BaseSystem<AlarmSystem> {
   /**
    * Sets the state.
    * @param itemId - The item id.
-   * @param zone - The zone.
+   * @param zone - The zone to sharp as 1-2, the device documents no command to unsharp.
    * @throws {@link ClientError}
    */
   public async setSharped(itemId: string, zone: number): Promise<void> {

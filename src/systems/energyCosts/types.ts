@@ -12,9 +12,9 @@ export type EnergyCost = BaseSystemType & {
   totalEnergy: number | null;
   /** The nominal power 0-... As powerUnit */
   nominalPower: number | null;
-  /** The energy unit */
+  /** The energy unit, the power unit per hour, e.g. kWh, the counter may also count water or gas */
   energyUnit: string | null;
-  /** The power unit */
+  /** The power unit, e.g. kW, ml or l3 */
   powerUnit: string | null;
   /** The total energy today from 00:00-06:00 0-... As energyUnit */
   totalEnergyToday0h6h: number | null;

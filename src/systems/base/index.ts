@@ -209,7 +209,7 @@ export class BaseSystem<T> extends Base {
   }
 
   /**
-   * Returns all groups, a group takes the commands of the system by its id like an item.
+   * Returns all groups, a group takes only a few commands of the system by its id, mostly off and on.
    * @throws {@link ClientError}
    */
   public async getGroups(): Promise<SystemGroup[]> {

@@ -3,7 +3,7 @@
  *  @group Client
  */
 export enum CLIENT_ERROR_MESSAGES {
-  /** Status code 403 */
+  /** Status code 403, the device may refuse further logins for some minutes */
   BAD_LOGIN = 'auth/bad-login',
   /** Status code 405 */
   PERMISSION_DENIED = 'auth/permission-denied',

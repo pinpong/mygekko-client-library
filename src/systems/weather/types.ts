@@ -6,7 +6,7 @@ export type WeatherItem = BaseSystemType & {
   twilight: number | null;
   /** The current relative humidity level as 0-100 % */
   humidity: number | null;
-  /** The current brightness value as 0-100000 kilo lux */
+  /** The current brightness value from the south sensor as 0-100000 kilo lux */
   brightness: number | null;
   /** The current brightness value from the west sensor as 0-100000 kilo lux */
   brightnessWest: number | null;
