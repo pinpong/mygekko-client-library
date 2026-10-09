@@ -161,7 +161,7 @@ export class BaseSystem<T> extends Base {
     itemId: string
   ): Promise<ItemStatusResponse> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, systemType);
-    throwErrorIfItemIdIsNoFound(this.client.trendConfig, systemType, itemId);
+    throwErrorIfItemIdIsNoFound(this.client.systemConfig, systemType, itemId);
 
     return await this.client.itemStatusRequest(systemType, itemId);
   }
