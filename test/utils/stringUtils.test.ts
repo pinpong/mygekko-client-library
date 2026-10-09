@@ -20,6 +20,13 @@ test('valuesToStringList', () => {
     'C°',
     '199.999',
   ]);
+  expect(valuesToStringList({ sumstate: { value: '0;100.00;50;0;90' } })).toEqual([
+    '0',
+    '100.00',
+    '50',
+    '0',
+    '90',
+  ]);
 
   expect(() => {
     valuesToStringList(JSON.parse('{}'));

@@ -8,7 +8,8 @@ import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
  */
 export function valuesToStringList(values: ItemStatusResponse): string[] {
   try {
-    return values.sumstate.value.slice(0, -1).split(';');
+    const value = values.sumstate.value;
+    return (value.endsWith(';') ? value.slice(0, -1) : value).split(';');
   } catch (e) {
     throw new ClientError(CLIENT_ERROR_MESSAGES.CANNOT_PARSE_STATUS);
   }
