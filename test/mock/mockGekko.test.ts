@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { CLIENT_ERROR_MESSAGES, LocalClient, SystemType } from '../../src';
+import { CLIENT_ERROR_MESSAGES, ClientError, LocalClient, SystemType } from '../../src';
 import { MockGekko } from './mockGekko';
 
 afterEach(() => {
@@ -67,6 +67,20 @@ test('fails with a http status', async () => {
   await expect(client.lights.getItems()).rejects.toThrow(
     CLIENT_ERROR_MESSAGES.SERVICE_NOT_REGISTERED_OR_EXPIRED
   );
+});
+
+test('fails with a client error', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await expect(client.initialize()).rejects.toThrow(
+    new ClientError(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED)
+  );
+  await expect(client.lights.getItemById('item99')).rejects.toBeInstanceOf(ClientError);
+  mock.failWith = 418;
+  const failure = client.lights.getItems();
+  await expect(failure).rejects.toBeInstanceOf(ClientError);
+  await expect(failure).rejects.toThrow(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
 });
 
 test('repeats status requests on timeouts', async () => {

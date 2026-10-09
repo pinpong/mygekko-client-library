@@ -415,7 +415,7 @@ export abstract class Client {
    */
   public async initialize(): Promise<void> {
     if (this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
     }
     await this.loadConfig();
   }
@@ -426,7 +426,7 @@ export abstract class Client {
    */
   public async rescan(): Promise<void> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
     await this.loadConfig();
   }
@@ -451,7 +451,7 @@ export abstract class Client {
    */
   public async request<T>(endpoint: string): Promise<T> {
     if (!this.systemConfig) {
-      throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+      throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
     }
     return await this.internalRequest<T>(endpoint);
   }
@@ -490,10 +490,7 @@ export abstract class Client {
           case 503:
             throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE);
           default:
-            throw new Error(
-              `${CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE}: ${error.response.status}`,
-              { cause: error }
-            );
+            throw new ClientError(CLIENT_ERROR_MESSAGES.SERVICE_NOT_AVAILABLE, { cause: error });
         }
       } else if (isAxiosError(error)) {
         throw new ClientError(
@@ -502,10 +499,8 @@ export abstract class Client {
             : CLIENT_ERROR_MESSAGES.NO_CONNECTION,
           { cause: error }
         );
-      } else if (error instanceof Error) {
-        throw new Error(error.message, { cause: error });
       } else {
-        throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR);
+        throw new ClientError(CLIENT_ERROR_MESSAGES.UNKNOWN_ERROR, { cause: error });
       }
     }
   }

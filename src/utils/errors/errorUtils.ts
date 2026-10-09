@@ -28,11 +28,11 @@ function find(config: Config, path: string[]): unknown {
  */
 export function throwErrorIfSystemIsNotEnabled(systemConfig: Config, systemType: SystemType): void {
   if (systemConfig.valueOf() == 0) {
-    throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
+    throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
   }
 
   if (!available(systemConfig, systemType)) {
-    throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
+    throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
   }
 }
 
