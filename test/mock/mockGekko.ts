@@ -145,7 +145,12 @@ export class MockGekko {
       return { status: 200, data: this.data.config };
     }
     if (root === 'var' && path[path.length - 1] === 'status') {
-      const status = find(this.data.status, path.slice(0, -1));
+      // the device answers meteo/status with the values below globals/meteo
+      const system = path.slice(0, -1);
+      const status = find(
+        this.data.status,
+        system.join('/') === 'meteo' ? ['globals', 'meteo'] : system
+      );
       if (status !== undefined) {
         return { status: 200, data: status };
       }

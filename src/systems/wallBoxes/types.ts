@@ -25,7 +25,7 @@ export type WallBox = BaseSystemType & {
   /** The charging start time as hh:mm:ss */
   chargeStartTime: string | null;
   /** The current charging user index */
-  chargeUserIndex: number | null;
+  chargeUserIndex: string | null;
   /** The registered users */
   wallBoxUser: WallBoxUser[] | null;
 };

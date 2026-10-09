@@ -21,6 +21,8 @@ export class Weather extends BaseSubSystem<WeatherItem> {
      * @param status - The response from the status request.
      */
     function parseItem(status: SubSystemStatusResponse): WeatherItem {
+      const wind = tryParseFloat(status['wind']?.['value']);
+
       return {
         sumState: null,
         itemId: null,
@@ -31,7 +33,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
         brightness: tryParseFloat(status['brightness']?.['value']),
         brightnessWest: tryParseFloat(status['brightnessw']?.['value']),
         brightnessEast: tryParseFloat(status['brightnesso']?.['value']),
-        wind: tryParseFloat(status['wind']?.['value']),
+        wind: wind === null ? null : wind * 3.6,
         temperature: tryParseFloat(status['temperature']?.['value']),
         rain: tryParseFloat(status['rain']?.['value']),
       };
@@ -86,7 +88,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
   public async getItem(): Promise<WeatherItem> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
-    const status = await this.client.systemStatusRequest<SubSystemStatusResponse>(this.systemType);
+    const status = await this.client.request<SubSystemStatusResponse>('/var/meteo/status?');
     return this.parseItem(status);
   }
 

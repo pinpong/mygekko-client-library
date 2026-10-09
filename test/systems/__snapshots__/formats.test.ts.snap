@@ -196,7 +196,7 @@ exports[`multiRooms reads the values in the order of the device format 1`] = `
   "18 playlist13Name <- playList.13.name",
   "19 playlist14Name <- playList.14.name",
   "20 playlist15Name <- playList.15.name",
-  "21 currentSongIndex <- currentSongIndex",
+  "21 currentSongIndex <- -",
 ]
 `;
 
@@ -216,7 +216,7 @@ exports[`roomTemperatures reads the values in the order of the device format 1`]
   "1 temperatureSetPointValue <- temperatureSetPoint",
   "2 valveOpeningLevel <- valveOpeningLevel",
   "3 workingMode <- workingMode",
-  "4 reserved <- reserved",
+  "4 reserved <- -",
   "5 temperatureAdjustmentValue <- temperatureAdjustment",
   "6 coolingModeState <- coolingModeState",
   "7 elementInfo <- sumState",
@@ -239,7 +239,7 @@ exports[`vents reads the values in the order of the device format 1`] = `
   "1 deviceModel <- deviceModel",
   "2 workingMode <- workingMode",
   "3 bypassState <- bypassState",
-  "4 maximumWorkingLevel <- maximumWorkingLevel",
+  "4 maximumWorkingLevel <- -",
   "5 relativeHumidityLevel <- relativeHumidity",
   "6 airQualityLevel <- airQuality",
   "7 co2Value <- co2",

@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { tryParseFloat } from '../../utils/extensions/numberUtils';
+import { tryParseFloat, tryParseInt } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -35,6 +35,7 @@ export class Vents extends BaseSystem<Vent> {
       itemId: string
     ): Vent {
       const values = valuesToStringList(status);
+      const maximumWorkingLevel = tryParseInt(values[4]);
 
       return {
         sumState: tryParseFloat(values[14]),
@@ -45,7 +46,7 @@ export class Vents extends BaseSystem<Vent> {
         deviceModel: tryParseFloat(values[1]),
         workingMode: tryParseFloat(values[2]),
         bypassState: tryParseFloat(values[3]),
-        maximumWorkingLevel: tryParseFloat(values[4]),
+        maximumWorkingLevel: maximumWorkingLevel === null ? null : maximumWorkingLevel + 1,
         relativeHumidity: tryParseFloat(values[5]),
         airQuality: tryParseFloat(values[6]),
         co2: tryParseFloat(values[7]),

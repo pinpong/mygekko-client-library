@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -28,7 +28,7 @@ export class Logics extends BaseSystem<Logic> {
         itemId: itemId,
         name: config[itemId].name,
         page: config[itemId].page ?? null,
-        value: tryParseFloat(values[0]),
+        value: values[0] ?? null,
       };
     }
 

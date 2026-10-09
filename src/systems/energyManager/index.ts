@@ -22,6 +22,7 @@ export class EnergyManager extends BaseSystem<EnergyManagerItem> {
       itemId: string
     ): EnergyManagerItem {
       const values = valuesToStringList(status);
+      const netMeterCurrentPower = tryParseFloat(values[4]);
 
       return {
         sumState: tryParseFloat(values[0]),
@@ -31,7 +32,8 @@ export class EnergyManager extends BaseSystem<EnergyManagerItem> {
         netMeterState: tryParseFloat(values[1]),
         solarPanelState: tryParseFloat(values[2]),
         batteryState: tryParseFloat(values[3]),
-        netMeterCurrentPower: tryParseFloat(values[4]),
+        netMeterCurrentPower:
+          netMeterCurrentPower === null ? null : Math.max(0, netMeterCurrentPower),
         currentPowerExportedToNet: tryParseFloat(values[5]),
         currentPowerFromSolarPanels: tryParseFloat(values[6]),
         currentPowerFromBattery: tryParseFloat(values[7]),

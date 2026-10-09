@@ -17,10 +17,12 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
     function parsePlayList(values: string[]): MultiRoomPlayList[] {
       const items: MultiRoomPlayList[] = [];
       for (let i = 5; i < 21; i++) {
-        items.push({
-          index: i - 5,
-          name: values[i] ?? null,
-        });
+        if (values[i]) {
+          items.push({
+            index: i - 5,
+            name: values[i],
+          });
+        }
       }
       return items;
     }
@@ -48,7 +50,7 @@ export class MultiRooms extends BaseSystem<MultiRoom> {
         currentAudioTitle: values[3] ?? null,
         currentPlaylistIndex: tryParseFloat(values[4]),
         playList: parsePlayList(values),
-        currentSongIndex: tryParseFloat(values[21]),
+        currentSongIndex: tryParseFloat(values[22]),
       };
     }
 

@@ -21,7 +21,7 @@ export class GekkoInfo extends BaseSubSystem<GekkoInfoItem> {
         page: null,
         gekkoName: status['gekkoname']?.['value'] ?? null,
         language: tryParseInt(status['language']?.['value']),
-        version: tryParseInt(status['version']?.['value']),
+        version: status['version']?.['value'] ?? null,
         hardware: status['hardware']?.['value'] ?? null,
       };
     }

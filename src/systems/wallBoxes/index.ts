@@ -21,7 +21,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
         if (value != null) {
           items.push({
             id: i,
-            totalEnergy: tryParseFloat(value.split(';')[0]),
+            totalEnergy: tryParseFloat(value),
           });
         }
       }
@@ -56,7 +56,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
         chargeDurationTime: values[8] ?? null,
         currentChargingEnergy: values[9] ?? null,
         chargeStartTime: values[11] ?? null,
-        chargeUserIndex: tryParseFloat(values[12]),
+        chargeUserIndex: values[12] ?? null,
         wallBoxUser: parseWallBoxUser(status),
       };
     }

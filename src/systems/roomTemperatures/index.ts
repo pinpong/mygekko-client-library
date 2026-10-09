@@ -1,5 +1,5 @@
 import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
-import { roundCommandValue, tryParseFloat } from '../../utils/extensions/numberUtils';
+import { roundCommandValue, tryParseFloat, tryParseInt } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -37,7 +37,7 @@ export class RoomTemperatures extends BaseSystem<RoomTemperature> {
         temperatureSetPoint: tryParseFloat(values[1]),
         valveOpeningLevel: tryParseFloat(values[2]),
         workingMode: tryParseFloat(values[3]),
-        reserved: values[4] ?? null,
+        reserved: tryParseInt(values[4]),
         temperatureAdjustment: tryParseFloat(values[5]),
         coolingModeState: tryParseFloat(values[6]),
         relativeHumidity: tryParseFloat(values[8]),

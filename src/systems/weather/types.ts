@@ -12,7 +12,7 @@ export type WeatherItem = BaseSystemType & {
   brightnessWest: number | null;
   /** The current brightness value from the east sensor as 0-100000 kilo lux */
   brightnessEast: number | null;
-  /** The current value of the wind as 0-100000 meter per second */
+  /** The current value of the wind as kilometer per hour */
   wind: number | null;
   /** The current value of the temperature as -100-100 °C */
   temperature: number | null;

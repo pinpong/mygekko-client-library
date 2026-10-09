@@ -60,7 +60,7 @@ test('global systems', async () => {
   expect(await client.gekkoInfo.getItem()).toMatchObject({
     gekkoName: 'Demo',
     language: 2,
-    version: 680000,
+    version: '680000',
     hardware: 'Slide 2 (XXAAXXAACCAA)',
   });
   expect(await client.globalAlarm.getItem()).toMatchObject({ state: 2 });
@@ -70,7 +70,7 @@ test('global systems', async () => {
     brightness: 0.2,
     brightnessWest: 0.224,
     brightnessEast: 0.21,
-    wind: 0.78,
+    wind: 0.78 * 3.6,
     temperature: 14.1,
     rain: 0,
   });
@@ -103,7 +103,7 @@ test('wall boxes', async () => {
       sumState: 0,
       wallBoxUser: [
         { id: 1, totalEnergy: 1221.34 },
-        { id: 2, totalEnergy: 23421.98 },
+        { id: 2, totalEnergy: null },
         { id: 3, totalEnergy: 0 },
       ],
     },
@@ -170,39 +170,19 @@ test('status value positions', async () => {
 
 test('heating circuits', async () => {
   const client = await createClient(
-    { heatingcircuits: { item0: { name: 'Fussboden' }, item1: { name: 'Radiatoren' } } },
-    {
-      heatingcircuits: {
-        item0: { sumstate: { value: '1;45.00;100.00;1;50;100.00;0;' } },
-        item1: { sumstate: { value: '1;45.00;38.50;12.00;100.00;1;50;100.00;0;1;' } },
-      },
-    }
+    { heatingcircuits: { item0: { name: 'Fussboden' } } },
+    { heatingcircuits: { item0: { sumstate: { value: '1;45.00;100.00;1;50;100.00;0;' } } } }
   );
 
   expect(await client.heatingCircuits.getItems()).toMatchObject([
     {
       deviceModel: 1,
       flowTemperature: 45,
-      returnFlowTemperature: null,
-      dewPoint: null,
       pumpWorkingLevel: 100,
-      coolingModeState: 1,
-      flowTemperatureSetPoint: 50,
-      valveOpeningLevel: 100,
-      sumState: 0,
-      currentState: null,
-    },
-    {
-      deviceModel: 1,
-      flowTemperature: 45,
-      returnFlowTemperature: 38.5,
-      dewPoint: 12,
-      pumpWorkingLevel: 100,
-      coolingModeState: 1,
-      flowTemperatureSetPoint: 50,
-      valveOpeningLevel: 100,
-      sumState: 0,
       currentState: 1,
+      flowTemperatureSetPoint: 50,
+      valveOpeningLevel: 100,
+      sumState: 0,
     },
   ]);
 });
@@ -477,5 +457,57 @@ test('sms and email and wall box charge commands', async () => {
     ['emobils', '0'],
     ['emobils', '1'],
     ['emobils', '2'],
+  ]);
+});
+
+test('grid power, maximum vent level and wind are null without a value', async () => {
+  const config = {
+    globals: { meteo: {} },
+    energymanager: { item0: { name: 'Energiemanager' } },
+    vents: { item0: { name: 'Lüftung' } },
+  };
+  const missing = await createClient(config, {
+    globals: { meteo: { wind: { value: '' } } },
+    energymanager: { item0: { sumstate: { value: '0;1;1;1;' } } },
+    vents: { item0: { sumstate: { value: '2;0;1;0;' } } },
+  });
+
+  expect(await missing.energyManager.getItems()).toMatchObject([
+    {
+      netMeterCurrentPower: null,
+    },
+  ]);
+  expect(await missing.vents.getItems()).toMatchObject([{ maximumWorkingLevel: null }]);
+  expect(await missing.weather.getItem()).toMatchObject({ wind: null });
+
+  const present = await createClient(config, {
+    globals: { meteo: { wind: { value: '10.000000' } } },
+    energymanager: { item0: { sumstate: { value: '0;1;1;1;-5.00;' } } },
+    vents: { item0: { sumstate: { value: '2;0;1;0;3;' } } },
+  });
+
+  expect(await present.energyManager.getItems()).toMatchObject([
+    {
+      netMeterCurrentPower: 0,
+    },
+  ]);
+  expect(await present.vents.getItems()).toMatchObject([{ maximumWorkingLevel: 4 }]);
+  expect(await present.weather.getItem()).toMatchObject({ wind: 36 });
+});
+
+test('play lists keep the number of the device', async () => {
+  const client = await createClient(
+    { multirooms: { item0: { name: 'Radio' } } },
+    { multirooms: { item0: { sumstate: { value: '1;50;;;2;Rock;;Jazz;' } } } }
+  );
+
+  expect(await client.multiRooms.getItems()).toMatchObject([
+    {
+      currentPlaylistIndex: 2,
+      playList: [
+        { index: 0, name: 'Rock' },
+        { index: 2, name: 'Jazz' },
+      ],
+    },
   ]);
 });

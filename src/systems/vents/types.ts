@@ -17,8 +17,8 @@ export type Vent = BaseSystemType & {
     | null;
   /** The current bypass state */
   bypassState: VentBypassState | null;
-  /** The max vent level */
-  maximumWorkingLevel: VentLevel | null;
+  /** The max vent level plus one for off */
+  maximumWorkingLevel: number | null;
   /** The current relative humidity level as 0-100 % */
   relativeHumidity: number | null;
   /** The current air quality level as 0-100 % */
