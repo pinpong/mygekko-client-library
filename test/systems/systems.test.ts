@@ -79,3 +79,36 @@ test('global systems', async () => {
     rain: 0,
   });
 });
+
+test('wall boxes', async () => {
+  const client = await createClient(
+    { emobils: { item0: { name: 'Wallbox Garage' } } },
+    {
+      emobils: {
+        item0: {
+          sumstate: { value: '1;1;0;11.00;0.00;11.00;0;;0s;0.00;0;;;39;;' },
+          user1_sumstate: { value: '1221.34' },
+          user2_sumstate: { value: '23421.98;' },
+          user3_sumstate: { value: '0' },
+        },
+      },
+    }
+  );
+
+  expect(await client.wallBoxes.getItems()).toMatchObject([
+    {
+      itemId: 'item0',
+      name: 'Wallbox Garage',
+      page: null,
+      pluggedState: 1,
+      chargeState: 1,
+      currentChargingPower: 11,
+      sumState: 0,
+      wallBoxUser: [
+        { id: 1, totalEnergy: 1221.34 },
+        { id: 2, totalEnergy: 23421.98 },
+        { id: 3, totalEnergy: 0 },
+      ],
+    },
+  ]);
+});

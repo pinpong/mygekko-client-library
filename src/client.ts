@@ -167,6 +167,8 @@ export type ItemStatusResponse = {
   sumstate: {
     value: string;
   };
+  /** Further values by name, e.g. the user totals of a wall box */
+  [name: string]: { value: string } | undefined;
 };
 
 /**

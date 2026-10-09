@@ -13,17 +13,15 @@ export class WallBoxes extends BaseSystem<WallBox> {
     /**
      * Parse the wall box user item.
      * @param status - The status response
-     * @param itemId - The item id
      */
-    function parseWallBoxUser(status: ItemStatusResponse, itemId: string): WallBoxUser[] {
+    function parseWallBoxUser(status: ItemStatusResponse): WallBoxUser[] {
       const items: WallBoxUser[] = [];
       for (let i = 1; i < 7; i++) {
-        // @ts-expect-error the status of a single item has no values by item id
-        const value = status[itemId][`user${i}_sumstate`]['value'];
+        const value = status[`user${i}_sumstate`]?.value;
         if (value != null) {
           items.push({
             id: i,
-            totalEnergy: value,
+            totalEnergy: tryParseFloat(value.split(';')[0]),
           });
         }
       }
@@ -59,7 +57,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
         currentChargingEnergy: tryParseFloat(values[9]),
         chargeStartTime: values[11],
         chargeUserIndex: tryParseFloat(values[12]),
-        wallBoxUser: parseWallBoxUser(status, itemId),
+        wallBoxUser: parseWallBoxUser(status),
       };
     }
 
