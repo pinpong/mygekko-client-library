@@ -41,10 +41,10 @@ export class SmsEmail extends BaseSystem<SmsEmailItem> {
    * @param state - The new state.
    */
   public async setState(itemId: string, state: SmsEmailState): Promise<void> {
-    let value = -1;
+    let value = 0;
     switch (state) {
       case SmsEmailState.off:
-        value = -1;
+        value = 0;
         break;
       case SmsEmailState.on:
         value = 1;

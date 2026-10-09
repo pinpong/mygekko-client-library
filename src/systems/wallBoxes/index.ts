@@ -70,15 +70,17 @@ export class WallBoxes extends BaseSystem<WallBox> {
    * @param state - The new charge state.
    */
   public async setChargeState(itemId: string, state: WallBoxChargeState): Promise<void> {
-    let value = -1;
+    let value = 0;
 
     switch (state) {
       case WallBoxChargeState.off:
-      case WallBoxChargeState.paused:
-        value = -1;
+        value = 0;
         break;
       case WallBoxChargeState.on:
         value = 1;
+        break;
+      case WallBoxChargeState.paused:
+        value = 2;
         break;
     }
     await this.client.changeRequest(this.systemType, itemId, `${value}`);

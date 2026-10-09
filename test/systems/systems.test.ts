@@ -6,7 +6,9 @@ import {
   LocalClient,
   PoolWorkingMode,
   RoomTemperatureWorkingModeStandard,
+  SmsEmailState,
   SystemType,
+  WallBoxChargeState,
 } from '../../src';
 import { MockGekko } from '../mock/mockGekko';
 
@@ -212,14 +214,14 @@ test('commands', async () => {
   await client.actions.setState('item0', ActionState.off);
   await client.actions.setState('item0', ActionState.on);
   await client.pools.setWorkingMode('item0', PoolWorkingMode.bathing);
-  await client.pools.setFilterCleaning('item0', 3);
+  await client.pools.setFilterCleaning('item0', 2);
   await client.roomTemperatures.setWorkingMode('item0', RoomTemperatureWorkingModeStandard.off);
 
   expect(mock.commands).toEqual([
     { system: 'actions', itemId: 'item0', value: '-1', documented: true },
     { system: 'actions', itemId: 'item0', value: '1', documented: true },
     { system: 'pools', itemId: 'item0', value: 'M2', documented: true },
-    { system: 'pools', itemId: 'item0', value: 'C3', documented: true },
+    { system: 'pools', itemId: 'item0', value: 'C2', documented: true },
     { system: 'roomtemps', itemId: 'item0', value: 'M1', documented: true },
   ]);
 });
@@ -457,4 +459,23 @@ test('wall box and air conditioner commands', async () => {
       ['air_handling_unit', 'T21.3', true],
     ]
   );
+});
+
+test('sms and email and wall box charge commands', async () => {
+  const mock = new MockGekko();
+  const client = await mock.createClient();
+
+  await client.smsEmail.setState('item0', SmsEmailState.off);
+  await client.smsEmail.setState('item0', SmsEmailState.on);
+  await client.wallBoxes.setChargeState('item0', WallBoxChargeState.off);
+  await client.wallBoxes.setChargeState('item0', WallBoxChargeState.on);
+  await client.wallBoxes.setChargeState('item0', WallBoxChargeState.paused);
+
+  expect(mock.commands.map(({ system, value }) => [system, value])).toEqual([
+    ['smsemail', '0'],
+    ['smsemail', '1'],
+    ['emobils', '0'],
+    ['emobils', '1'],
+    ['emobils', '2'],
+  ]);
 });
