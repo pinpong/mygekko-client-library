@@ -26,6 +26,6 @@ export class GekkoInfo extends BaseSubSystem<GekkoInfoItem> {
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.network, parseItem);
   }
 }

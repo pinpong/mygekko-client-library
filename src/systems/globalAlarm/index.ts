@@ -23,6 +23,6 @@ export class GlobalAlarm extends BaseSubSystem<GlobalAlarmItem> {
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.alarm, parseItem);
   }
 }

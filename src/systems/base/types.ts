@@ -31,7 +31,7 @@ export enum SystemType {
   'globals' = 'globals',
   'weather' = 'globals/meteo',
   'network' = 'globals/network',
-  'alarm' = 'alarm',
+  'alarm' = 'globals/alarm',
   'lights' = 'lights',
   'blinds' = 'blinds',
   'vents' = 'vents',

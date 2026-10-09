@@ -37,7 +37,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
       };
     }
 
-    super(client, SystemType.energyManagers, parseItem);
+    super(client, SystemType.weather, parseItem);
   }
 
   /**
