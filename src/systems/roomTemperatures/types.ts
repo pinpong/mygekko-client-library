@@ -31,7 +31,8 @@ export type RoomTemperature = BaseSystemType & {
  * @group Systems
  */
 export enum RoomTemperatureWorkingModeStandard {
-  'off' = 0,
+  'off' = 1,
+  'on' = 2,
   'comfort' = 8,
   'reduced' = 16,
   'manual' = 64,
@@ -65,5 +66,5 @@ export enum RoomTemperatureCoolingState {
  */
 export enum RoomTemperatureDeviceModel {
   'standard' = 0,
-  'knx' = 1,
+  'knx' = 3,
 }

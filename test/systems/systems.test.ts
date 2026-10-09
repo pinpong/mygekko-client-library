@@ -1,4 +1,9 @@
-import { ActionState, LocalClient, PoolWorkingMode } from '../../src';
+import {
+  ActionState,
+  LocalClient,
+  PoolWorkingMode,
+  RoomTemperatureWorkingModeStandard,
+} from '../../src';
 import { MockGekko } from '../mock/mockGekko';
 
 /**
@@ -204,11 +209,13 @@ test('commands', async () => {
   await client.actions.setState('item0', ActionState.on);
   await client.pools.setWorkingMode('item0', PoolWorkingMode.bathing);
   await client.pools.setFilterCleaning('item0', 3);
+  await client.roomTemperatures.setWorkingMode('item0', RoomTemperatureWorkingModeStandard.off);
 
   expect(mock.commands).toEqual([
     { system: 'actions', itemId: 'item0', value: '-1', documented: true },
     { system: 'actions', itemId: 'item0', value: '1', documented: true },
     { system: 'pools', itemId: 'item0', value: 'M2', documented: true },
     { system: 'pools', itemId: 'item0', value: 'C3', documented: true },
+    { system: 'roomtemps', itemId: 'item0', value: 'M1', documented: true },
   ]);
 });

@@ -30,7 +30,6 @@ export type AlarmDevice = {
 export enum AlarmSystemState {
   'ok' = 0,
   'alarm' = 1,
-  'keepOpen' = 2,
 }
 
 /**
