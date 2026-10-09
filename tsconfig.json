@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "strict": true,
-    // TODO: remove once the device config and status responses are typed
-    "noImplicitAny": false,
     "module": "commonjs",
     "target": "es2022",
     "declaration": true,

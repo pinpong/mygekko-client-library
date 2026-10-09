@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -17,7 +17,7 @@ export class HeatingCircuits extends BaseSystem<HeatingCircuit> {
      * @param itemId - The item id.
      */
     function parseItem(
-      config: SystemConfig,
+      config: SystemItemsConfig,
       status: ItemStatusResponse,
       itemId: string
     ): HeatingCircuit {

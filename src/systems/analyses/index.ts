@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -16,7 +16,11 @@ export class Analyses extends BaseSystem<Analysis> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): Analysis {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): Analysis {
       const values = valuesToStringList(status);
 
       return {

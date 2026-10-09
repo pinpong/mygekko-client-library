@@ -1,4 +1,4 @@
-import { ItemStatusResponse, LocalClient, RemoteClient, SystemConfig } from '../../client';
+import { ItemStatusResponse, LocalClient, RemoteClient, SystemItemsConfig } from '../../client';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { valuesToStringList } from '../../utils/extensions/stringUtils';
 import { BaseSystem } from '../base';
@@ -18,6 +18,7 @@ export class WallBoxes extends BaseSystem<WallBox> {
     function parseWallBoxUser(status: ItemStatusResponse, itemId: string): WallBoxUser[] {
       const items: WallBoxUser[] = [];
       for (let i = 1; i < 7; i++) {
+        // @ts-expect-error the status of a single item has no values by item id
         const value = status[itemId][`user${i}_sumstate`]['value'];
         if (value != null) {
           items.push({
@@ -34,7 +35,11 @@ export class WallBoxes extends BaseSystem<WallBox> {
      * @param status - The response from the status request.
      * @param itemId - The item id.
      */
-    function parseItem(config: SystemConfig, status: ItemStatusResponse, itemId: string): WallBox {
+    function parseItem(
+      config: SystemItemsConfig,
+      status: ItemStatusResponse,
+      itemId: string
+    ): WallBox {
       const values = valuesToStringList(status);
 
       return {

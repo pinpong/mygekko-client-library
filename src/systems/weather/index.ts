@@ -1,4 +1,10 @@
-import { LocalClient, RemoteClient, SystemStatusResponse, TrendItemResponse } from '../../client';
+import {
+  LocalClient,
+  RemoteClient,
+  SubSystemStatusResponse,
+  TrendDescriptions,
+  TrendItemResponse,
+} from '../../client';
 import { throwErrorIfSystemIsNotEnabled } from '../../utils/errors/errorUtils';
 import { tryParseFloat } from '../../utils/extensions/numberUtils';
 import { BaseSubSystem } from '../base';
@@ -14,7 +20,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
      * Parses the item.
      * @param status - The response from the status request.
      */
-    function parseItem(status: SystemStatusResponse): WeatherItem {
+    function parseItem(status: SubSystemStatusResponse): WeatherItem {
       return {
         sumState: null,
         itemId: null,
@@ -44,7 +50,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
    */
   private async parseWeatherItemTrend(
     systemType: SystemType,
-    item: string,
+    item: TrendDescriptions,
     startDate: string,
     endDate: string,
     count: number
@@ -80,7 +86,7 @@ export class Weather extends BaseSubSystem<WeatherItem> {
   public async getItem(): Promise<WeatherItem> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
-    const status = await this.client.systemStatusRequest(this.systemType);
+    const status = await this.client.systemStatusRequest<SubSystemStatusResponse>(this.systemType);
     return this.parseItem(status);
   }
 

@@ -70,16 +70,91 @@ export type LocalClientConfig = {
 };
 
 /**
- * The system Configuration of myGEKKO device.
+ * The configuration of a single item.
+ * @group Client
+ */
+export type ItemConfig = {
+  /** The item name */
+  name: string;
+  /** The item page */
+  page: string;
+  /** The image path of a camera */
+  imagepath?: string;
+  /** The stream path of a camera */
+  streampath?: string;
+  /** The cgi path of a camera */
+  cgipath?: string;
+};
+
+/**
+ * The item configurations of a system by item id.
+ * @group Client
+ */
+export type SystemItemsConfig = { [itemId: string]: ItemConfig };
+
+/**
+ * The system Configuration of myGEKKO device by system.
  *  @group Client
  */
-export type SystemConfig = string | { [key in SystemType]: SystemConfig };
+export type SystemConfig = { [system: string]: SystemItemsConfig };
+
+/**
+ * The description of a single trend.
+ * @group Client
+ */
+export type TrendDescription = {
+  /** The trend description */
+  description: string;
+  /** The trend unit */
+  unit: string;
+};
+
+/**
+ * The trend descriptions by trend id.
+ * @group Client
+ */
+export type TrendDescriptions = { [trendId: string]: TrendDescription };
+
+/**
+ * The trend configuration of a single item.
+ * @group Client
+ */
+export type ItemTrendConfig = {
+  /** The item name */
+  name: string;
+  /** The trends of the item */
+  trends: TrendDescriptions;
+};
+
+/**
+ * The item trend configurations of a system by item id.
+ * @group Client
+ */
+export type SystemItemsTrendConfig = { [itemId: string]: ItemTrendConfig };
+
+/**
+ * The trend configuration of myGEKKO device by system.
+ * @group Client
+ */
+export type TrendConfig = { [system: string]: SystemItemsTrendConfig } & {
+  /** The trends of the global systems */
+  globals: SystemItemsTrendConfig & {
+    /** The weather trends */
+    meteo: TrendDescriptions;
+  };
+};
 
 /**
  * The system status response.
  *  @group Client
  */
 export type SystemStatusResponse = { [itemId: string]: ItemStatusResponse };
+
+/**
+ * The status response of a system without items.
+ * @group Client
+ */
+export type SubSystemStatusResponse = { [name: string]: { value: string } };
 
 /**
  * The system item status response.
@@ -127,22 +202,22 @@ export abstract class Client {
   private readonly authQueryString: string;
 
   /** The myGEKKO device system configuration */
-  private _systemConfig: SystemConfig = '';
+  private _systemConfig: SystemConfig | '' = '';
   /** The myGEKKO device trend configuration */
-  private _trendConfig: SystemConfig = '';
+  private _trendConfig: TrendConfig | '' = '';
 
   /**
-   * The myGEKKO device system configuration.
+   * The myGEKKO device system configuration, an empty string until the client is initialized.
    */
   public get systemConfig(): SystemConfig {
-    return this._systemConfig;
+    return this._systemConfig as SystemConfig;
   }
 
   /**
-   * The myGEKKO device trend configuration.
+   * The myGEKKO device trend configuration, an empty string until the client is initialized.
    */
-  public get trendConfig(): SystemConfig {
-    return this._trendConfig;
+  public get trendConfig(): TrendConfig {
+    return this._trendConfig as TrendConfig;
   }
 
   /** The {@link Accesses} class instance */
@@ -222,7 +297,7 @@ export abstract class Client {
       throw Error(CLIENT_ERROR_MESSAGES.ALREADY_INITIALIZED);
     }
     this._systemConfig = await this.internalRequest<SystemConfig>('/var?');
-    this._trendConfig = await this.internalRequest<SystemConfig>('/trend?');
+    this._trendConfig = await this.internalRequest<TrendConfig>('/trend?');
   }
 
   /**
@@ -302,8 +377,8 @@ export abstract class Client {
    * @param systemType - The myGEKKO device API endpoint.
    * @throws {@link ClientError}
    */
-  public async systemStatusRequest(systemType: SystemType): Promise<SystemStatusResponse> {
-    return await this.request<SystemStatusResponse>(`/var/${systemType}/status?`);
+  public async systemStatusRequest<T = SystemStatusResponse>(systemType: SystemType): Promise<T> {
+    return await this.request<T>(`/var/${systemType}/status?`);
   }
 
   /**

@@ -1,6 +1,11 @@
-import { SystemConfig } from '../../client';
 import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
 import { SystemType } from '../../systems/base/types';
+
+/** A node of the config tree. */
+type ConfigNode = { [key: string]: { [key: string]: unknown } };
+
+/** The config tree of myGEKKO device by system. */
+type ConfigTree = { [system: string]: ConfigNode };
 
 /**
  * Throws error if system is not enabled.
@@ -9,14 +14,14 @@ import { SystemType } from '../../systems/base/types';
  * @throws {@link ClientError}
  */
 export function throwErrorIfSystemIsNotEnabled(
-  systemConfig: SystemConfig,
+  systemConfig: ConfigTree | string,
   systemType: SystemType
 ): void {
   if (systemConfig.valueOf() == 0) {
     throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
   }
 
-  if (!available(systemConfig, systemType)) {
+  if (!available(systemConfig as ConfigTree, systemType)) {
     throw Error(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_SUPPORTED);
   }
 }
@@ -28,13 +33,13 @@ export function throwErrorIfSystemIsNotEnabled(
  * @throws {@link ClientError}
  */
 export function throwErrorIfTrendIsNotEnabled(
-  trendConfig: SystemConfig,
+  trendConfig: ConfigTree | string,
   systemType: SystemType
 ): void {
   if (trendConfig.valueOf() == 0) {
     throw new ClientError(CLIENT_ERROR_MESSAGES.SYSTEM_NOT_INITIALIZED);
   }
-  if (!available(trendConfig, systemType)) {
+  if (!available(trendConfig as ConfigTree, systemType)) {
     throw new ClientError(CLIENT_ERROR_MESSAGES.TREND_NOT_SUPPORTED);
   }
 }
@@ -47,12 +52,12 @@ export function throwErrorIfTrendIsNotEnabled(
  * @throws {@link ClientError}
  */
 export function throwErrorIfItemIdIsNoFound(
-  config: SystemConfig,
+  config: ConfigTree,
   systemType: SystemType,
   itemId: string
 ): void {
   const values = systemType.split('/');
-  let s = config;
+  let s: ConfigNode = config;
 
   for (const i of values) {
     if (values.lastIndexOf(i) === values.length - 1) {
@@ -70,9 +75,9 @@ export function throwErrorIfItemIdIsNoFound(
  * @param config - The config of myGEKKO device.
  * @param systemType - The system type.
  */
-function available(config: SystemConfig, systemType: SystemType): boolean {
+function available(config: ConfigTree, systemType: SystemType): boolean {
   const values = systemType.split('/');
-  let s = config;
+  let s: ConfigNode = config;
   for (const i of values) {
     if (!s[i]) {
       return false;

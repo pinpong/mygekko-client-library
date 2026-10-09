@@ -1,8 +1,10 @@
 import {
   ItemStatusResponse,
+  ItemTrendConfig,
   LocalClient,
   RemoteClient,
-  SystemConfig,
+  SubSystemStatusResponse,
+  SystemItemsConfig,
   SystemStatusResponse,
 } from '../../client';
 import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
@@ -38,7 +40,7 @@ class Base {
    */
   protected async parseItemTrend(
     systemType: SystemType,
-    item: string,
+    item: ItemTrendConfig,
     itemId: string,
     startDate: string,
     endDate: string,
@@ -114,7 +116,7 @@ export class BaseSystem<T> extends Base {
   protected readonly client: LocalClient | RemoteClient;
   protected readonly systemType: SystemType;
   protected readonly parseItem: (
-    config: SystemConfig,
+    config: SystemItemsConfig,
     status: ItemStatusResponse,
     itemId: string
   ) => T;
@@ -128,7 +130,7 @@ export class BaseSystem<T> extends Base {
   public constructor(
     client: LocalClient | RemoteClient,
     systemType: SystemType,
-    parseItem: (config: SystemConfig, status: ItemStatusResponse, itemId: string) => T
+    parseItem: (config: SystemItemsConfig, status: ItemStatusResponse, itemId: string) => T
   ) {
     super(client);
     this.client = client;
@@ -252,7 +254,7 @@ export class BaseSubSystem<T> extends Base {
   /** The client instance */
   protected readonly client: LocalClient | RemoteClient;
   protected readonly systemType: SystemType;
-  protected readonly parseItem: (status: SystemStatusResponse) => T;
+  protected readonly parseItem: (status: SubSystemStatusResponse) => T;
 
   /**
    * The base system constructor.
@@ -263,7 +265,7 @@ export class BaseSubSystem<T> extends Base {
   public constructor(
     client: LocalClient | RemoteClient,
     systemType: SystemType,
-    parseItem: (status: SystemStatusResponse) => T
+    parseItem: (status: SubSystemStatusResponse) => T
   ) {
     super(client);
     this.client = client;
@@ -278,7 +280,7 @@ export class BaseSubSystem<T> extends Base {
   public async getItem(): Promise<T> {
     throwErrorIfSystemIsNotEnabled(this.client.systemConfig, this.systemType);
 
-    const status = await this.client.systemStatusRequest(this.systemType);
+    const status = await this.client.systemStatusRequest<SubSystemStatusResponse>(this.systemType);
     return this.parseItem(status);
   }
 

@@ -1,4 +1,4 @@
-import { LocalClient, RemoteClient, SystemStatusResponse } from '../../client';
+import { LocalClient, RemoteClient, SubSystemStatusResponse } from '../../client';
 import { tryParseInt } from '../../utils/extensions/numberUtils';
 import { BaseSubSystem } from '../base';
 import { SystemType } from '../base/types';
@@ -13,7 +13,7 @@ export class GekkoInfo extends BaseSubSystem<GekkoInfoItem> {
      * Parses the item.
      * @param status - The response from the status request.
      */
-    function parseItem(status: SystemStatusResponse): GekkoInfoItem {
+    function parseItem(status: SubSystemStatusResponse): GekkoInfoItem {
       return {
         sumState: null,
         itemId: null,

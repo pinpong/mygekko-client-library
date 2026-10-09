@@ -1,4 +1,4 @@
-import { ItemStatusResponse, SystemConfig } from '../../client';
+import { ItemStatusResponse, SystemItemsConfig } from '../../client';
 import { CLIENT_ERROR_MESSAGES, ClientError } from '../../errors';
 
 /**
@@ -18,7 +18,7 @@ export function valuesToStringList(values: ItemStatusResponse): string[] {
  * Filters system config by items.
  * @param systemConfig - The myGEKKO device system config.
  */
-export function systemFilteredByItems(systemConfig: SystemConfig): string[] {
+export function systemFilteredByItems(systemConfig: SystemItemsConfig | string): string[] {
   return Object.keys(systemConfig).filter((key) => key.includes('item'));
 }
 
@@ -26,6 +26,6 @@ export function systemFilteredByItems(systemConfig: SystemConfig): string[] {
  * Filters system config by groups.
  * @param systemConfig - The myGEKKO device system config.
  */
-export function systemFilteredByGroup(systemConfig: SystemConfig): string[] {
+export function systemFilteredByGroup(systemConfig: SystemItemsConfig | string): string[] {
   return Object.keys(systemConfig).filter((key) => key.includes('group'));
 }
